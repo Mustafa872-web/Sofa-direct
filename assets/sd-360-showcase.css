@@ -1,0 +1,220 @@
+/* sd-360-showcase.css */
+.sd-360-showcase {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Stage — the full-bleed canvas container */
+.sd-360-showcase__stage {
+  position: relative;
+  width: 100%;
+  min-height: var(--sc-min-h, 65vh);
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Canvas */
+.sd-360-showcase__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .4s;
+  cursor: grab;
+}
+.sd-360-showcase__canvas.is-dragging { cursor: grabbing; }
+
+/* ── Loading overlay ── */
+.sd-360-showcase__loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  z-index: 4;
+  background: rgba(17,17,17,.7);
+  transition: opacity .4s;
+}
+
+.sd-360-showcase__loader-ring {
+  width: 4.4rem;
+  height: 4.4rem;
+  border: 3px solid rgba(255,255,255,.18);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sc360spin .8s linear infinite;
+}
+@keyframes sc360spin { to { transform: rotate(360deg); } }
+
+.sd-360-showcase__loader-bar-wrap {
+  width: 14rem;
+  height: 3px;
+  background: rgba(255,255,255,.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.sd-360-showcase__loader-bar {
+  height: 100%;
+  width: 0%;
+  background: #fff;
+  border-radius: 2px;
+  transition: width .25s;
+}
+.sd-360-showcase__loader-pct {
+  font-family: Montserrat, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.7);
+  letter-spacing: .06em;
+}
+
+/* ── Drag hint ── */
+.sd-360-showcase__hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  color: rgba(255,255,255,.8);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  background: rgba(0,0,0,.45);
+  backdrop-filter: blur(6px);
+  padding: .6rem 1.4rem;
+  border-radius: 10rem;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .5s;
+}
+.sd-360-showcase__hint--visible { opacity: 1; }
+.sd-360-showcase__hint--hidden  { opacity: 0; }
+
+/* ── 360° badge — top right ── */
+.sd-360-showcase__360-badge {
+  position: absolute;
+  top: 1.6rem;
+  right: 1.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(255,255,255,.13);
+  border: 1px solid rgba(255,255,255,.28);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: .4rem 1rem;
+  border-radius: 2rem;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ── Text overlay ── */
+.sd-360-showcase__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 4rem 6rem;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,calc(var(--sc-overlay, .3) + .2)) 0%,
+    rgba(0,0,0,var(--sc-overlay, .3)) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+.sd-360-showcase__overlay > * { pointer-events: auto; }
+
+.sd-360-showcase__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .5rem 1.2rem;
+  border-radius: 2rem;
+  margin-bottom: 1.2rem;
+}
+
+.sd-360-showcase__heading {
+  font-family: 'Recoleta', Georgia, serif;
+  font-size: clamp(3rem, 5vw, 6rem);
+  color: #fff;
+  line-height: 1.1;
+  margin: 0 0 1rem;
+  text-shadow: 0 2px 20px rgba(0,0,0,.3);
+  white-space: pre-line;
+}
+
+.sd-360-showcase__sub {
+  font-family: Montserrat, sans-serif;
+  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+  color: rgba(255,255,255,.85);
+  margin: 0 0 2rem;
+  max-width: 48rem;
+  line-height: 1.6;
+}
+
+.sd-360-showcase__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  background: #fff;
+  color: #2F4858;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 1.1rem 2.8rem;
+  border-radius: 10rem;
+  text-decoration: none;
+  transition: background .18s, color .18s;
+}
+.sd-360-showcase__cta:hover { background: #A58C70; color: #fff; }
+
+/* ── Placeholder (no frames) ── */
+.sd-360-showcase__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  color: rgba(255,255,255,.4);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  padding: 4rem;
+  text-align: center;
+}
+
+/* ── Mobile ── */
+@media screen and (max-width: 749px) {
+  .sd-360-showcase__overlay { padding: 2.4rem 2rem; }
+  .sd-360-showcase__stage   { min-height: 55vw; }
+  .sd-360-showcase__hint    { font-size: 1rem; bottom: 1.2rem; }
+  .sd-360-showcase__360-badge { font-size: .9rem; top: 1rem; right: 1rem; }
+}

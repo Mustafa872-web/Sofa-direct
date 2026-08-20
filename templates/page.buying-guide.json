@@ -1,0 +1,145 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-info-hero",
+      "settings": {
+        "badge_text": "Buying Guide",
+        "heading": "Buy The Right Sofa, First Time",
+        "body_text": "Materials, measurements, designs and aftercare — everything you need to make a confident, long-lasting choice."
+      },
+      "blocks": {
+        "c1": { "type": "chip", "settings": { "icon": true, "text": "Key Questions" } },
+        "c2": { "type": "chip", "settings": { "icon": true, "text": "Material Guide" } },
+        "c3": { "type": "chip", "settings": { "icon": true, "text": "Delivery Ready" } }
+      },
+      "block_order": ["c1", "c2", "c3"]
+    },
+    "questions": {
+      "type": "sd-info-cards",
+      "settings": {
+        "eyebrow": "Key Considerations",
+        "heading": "Start With These Four Questions",
+        "bg": "cream"
+      },
+      "blocks": {
+        "q1": {
+          "type": "card",
+          "settings": {
+            "number": "01",
+            "title": "What's The Main Purpose?",
+            "text": "Décor statement, busy family life, or occasional guest seating — the answer shapes material and shape choice."
+          }
+        },
+        "q2": {
+          "type": "card",
+          "settings": {
+            "number": "02",
+            "title": "What's Your Space & Layout?",
+            "text": "Room size, flow, doorways and sockets all matter. A great sofa still needs to fit in your life."
+          }
+        },
+        "q3": {
+          "type": "card",
+          "settings": {
+            "number": "03",
+            "title": "What's Your Budget?",
+            "text": "Spend where you'll sit most. Finance and split-payment options can unlock higher-grade materials."
+          }
+        },
+        "q4": {
+          "type": "card",
+          "settings": {
+            "number": "04",
+            "title": "Who Lives With You?",
+            "text": "Pets, children and high-traffic households need tougher materials — think leather or chenille."
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"]
+    },
+    "materials": {
+      "type": "sd-info-cards",
+      "settings": {
+        "eyebrow": "Materials",
+        "heading": "Know Your Upholstery"
+      },
+      "blocks": {
+        "m1": { "type": "card", "settings": { "title": "Genuine Leather", "text": "Ages beautifully with a natural patina. Durable, breathable, forgiving of everyday life." } },
+        "m2": { "type": "card", "settings": { "title": "Leather Aire", "text": "Breathable fabric-backed alternative — softer feel at a friendlier price." } },
+        "m3": { "type": "card", "settings": { "title": "Bonded Leather", "text": "Combines real hide fibres with a PU binder — a practical leather look." } },
+        "m4": { "type": "card", "settings": { "title": "Faux Leather", "text": "Budget-friendly vinyl option — easy-wipe and great for rentals." } },
+        "m5": { "type": "card", "settings": { "title": "Velvet", "text": "Luxurious statement fabric with a rich sheen — best in low-traffic rooms." } },
+        "m6": { "type": "card", "settings": { "title": "Chenille", "text": "Hard-wearing everyday textile — warm, soft and family-friendly." } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4", "m5", "m6"]
+    },
+    "designs": {
+      "type": "sd-info-cards",
+      "settings": {
+        "eyebrow": "Sofa Designs",
+        "heading": "Find Your Shape",
+        "bg": "cream"
+      },
+      "blocks": {
+        "d1": { "type": "card", "settings": { "number": "1", "title": "Armchair / 1-Seater", "text": "A compact reading corner or side-piece for layered living rooms." } },
+        "d2": { "type": "card", "settings": { "number": "2", "title": "2-Seater", "text": "Apartment-friendly — ideal for couples and smaller spaces." } },
+        "d3": { "type": "card", "settings": { "number": "3", "title": "3-Seater", "text": "The everyday format — balanced for daily family use." } },
+        "d4": { "type": "card", "settings": { "number": "L", "title": "Corner Sofa", "text": "Efficient space utilisation with generous seating." } },
+        "d5": { "type": "card", "settings": { "number": "R", "title": "Recliner Sofa", "text": "Manual or electric — effortless relaxation on demand." } },
+        "d6": { "type": "card", "settings": { "number": "B", "title": "Sofa Bed", "text": "A dual-function solution for guest-ready homes." } }
+      },
+      "block_order": ["d1", "d2", "d3", "d4", "d5", "d6"]
+    },
+    "measure": {
+      "type": "sd-info-steps",
+      "settings": {
+        "heading": "Before You Buy: Room Checklist",
+        "body": "Six minutes now saves six months of regret later."
+      },
+      "blocks": {
+        "s1": { "type": "step", "settings": { "title": "Measure Dimensions", "text": "Width, depth, ceiling height — all three matter." } },
+        "s2": { "type": "step", "settings": { "title": "Check Access", "text": "Doorway, hallway and staircase widths." } },
+        "s3": { "type": "step", "settings": { "title": "Allow Clearance", "text": "45 cm minimum walkways around the sofa." } },
+        "s4": { "type": "step", "settings": { "title": "Mark The Footprint", "text": "Masking tape on the floor — visualise before you commit." } },
+        "s5": { "type": "step", "settings": { "title": "Note Fixtures", "text": "Radiators, plug sockets and window cills." } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4", "s5"]
+    },
+    "after": {
+      "type": "sd-info-cards",
+      "settings": {
+        "eyebrow": "After Delivery",
+        "heading": "Settling In"
+      },
+      "blocks": {
+        "a1": { "type": "card", "settings": { "title": "Most Orders", "text": "Arrive within 7 days. Coastal areas may take up to 2 weeks." } },
+        "a2": { "type": "card", "settings": { "title": "We'll Be In Touch", "text": "Our team contacts you 2 days before delivery with a time window." } },
+        "a3": { "type": "card", "settings": { "title": "Ground Floor Delivery", "text": "Complimentary — upper floors and assembly available from £49.99." } },
+        "a4": { "type": "card", "settings": { "title": "Acclimatise", "text": "Let your sofa settle for 24–48 hours before heavy use." } }
+      },
+      "block_order": ["a1", "a2", "a3", "a4"]
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "settings": {
+        "heading": "Ready to find your sofa?",
+        "body": "Our team is available 7 days a week — call 02476 581 053 or browse the collection at your leisure."
+      },
+      "blocks": {
+        "btn1": { "type": "button", "settings": { "label": "Shop All Sofas", "link": "/collections/all" } },
+        "btn2": { "type": "button", "settings": { "label": "Use The Sofa Sizer", "link": "/pages/sofa-sizer", "outline": true } }
+      },
+      "block_order": ["btn1", "btn2"]
+    }
+  },
+  "order": ["hero", "questions", "materials", "designs", "measure", "after", "cta"]
+}

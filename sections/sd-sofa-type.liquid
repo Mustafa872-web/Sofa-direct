@@ -1,0 +1,229 @@
+<link rel="stylesheet" href="{{ 'sd-sofa-type.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-sofa-type.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign heading    = section.settings.heading | default: 'Sofa Type'
+  assign type_cards = section.blocks | where: 'type', 'sofa_type'
+  assign is_slider  = false
+  if type_cards.size > 3
+    assign is_slider = true
+  endif
+-%}
+
+<section
+  id="sd-sofa-type-{{ section.id }}"
+  class="sd-sofa-type{% unless is_slider %} sd-sofa-type--static{% endunless %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  aria-label="{{ heading | escape }}"
+>
+
+  {%- comment -%} ── Header ── {%- endcomment -%}
+  <div class="sd-sofa-type__header page-width">
+    {%- if heading != blank -%}
+      <h2 class="sd-sofa-type__heading">{{ heading }}</h2>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Slider / static strip ── {%- endcomment -%}
+  <div class="sd-sofa-type__slider-wrap">
+
+    {%- if is_slider -%}
+      <button class="sd-st__arrow sd-st__arrow--prev" aria-label="Previous" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M15 18L9 12L15 6" stroke="#1b1b1b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    {%- endif -%}
+
+    <div class="sd-st__track-outer">
+      <div class="sd-st__track" id="sd-st-track-{{ section.id }}">
+
+        {%- if type_cards.size > 0 -%}
+
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'sofa_type' -%}
+              <div class="sd-st__slide" {{ block.shopify_attributes }}>
+                <a
+                  class="sd-st__card"
+                  href="{{ block.settings.card_url | default: '#' }}"
+                  aria-label="{{ block.settings.label | default: 'Sofa type' | escape }}"
+                >
+                  {%- if block.settings.card_image != blank -%}
+                    {%- assign card_alt = block.settings.card_image.alt | default: block.settings.label | escape -%}
+                    {{
+                      block.settings.card_image
+                      | image_url: width: 640
+                      | image_tag:
+                        class: 'sd-st__img',
+                        widths: '320,480,640',
+                        sizes: '(max-width: 749px) 40vw, (max-width: 989px) 25vw, 20vw',
+                        alt: card_alt,
+                        loading: 'lazy'
+                    }}
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'sd-st__img sd-st__img--placeholder' }}
+                  {%- endif -%}
+
+                  {%- if block.settings.label != blank -%}
+                    <span class="sd-st__label">{{ block.settings.label }}</span>
+                  {%- endif -%}
+                </a>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+
+        {%- else -%}
+
+          {%- comment -%} Placeholder cards for editor {%- endcomment -%}
+          {%- assign placeholder_labels = 'Armchair,2 Seater,3 Seater' | split: ',' -%}
+          {%- for i in (1..3) -%}
+            <div class="sd-st__slide">
+              <a class="sd-st__card" href="#" aria-label="{{ placeholder_labels[forloop.index0] }}">
+                {{ 'product-' | append: i | placeholder_svg_tag: 'sd-st__img sd-st__img--placeholder' }}
+                <span class="sd-st__label">{{ placeholder_labels[forloop.index0] }}</span>
+              </a>
+            </div>
+          {%- endfor -%}
+
+        {%- endif -%}
+
+      </div>
+    </div>
+
+    {%- if is_slider -%}
+      <button class="sd-st__arrow sd-st__arrow--next" aria-label="Next" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9 18L15 12L9 6" stroke="#1b1b1b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    {%- endif -%}
+
+  </div>
+
+</section>
+
+{%- if is_slider -%}
+<script>
+(function () {
+  'use strict';
+
+  var wrap   = document.getElementById('sd-sofa-type-{{ section.id }}');
+  if (!wrap) return;
+
+  var track  = wrap.querySelector('.sd-st__track');
+  var slides = Array.prototype.slice.call(wrap.querySelectorAll('.sd-st__slide'));
+  var btnPrev = wrap.querySelector('.sd-st__arrow--prev');
+  var btnNext = wrap.querySelector('.sd-st__arrow--next');
+  var current = 0;
+  var total   = slides.length;
+  var resizeId;
+
+  function getPerView() {
+    if (window.innerWidth < 750)  return 2;
+    if (window.innerWidth < 990)  return 3;
+    return 4;
+  }
+
+  function getGap() {
+    return window.innerWidth < 750 ? 10 : 13;
+  }
+
+  function setSizes() {
+    var pv  = getPerView();
+    var gap = getGap();
+    slides.forEach(function (s) {
+      s.style.flex = '0 0 calc((100% - ' + (gap * (pv - 1)) + 'px) / ' + pv + ')';
+    });
+    track.style.gap = gap + 'px';
+    goTo(Math.min(current, Math.max(0, total - pv)), true);
+  }
+
+  function goTo(index, silent) {
+    var pv  = getPerView();
+    var gap = getGap();
+    var max = Math.max(0, total - pv);
+
+    current = Math.max(0, Math.min(index, max));
+
+    var slideW = slides[0] ? slides[0].offsetWidth : 0;
+    track.style.transform = 'translateX(-' + (current * (slideW + gap)) + 'px)';
+
+    if (btnPrev) btnPrev.disabled = current === 0;
+    if (btnNext) btnNext.disabled = current >= max;
+  }
+
+  btnPrev && btnPrev.addEventListener('click', function () { goTo(current - 1); });
+  btnNext && btnNext.addEventListener('click', function () { goTo(current + 1); });
+
+  /* Touch / swipe */
+  var touchStartX = 0;
+  track.addEventListener('touchstart', function (e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+  }, { passive: true });
+
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeId);
+    resizeId = setTimeout(setSizes, 120);
+  });
+
+  setSizes();
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "SD Sofa Type",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Sofa Type"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "sofa_type",
+      "name": "Sofa Type Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Card image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label (e.g. Armchair, 2 Seater)",
+          "default": "Armchair"
+        },
+        {
+          "type": "url",
+          "id": "card_url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "SD Sofa Type",
+      "settings": {
+        "heading": "Sofa Type"
+      },
+      "blocks": [
+        { "type": "sofa_type", "settings": { "label": "Armchair" } },
+        { "type": "sofa_type", "settings": { "label": "2 Seater" } },
+        { "type": "sofa_type", "settings": { "label": "3 Seater" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

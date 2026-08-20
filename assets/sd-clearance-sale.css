@@ -1,0 +1,662 @@
+/* ============================================================
+   SD Clearance Sale — gorgeous redesign
+   Centered hero w/ giant decorative %, eyebrow badge, stats row.
+   Cards: sale badge, RRP + sale price, "Save £X" chip, hover.
+   ============================================================ */
+
+/* ── Section shell ────────────────────────────────────────── */
+.sd-clearance {
+  padding: var(--sd-section-pad-desktop) 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 250, 234, 0.7), transparent 70%),
+    linear-gradient(180deg, #fff 0%, #fafaf7 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Giant decorative "%" floating top-right behind the heading */
+.sd-clearance__bg-mark {
+  position: absolute;
+  top: -4rem;
+  right: -3rem;
+  font-family: var(--sd-font-display);
+  font-size: 32rem;
+  font-weight: 900;
+  line-height: 0.85;
+  color: rgba(192, 176, 159, 0.10);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.sd-clearance > .page-width {
+  position: relative;
+  z-index: 1;
+  max-width: 170rem; /* match Shop-the-Look hotspot section width */
+}
+
+/* Ambient floating sparkles — subtle gold dots that drift slowly */
+.sd-clearance__sparkle {
+  position: absolute;
+  z-index: 0;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 184, 118, 0.85) 0%, rgba(201, 168, 92, 0) 70%);
+  pointer-events: none;
+  opacity: 0;
+  animation: sdClearanceTwinkle 6s ease-in-out infinite;
+}
+
+.sd-clearance__sparkle--1 {
+  top: 12%;
+  left: 8%;
+  width: 0.5rem;
+  height: 0.5rem;
+  animation-delay: 0.4s;
+}
+
+.sd-clearance__sparkle--2 {
+  top: 28%;
+  right: 14%;
+  width: 0.8rem;
+  height: 0.8rem;
+  animation-delay: 2.1s;
+}
+
+.sd-clearance__sparkle--3 {
+  top: 60%;
+  left: 18%;
+  width: 0.4rem;
+  height: 0.4rem;
+  animation-delay: 3.8s;
+}
+
+@keyframes sdClearanceTwinkle {
+  0%, 100% { opacity: 0; transform: translateY(0) scale(0.6); }
+  30%      { opacity: 0.9; transform: translateY(-4px) scale(1.2); }
+  60%      { opacity: 0.6; transform: translateY(-2px) scale(1); }
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.sd-clearance__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  margin-bottom: 5.2rem;
+  text-align: center;
+}
+
+/* Eyebrow — pulsing red dot + label */
+.sd-clearance__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0.5rem 1.4rem;
+  background: rgba(217, 83, 79, 0.10);
+  border: 1px solid rgba(217, 83, 79, 0.25);
+  border-radius: 99rem;
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #b9433f;
+}
+
+.sd-clearance__eyebrow-dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: #d9534f;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 0 rgba(217, 83, 79, 0.6);
+  animation: sdClearancePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes sdClearancePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(217, 83, 79, 0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(217, 83, 79, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(217, 83, 79, 0); }
+}
+
+/* Heading — gradient teal→brown→teal with subtle shimmer */
+.sd-clearance__heading {
+  font-family: var(--sd-font-display);
+  font-size: 6.0rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.0;
+  margin: 0;
+  letter-spacing: -0.01em;
+  position: relative;
+}
+
+.sd-clearance__heading-text {
+  background: linear-gradient(
+    100deg,
+    #2f4858 0%,
+    #2f4858 35%,
+    #a58c70 50%,
+    #2f4858 65%,
+    #2f4858 100%
+  );
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: sdClearanceShimmer 6s ease-in-out infinite;
+}
+
+@keyframes sdClearanceShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* Decorative flourish under heading — line · diamond · line */
+.sd-clearance__flourish {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.0rem;
+  margin-top: -0.4rem;
+}
+
+.sd-clearance__flourish-line {
+  width: 5.4rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 168, 92, 0.55) 50%,
+    transparent 100%
+  );
+}
+
+.sd-clearance__flourish-diamond {
+  width: 0.7rem;
+  height: 0.7rem;
+  background: linear-gradient(135deg, #d4b876 0%, #c9a85c 60%, #a98841 100%);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px rgba(201, 168, 92, 0.45);
+}
+
+/* Body */
+.sd-clearance__body {
+  font-family: var(--sd-font-body);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: rgba(47, 72, 88, 0.78);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 64rem;
+}
+
+/* Stats row — 3 items, brown brand-tinted icons */
+.sd-clearance__stats {
+  list-style: none;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.0rem 2.4rem;
+}
+
+.sd-clearance__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--sd-font-body);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--sd-clr-teal, #2f4858);
+}
+
+.sd-clearance__stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  background: rgba(165, 140, 112, 0.14);
+  color: var(--sd-clr-accent-brown, #a58c70);
+  flex-shrink: 0;
+}
+
+/* CTA — refined brand teal pill */
+.sd-clearance__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 1.6rem;
+  background: var(--sd-clr-teal, #2f4858);
+  border-radius: var(--sd-radius-pill, 99rem);
+  padding: 1.2rem 2.8rem;
+  font-family: var(--sd-font-body);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 8px 22px rgba(47, 72, 88, 0.22);
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sd-clearance__cta:hover {
+  background: #1f3340;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(47, 72, 88, 0.30);
+}
+
+.sd-clearance__cta:focus-visible {
+  outline: 2px solid var(--sd-clr-teal, #2f4858);
+  outline-offset: 3px;
+}
+
+.sd-clearance__cta svg {
+  transition: transform 0.25s ease;
+}
+
+.sd-clearance__cta:hover svg {
+  transform: translateX(4px);
+}
+
+/* ── Product grid — 3 cols desktop ───────────────────────── */
+.sd-clearance__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.4rem;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+.sd-clearance__card {
+  position: relative;
+  background: #fff;
+  border-radius: 1.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(165, 140, 112, 0.18);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.32s ease;
+}
+
+.sd-clearance__card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(47, 72, 88, 0.12);
+}
+
+.sd-clearance__card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+/* Sale badge — ribbon-style with notch + gradient + shimmer on hover */
+.sd-clearance__badge {
+  position: absolute;
+  top: 1.4rem;
+  left: -0.6rem;
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 5.6rem;
+  padding: 0.65rem 1.0rem 0.6rem;
+  background: linear-gradient(135deg, #3a5667 0%, #2f4858 60%, #233846 100%);
+  color: #fff;
+  font-family: var(--sd-font-display);
+  line-height: 1;
+  /* ribbon notch on the left + soft rounded right edge */
+  clip-path: polygon(
+    0.4rem 0%,
+    100% 0%,
+    100% 100%,
+    0.4rem 100%,
+    0 50%
+  );
+  box-shadow: 0 6px 14px rgba(47, 72, 88, 0.30);
+  overflow: hidden;
+}
+
+/* Ribbon tail — small folded triangle below the notch */
+.sd-clearance__badge::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.6rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  background: #1a2b35;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+/* Shimmer sweep on card hover */
+.sd-clearance__badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.sd-clearance__card:hover .sd-clearance__badge::before {
+  transform: translateX(110%);
+}
+
+.sd-clearance__badge strong {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
+}
+
+.sd-clearance__badge span {
+  font-family: var(--sd-font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  margin-top: 0.2rem;
+  opacity: 0.85;
+  position: relative;
+  z-index: 1;
+}
+
+/* Image wrap — soft diagonal cream→tan gradient with subtle inner ring */
+.sd-clearance__card-img-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 250, 234, 0.85) 0%,
+    rgba(192, 176, 159, 0.18) 100%
+  );
+  display: block;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(165, 140, 112, 0.10);
+}
+
+.sd-clearance__card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  padding: 2.0rem;
+  box-sizing: border-box;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sd-clearance__card:hover .sd-clearance__card-img {
+  transform: scale(1.05);
+}
+
+/* Card info — title + price row + shop link */
+.sd-clearance__card-info {
+  padding: 1.8rem 1.8rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  border-top: 1px solid rgba(165, 140, 112, 0.18);
+  background: #fff;
+}
+
+.sd-clearance__card-title {
+  font-family: var(--sd-font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--sd-clr-teal, #2f4858);
+  margin: 0;
+  text-transform: capitalize;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Price row — RRP strikethrough · sale price · "Save" chip */
+.sd-clearance__card-price-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.sd-clearance__card-rrp {
+  font-family: var(--sd-font-body);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: rgba(47, 72, 88, 0.48);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.sd-clearance__card-price {
+  font-family: var(--sd-font-display);
+  font-size: 2.0rem;
+  font-weight: 800;
+  color: var(--sd-clr-teal, #2f4858);
+  letter-spacing: -0.005em;
+  line-height: 1;
+}
+
+/* "Save £X" chip — champagne gold, premium feel */
+.sd-clearance__card-save {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.8rem;
+  background: linear-gradient(
+    135deg,
+    rgba(212, 184, 118, 0.18) 0%,
+    rgba(201, 168, 92, 0.28) 100%
+  );
+  color: #8a6c2a;
+  border: 1px solid rgba(201, 168, 92, 0.35);
+  border-radius: 0.6rem;
+  font-family: var(--sd-font-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-left: auto;
+  box-shadow: 0 1px 3px rgba(201, 168, 92, 0.18);
+}
+
+/* "Shop Now" link with sliding arrow */
+.sd-clearance__card-shop {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--sd-font-body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sd-clr-accent-brown, #a58c70);
+  transition: gap 0.25s cubic-bezier(0.22, 1, 0.36, 1), color 0.22s ease;
+  margin-top: 0.2rem;
+}
+
+.sd-clearance__card:hover .sd-clearance__card-shop {
+  gap: 1.0rem;
+  color: var(--sd-clr-teal, #2f4858);
+}
+
+/* ============================================================
+   SCROLL-TRIGGERED ANIMATIONS
+   ============================================================ */
+.sd-clearance__eyebrow,
+.sd-clearance__heading,
+.sd-clearance__flourish,
+.sd-clearance__body,
+.sd-clearance__stats,
+.sd-clearance__cta,
+.sd-clearance__card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity  0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-clearance__cta {
+  transform: translateY(16px) scale(0.96);
+  transition:
+    opacity  0.5s cubic-bezier(0.34, 1.3, 0.64, 1),
+    transform 0.5s cubic-bezier(0.34, 1.3, 0.64, 1),
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.sd-clearance.is-visible .sd-clearance__eyebrow  { opacity: 1; transform: translateY(0); transition-delay: 0s; }
+.sd-clearance.is-visible .sd-clearance__heading  { opacity: 1; transform: translateY(0); transition-delay: 0.10s; }
+.sd-clearance.is-visible .sd-clearance__flourish { opacity: 1; transform: translateY(0); transition-delay: 0.20s; }
+.sd-clearance.is-visible .sd-clearance__body     { opacity: 1; transform: translateY(0); transition-delay: 0.30s; }
+.sd-clearance.is-visible .sd-clearance__stats    { opacity: 1; transform: translateY(0); transition-delay: 0.42s; }
+.sd-clearance.is-visible .sd-clearance__cta      { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.54s; }
+
+.sd-clearance.is-visible .sd-clearance__card { opacity: 1; transform: translateY(0); }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(1)  { transition-delay: 0.58s; }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(2)  { transition-delay: 0.68s; }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(3)  { transition-delay: 0.78s; }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(4)  { transition-delay: 0.72s; }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(5)  { transition-delay: 0.82s; }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(6)  { transition-delay: 0.92s; }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(7)  { transition-delay: 0.86s; }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(8)  { transition-delay: 0.96s; }
+.sd-clearance.is-visible .sd-clearance__card:nth-child(9)  { transition-delay: 1.06s; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .sd-clearance__eyebrow,
+  .sd-clearance__heading,
+  .sd-clearance__flourish,
+  .sd-clearance__body,
+  .sd-clearance__stats,
+  .sd-clearance__cta,
+  .sd-clearance__card {
+    transform: none !important;
+    transition-property: opacity !important;
+    transition-duration: 0.4s !important;
+  }
+  .sd-clearance__eyebrow-dot,
+  .sd-clearance__heading-text,
+  .sd-clearance__sparkle {
+    animation: none !important;
+  }
+  .sd-clearance__heading-text {
+    background: none;
+    -webkit-text-fill-color: var(--sd-clr-teal, #2f4858);
+    color: var(--sd-clr-teal, #2f4858);
+  }
+  .sd-clearance__card:hover { transform: none !important; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .sd-clearance__header { gap: 1.4rem; margin-bottom: 4.0rem; }
+  .sd-clearance__heading { font-size: 4.4rem; }
+  .sd-clearance__body { font-size: 1.5rem; }
+  .sd-clearance__stats { gap: 0.8rem 1.6rem; }
+  .sd-clearance__bg-mark { font-size: 22rem; right: -2rem; }
+  .sd-clearance__grid { grid-template-columns: repeat(2, 1fr); gap: 1.6rem; }
+}
+
+@media screen and (max-width: 749px) {
+  .sd-clearance { padding: var(--sd-section-pad-mobile) 0; }
+  .sd-clearance__bg-mark { font-size: 14rem; top: -2rem; right: -1rem; }
+  .sd-clearance__sparkle { display: none; }
+  .sd-clearance__flourish-line { width: 3.2rem; }
+
+  .sd-clearance__header {
+    gap: 1.2rem;
+    margin-bottom: 2.4rem;
+  }
+
+  .sd-clearance__eyebrow {
+    font-size: 1.0rem;
+    letter-spacing: 0.14em;
+    padding: 0.4rem 1.0rem;
+  }
+
+  .sd-clearance__heading {
+    font-size: 3.0rem;
+    line-height: 1.05;
+  }
+
+  .sd-clearance__body {
+    font-size: 1.3rem;
+    line-height: 1.55;
+  }
+
+  .sd-clearance__stats {
+    gap: 0.6rem 1.4rem;
+  }
+
+  .sd-clearance__stat { font-size: 1.15rem; gap: 0.5rem; }
+  .sd-clearance__stat-icon { width: 2.4rem; height: 2.4rem; }
+
+  .sd-clearance__cta {
+    font-size: 1.25rem;
+    padding: 0.9rem 2.0rem;
+  }
+
+  /* Mobile: switch grid -> horizontal scroll-snap slider.
+     One card almost-full width, peek of next card hints scrollability.
+     No JS — native swipe + scroll-snap. */
+  .sd-clearance__grid {
+    display: flex !important;
+    grid-template-columns: none;
+    gap: 1.2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 1.6rem 0.4rem;
+    margin: 0 -1.6rem;          /* let track touch screen edges */
+    scroll-padding: 1.6rem;
+  }
+  .sd-clearance__grid::-webkit-scrollbar { display: none; }
+  .sd-clearance__card {
+    flex: 0 0 80%;              /* one card per view + peek of next */
+    scroll-snap-align: start;
+    min-width: 0;
+    border-radius: 1.2rem;
+  }
+  .sd-clearance__badge {
+    top: 0.8rem;
+    left: 0.8rem;
+    min-width: 4.2rem;
+    padding: 0.4rem 0.7rem;
+  }
+  .sd-clearance__badge strong { font-size: 1.4rem; }
+  .sd-clearance__badge span { font-size: 0.75rem; }
+
+  .sd-clearance__card-img { padding: 1.4rem; }
+  .sd-clearance__card-info {
+    padding: 1.2rem 1.2rem 1.0rem;
+    gap: 0.6rem;
+  }
+  .sd-clearance__card-title { font-size: 1.4rem; }
+  .sd-clearance__card-rrp { font-size: 1.1rem; }
+  .sd-clearance__card-price { font-size: 1.6rem; }
+  .sd-clearance__card-save { font-size: 1.0rem; padding: 0.2rem 0.5rem; }
+  .sd-clearance__card-shop { font-size: 1.05rem; letter-spacing: 0.04em; }
+}

@@ -1,0 +1,340 @@
+<link rel="stylesheet" href="{{ 'sd-new-releases.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-new-releases.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign badge_text     = section.settings.badge_text     | default: 'New Releases 2026'
+  assign heading        = section.settings.heading        | default: 'Fresh styles just landed.'
+  assign top_left_ratio = section.settings.top_left_ratio | default: 41
+  assign bot_left_ratio = section.settings.bot_left_ratio | default: 61
+-%}
+
+<section
+  id="sd-nr-{{ section.id }}"
+  class="sd-nr{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  style="
+    --nr-top-left:  {{ top_left_ratio }};
+    --nr-top-right: {{ 100 | minus: top_left_ratio }};
+    --nr-bot-left:  {{ bot_left_ratio }};
+    --nr-bot-right: {{ 100 | minus: bot_left_ratio }};
+    --nr-gap: {{ section.settings.gap_size | default: 16 }}px;
+  "
+  aria-label="{{ heading | escape }}"
+>
+
+  {%- comment -%} ═══ TOP ROW ═══ {%- endcomment -%}
+  <div class="sd-nr__row sd-nr__row--top">
+
+    {%- comment -%} ── Top-left: tall portrait image ── {%- endcomment -%}
+    <div class="sd-nr__cell sd-nr__cell--top-left">
+      {%- if section.settings.top_left_image != blank -%}
+        {%- assign tl_alt = section.settings.top_left_image.alt | default: badge_text | escape -%}
+        {{
+          section.settings.top_left_image
+          | image_url: width: 1200
+          | image_tag:
+            class: 'sd-nr__img',
+            widths: '600,800,1000,1200',
+            sizes: '42vw',
+            alt: tl_alt,
+            loading: 'lazy'
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'sd-nr__img sd-nr__img--ph' }}
+      {%- endif -%}
+
+      <div class="sd-nr__hover-overlay" aria-hidden="true"></div>
+
+      {%- if section.settings.top_left_url != blank -%}
+        <a
+          href="{{ section.settings.top_left_url }}"
+          class="sd-nr__hover-btn"
+          aria-label="{{ section.settings.top_left_label | default: 'View Product' | escape }}"
+        >
+          {{- section.settings.top_left_label | default: 'View Product' -}}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── Top-right: badge + heading header, then wide image ── {%- endcomment -%}
+    <div class="sd-nr__cell sd-nr__cell--top-right">
+
+      <div class="sd-nr__header">
+        {%- if badge_text != blank -%}
+          <span class="sd-badge sd-nr__badge">{{ badge_text }}</span>
+        {%- endif -%}
+        {%- if heading != blank -%}
+          <h2 class="sd-nr__heading">{{ heading }}</h2>
+        {%- endif -%}
+      </div>
+
+      <div class="sd-nr__img-wrap">
+        {%- if section.settings.top_right_image != blank -%}
+          {%- assign tr_alt = section.settings.top_right_image.alt | default: heading | escape -%}
+          {{
+            section.settings.top_right_image
+            | image_url: width: 1600
+            | image_tag:
+              class: 'sd-nr__img',
+              widths: '800,1000,1200,1600',
+              sizes: '58vw',
+              alt: tr_alt,
+              loading: 'lazy'
+          }}
+        {%- else -%}
+          {{ 'product-2' | placeholder_svg_tag: 'sd-nr__img sd-nr__img--ph' }}
+        {%- endif -%}
+
+        <div class="sd-nr__hover-overlay" aria-hidden="true"></div>
+
+        {%- if section.settings.top_right_url != blank -%}
+          <a
+            href="{{ section.settings.top_right_url }}"
+            class="sd-nr__hover-btn"
+            aria-label="{{ section.settings.top_right_label | default: 'View Product' | escape }}"
+          >
+            {{- section.settings.top_right_label | default: 'View Product' -}}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+
+  {%- comment -%} ═══ BOTTOM ROW ═══ {%- endcomment -%}
+  <div class="sd-nr__row sd-nr__row--bottom">
+
+    {%- comment -%} ── Bottom-left: wide landscape image ── {%- endcomment -%}
+    <div class="sd-nr__cell sd-nr__cell--bottom-left">
+      {%- if section.settings.bot_left_image != blank -%}
+        {%- assign bl_alt = section.settings.bot_left_image.alt | default: heading | escape -%}
+        {{
+          section.settings.bot_left_image
+          | image_url: width: 1400
+          | image_tag:
+            class: 'sd-nr__img',
+            widths: '700,1000,1200,1400',
+            sizes: '61vw',
+            alt: bl_alt,
+            loading: 'lazy'
+        }}
+      {%- else -%}
+        {{ 'product-3' | placeholder_svg_tag: 'sd-nr__img sd-nr__img--ph' }}
+      {%- endif -%}
+
+      <div class="sd-nr__hover-overlay" aria-hidden="true"></div>
+
+      {%- if section.settings.bot_left_url != blank -%}
+        <a
+          href="{{ section.settings.bot_left_url }}"
+          class="sd-nr__hover-btn"
+          aria-label="{{ section.settings.bot_left_label | default: 'View Product' | escape }}"
+        >
+          {{- section.settings.bot_left_label | default: 'View Product' -}}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── Bottom-right: permanent dark overlay + hover pill ── {%- endcomment -%}
+    <div class="sd-nr__cell sd-nr__cell--bottom-right">
+      {%- if section.settings.bot_right_image != blank -%}
+        {%- assign br_alt = section.settings.bot_right_image.alt | default: heading | escape -%}
+        {{
+          section.settings.bot_right_image
+          | image_url: width: 1000
+          | image_tag:
+            class: 'sd-nr__img',
+            widths: '500,750,1000',
+            sizes: '39vw',
+            alt: br_alt,
+            loading: 'lazy'
+        }}
+      {%- else -%}
+        {{ 'product-4' | placeholder_svg_tag: 'sd-nr__img sd-nr__img--ph' }}
+      {%- endif -%}
+
+      {%- comment -%} Hover overlay — same as all other cells {%- endcomment -%}
+      <div class="sd-nr__hover-overlay" aria-hidden="true"></div>
+
+      {%- if section.settings.view_product_url != blank -%}
+        <a
+          href="{{ section.settings.view_product_url }}"
+          class="sd-nr__hover-btn"
+          aria-label="{{ section.settings.view_product_label | default: 'View Product' | escape }}"
+        >
+          {{- section.settings.view_product_label | default: 'View Product' -}}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+  </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "SD New Releases",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge label",
+      "default": "New Releases 2026"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Fresh styles just landed."
+    },
+    {
+      "type": "header",
+      "content": "Top-Left Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "top_left_image",
+      "label": "Image (tall portrait)"
+    },
+    {
+      "type": "url",
+      "id": "top_left_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "text",
+      "id": "top_left_label",
+      "label": "Hover button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "Top-Right Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "top_right_image",
+      "label": "Image (wide landscape)"
+    },
+    {
+      "type": "url",
+      "id": "top_right_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "text",
+      "id": "top_right_label",
+      "label": "Hover button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "Bottom-Left Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "bot_left_image",
+      "label": "Image (wider)"
+    },
+    {
+      "type": "url",
+      "id": "bot_left_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "text",
+      "id": "bot_left_label",
+      "label": "Hover button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "Bottom-Right Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "bot_right_image",
+      "label": "Image (dark overlay)"
+    },
+    {
+      "type": "url",
+      "id": "view_product_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "text",
+      "id": "view_product_label",
+      "label": "Hover button text",
+      "default": "View Product"
+    },
+    {
+      "type": "header",
+      "content": "Layout — Column Width Control"
+    },
+    {
+      "type": "range",
+      "id": "top_left_ratio",
+      "label": "Top row — left column width (%)",
+      "min": 25,
+      "max": 65,
+      "step": 1,
+      "default": 41,
+      "info": "Right column = 100% minus this. Figma default: 41%"
+    },
+    {
+      "type": "range",
+      "id": "bot_left_ratio",
+      "label": "Bottom row — left column width (%)",
+      "min": 25,
+      "max": 75,
+      "step": 1,
+      "default": 61,
+      "info": "Right column = 100% minus this. Figma default: 61%"
+    },
+    {
+      "type": "range",
+      "id": "gap_size",
+      "label": "Gap between images (px)",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD New Releases",
+      "settings": {
+        "badge_text": "New Releases 2026",
+        "heading": "Fresh styles just landed.",
+        "top_left_ratio": 41,
+        "bot_left_ratio": 61,
+        "gap_size": 16,
+
+        "view_product_label": "View Product",
+        "top_left_label": "View Product",
+        "top_right_label": "View Product",
+        "bot_left_label": "View Product"
+      }
+    }
+  ]
+}
+{% endschema %}

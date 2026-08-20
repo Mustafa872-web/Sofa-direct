@@ -1,0 +1,180 @@
+<link rel="stylesheet" href="{{ 'sd-configurator.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-configurator.css' | asset_url | stylesheet_tag }}</noscript>
+<script src="{{ 'sd-configurator.js' | asset_url }}" defer></script>
+
+{%- liquid
+  assign collection = section.settings.collection
+  if collection == blank
+    assign collection = collections['all']
+  endif
+-%}
+
+{%- capture shapes_json -%}
+[
+  {"key":"armchair","name":"Armchair","dim":"1 seat · ~90cm W","match":"armchair|1 seat|1-seat|1seat|single","icon":"<svg viewBox='0 0 64 40' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round'><rect x='10' y='12' width='44' height='22' rx='4'/><path d='M14 22h36'/></svg>"},
+  {"key":"2-seater","name":"2-Seater","dim":"~140–170cm W","match":"2 seat|2-seat|2seat|two seat|loveseat","icon":"<svg viewBox='0 0 64 40' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round'><rect x='4' y='12' width='56' height='22' rx='4'/><path d='M8 22h48M32 12v22'/></svg>"},
+  {"key":"3-seater","name":"3-Seater","dim":"~180–220cm W","match":"3 seat|3-seat|3seat|three seat","icon":"<svg viewBox='0 0 64 40' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round'><rect x='2' y='12' width='60' height='22' rx='4'/><path d='M6 22h52M22 12v22M42 12v22'/></svg>"},
+  {"key":"sofa-set","name":"Sofa Set","dim":"3+2, 3+1+1, 2+1","match":"3+2|3+1|3+3|2+1|2+2|3+1+1|3+2+1|2+1+1|sofa set","icon":"<svg viewBox='0 0 64 40' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round'><rect x='2' y='14' width='36' height='20' rx='3'/><rect x='42' y='18' width='20' height='16' rx='3'/></svg>"},
+  {"key":"corner","name":"Corner / L-Shape","dim":"~240–260cm W","match":"corner|l shape|l-shape|lshape|chaise","icon":"<svg viewBox='0 0 64 40' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round'><path d='M4 34V12h36v10h20v12z'/><path d='M8 22h32M44 26h16'/></svg>"},
+  {"key":"u-shape","name":"U-Shape","dim":"~300cm+ W","match":"u shape|u-shape|ushape|modular","icon":"<svg viewBox='0 0 64 40' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round'><path d='M4 6v28h56V6'/><path d='M4 22h56M8 14v20M56 14v20'/></svg>"},
+  {"key":"recliner","name":"Recliner","dim":"Manual or electric","match":"recliner|reclining","icon":"<svg viewBox='0 0 64 40' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round'><path d='M10 34V14l18-6v26'/><path d='M28 26l28 4v4H10'/></svg>"},
+  {"key":"sofa-bed","name":"Sofa Bed","dim":"Dual function","match":"sofa bed|sofabed|bed","icon":"<svg viewBox='0 0 64 40' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linejoin='round'><rect x='4' y='14' width='56' height='16' rx='3'/><path d='M4 22h56M4 30v4M60 30v4'/></svg>"}
+]
+{%- endcapture -%}
+
+{%- liquid
+  assign page_size = 250
+  assign total_count = collection.products_count
+  assign total_pages = total_count | divided_by: page_size
+  assign remainder = total_count | modulo: page_size
+  if remainder > 0
+    assign total_pages = total_pages | plus: 1
+  endif
+  assign collection_handle = collection.handle | default: 'all'
+-%}
+
+<section
+  class="sd-cfg"
+  data-sd-configurator
+  data-shapes="{{ shapes_json | strip_newlines | escape }}"
+  data-total-pages="{{ total_pages }}"
+  data-collection-handle="{{ collection_handle }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="sd-cfg__inner">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="sd-cfg__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h1 class="sd-cfg__title">{{ section.settings.heading }}</h1>
+    {%- endif -%}
+    {%- if section.settings.sub != blank -%}
+      <p class="sd-cfg__sub">{{ section.settings.sub }}</p>
+    {%- endif -%}
+
+    <div class="sd-cfg__progress">
+      <button class="sd-cfg__step-btn is-active" type="button" data-cfg-step-btn="0">
+        <span class="sd-cfg__step-num">1</span>
+        <span class="sd-cfg__step-label">Shape<small>Pick a style</small></span>
+      </button>
+      <button class="sd-cfg__step-btn" type="button" data-cfg-step-btn="1">
+        <span class="sd-cfg__step-num">2</span>
+        <span class="sd-cfg__step-label">Colour<small>Choose a tone</small></span>
+      </button>
+      <button class="sd-cfg__step-btn" type="button" data-cfg-step-btn="2">
+        <span class="sd-cfg__step-num">3</span>
+        <span class="sd-cfg__step-label">Material<small>Feel & finish</small></span>
+      </button>
+      <button class="sd-cfg__step-btn" type="button" data-cfg-step-btn="3">
+        <span class="sd-cfg__step-num">4</span>
+        <span class="sd-cfg__step-label">Your Matches<small>View results</small></span>
+      </button>
+    </div>
+
+    <div class="sd-cfg__panel is-active" data-cfg-panel="shape">
+      <div class="sd-cfg__panel-head">
+        <h2 class="sd-cfg__panel-title">Start with a shape</h2>
+        <p class="sd-cfg__panel-hint">Pick the silhouette that fits your room. We'll narrow everything else to match.</p>
+      </div>
+      <div class="sd-cfg__shapes" data-cfg-shapes></div>
+    </div>
+
+    <div class="sd-cfg__panel" data-cfg-panel="colour">
+      <div class="sd-cfg__panel-head">
+        <h2 class="sd-cfg__panel-title">Choose a colour</h2>
+        <p class="sd-cfg__panel-hint">Only colours available in your chosen shape are shown.</p>
+      </div>
+      <div class="sd-cfg__swatches" data-cfg-swatches></div>
+      <div class="sd-cfg__nav">
+        <button class="sd-cfg__btn sd-cfg__btn--prev" type="button" data-cfg-prev>← Back</button>
+        <button class="sd-cfg__btn sd-cfg__btn--skip" type="button" data-cfg-skip="colour">Skip colour</button>
+      </div>
+    </div>
+
+    <div class="sd-cfg__panel" data-cfg-panel="material">
+      <div class="sd-cfg__panel-head">
+        <h2 class="sd-cfg__panel-title">Pick a material</h2>
+        <p class="sd-cfg__panel-hint">Leather ages beautifully; velvet looks luxe; chenille handles family life.</p>
+      </div>
+      <div class="sd-cfg__pills" data-cfg-pills></div>
+      <div class="sd-cfg__nav">
+        <button class="sd-cfg__btn sd-cfg__btn--prev" type="button" data-cfg-prev>← Back</button>
+        <button class="sd-cfg__btn sd-cfg__btn--skip" type="button" data-cfg-skip="material">Skip material</button>
+      </div>
+    </div>
+
+    <div class="sd-cfg__panel" data-cfg-panel="results">
+      <div class="sd-cfg__results-meta">
+        <span class="sd-cfg__results-count" data-cfg-count>0 matching sofas</span>
+        <button class="sd-cfg__reset" type="button" data-cfg-reset>Start over</button>
+      </div>
+      <div class="sd-cfg__grid" data-cfg-grid>
+        {%- if collection != blank -%}
+          {%- paginate collection.products by 250 -%}
+            {%- for product in collection.products -%}
+              {%- liquid
+                assign size_value = product.metafields.custom.size.value
+                assign colour_value = product.metafields.custom.colour.value
+                assign material_value = product.metafields.custom.material.value
+                assign width_value = product.metafields.custom.width.value
+                assign height_value = product.metafields.custom.height.value
+                assign depth_value = product.metafields.custom.depth.value
+              -%}
+              <a
+                class="sd-cfg__card"
+                data-cfg-card
+                data-shape="{{ size_value | downcase | escape }}"
+                data-colour="{{ colour_value | downcase | escape }}"
+                data-material="{{ material_value | downcase | escape }}"
+                href="{{ product.url }}"
+                hidden
+              >
+                <div class="sd-cfg__card-media">
+                  {%- if product.featured_image -%}
+                    <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title | escape }}" loading="lazy">
+                  {%- endif -%}
+                </div>
+                <div class="sd-cfg__card-body">
+                  <h3 class="sd-cfg__card-title">{{ product.title }}</h3>
+                  <div class="sd-cfg__card-meta">
+                    {%- if colour_value != blank -%}
+                      <span class="sd-cfg__card-colour"><span class="sd-cfg__card-dot" data-colour-dot="{{ colour_value | downcase | escape }}"></span>{{ colour_value }}</span>
+                    {%- endif -%}
+                    {%- if material_value != blank -%}
+                      <span class="sd-cfg__card-mat">{{ material_value }}</span>
+                    {%- endif -%}
+                  </div>
+                  <p class="sd-cfg__card-dim">
+                    {%- if height_value -%}H{{ height_value }}{%- endif -%}
+                    {%- if width_value %} x W{{ width_value }}{%- endif -%}
+                    {%- if depth_value %} x D{{ depth_value }}{%- endif -%}
+                    {%- if height_value or width_value or depth_value %} cm{%- endif -%}
+                  </p>
+                  <div class="sd-cfg__card-price">{{ product.price_min | money }}</div>
+                </div>
+              </a>
+            {%- endfor -%}
+          {%- endpaginate -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="sd-cfg__summary" data-cfg-summary>
+    <div class="sd-cfg__summary-chips" data-cfg-summary-chips></div>
+    <button class="sd-cfg__summary-cta" type="button" data-cfg-view disabled>View Matching Sofas →</button>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sofa Configurator",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Sofa Configurator" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Build Your Perfect Sofa" },
+    { "type": "textarea", "id": "sub", "label": "Subtitle", "default": "Three quick steps — shape, colour, material — and we'll show you every sofa that matches." },
+    { "type": "collection", "id": "collection", "label": "Collection" }
+  ],
+  "presets": [ { "name": "Sofa Configurator" } ]
+}
+{% endschema %}

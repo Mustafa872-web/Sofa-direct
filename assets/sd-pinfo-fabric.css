@@ -1,0 +1,476 @@
+/* ============================================================
+   SD Product Info — Fabric Information card
+   Gorgeous premium fabric/material info widget sitting in the
+   product info column. Brand palette: cream / taupe / brown / teal.
+   ============================================================ */
+
+.sd-pinfab {
+  --pf-cream: var(--color-sd-cream, #FFFAEA);
+  --pf-taupe: var(--color-sd-tan,   #C0B09F);
+  --pf-brown: var(--color-sd-brown, #A58C70);
+  --pf-teal:  var(--color-sd-teal,  #2F4858);
+  --pf-gold:  #E8A53A;
+  --pf-line:  rgba(165, 140, 112, 0.32);
+
+  position: relative;
+  margin: 0 0 2rem;
+  padding: 0;
+  background:
+    linear-gradient(180deg, #fffdf3 0%, var(--pf-cream) 60%, rgba(192, 176, 159, 0.18) 100%);
+  border: 1px solid var(--pf-line);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 18px 36px -22px rgba(47, 72, 88, 0.32);
+  overflow: hidden;
+}
+
+/* ── Bar (clickable tab) ───────────────────────────────── */
+.sd-pinfab__bar {
+  appearance: none;
+  display: flex; width: 100%;
+  align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1rem 1.4rem;
+  background: var(--pf-teal);
+  color: #fff; border: 0; cursor: pointer;
+  text-align: left; font-family: inherit;
+  position: relative; z-index: 2;
+  transition: filter 0.25s ease;
+}
+.sd-pinfab__bar:hover { filter: brightness(1.08); }
+.sd-pinfab__bar:focus-visible { outline: 2px solid var(--pf-gold); outline-offset: -2px; }
+
+.sd-pinfab__bar-l { display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex: 1; }
+
+.sd-pinfab__bar-swatch {
+  width: 40px; height: 40px; border-radius: 10px; overflow: hidden;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--pf-taupe) 0%, var(--pf-brown) 100%);
+  box-shadow: inset 0 0 0 2px rgba(232, 165, 58, 0.5), 0 4px 10px -4px rgba(0,0,0,0.45);
+}
+.sd-pinfab__bar-swatch-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.sd-pinfab__bar-txt { display: flex; flex-direction: column; min-width: 0; }
+.sd-pinfab__bar-title {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem; font-weight: 700; letter-spacing: 0.02em; line-height: 1.15;
+}
+.sd-pinfab__bar-sub {
+  font-size: 1rem; font-weight: 500;
+  color: rgba(255, 255, 255, 0.72); letter-spacing: 0.02em; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.sd-pinfab__bar-toggle {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff; font-family: var(--sd-font-body, inherit);
+  font-size: 1.1rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 0.45rem 0.85rem; border-radius: 999px; flex-shrink: 0;
+}
+.sd-pinfab__bar:hover .sd-pinfab__bar-toggle { background: rgba(255,255,255,0.24); }
+.sd-pinfab__bar-chev { transition: transform 0.3s ease; }
+.sd-pinfab.is-collapsed .sd-pinfab__bar-chev { transform: rotate(-90deg); }
+
+/* ── Panel collapse ────────────────────────────────────── */
+.sd-pinfab__panel {
+  position: relative;
+  max-height: 2000px; opacity: 1; overflow: hidden;
+  padding: 1.8rem 1.8rem 1.6rem;
+  transition: max-height 0.45s ease, opacity 0.3s ease, padding 0.4s ease;
+}
+.sd-pinfab.is-collapsed .sd-pinfab__panel {
+  max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; pointer-events: none;
+}
+
+/* subtle diagonal weave texture overlay (inside panel only) */
+.sd-pinfab__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(165, 140, 112, 0.04) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(165, 140, 112, 0.03) 0 2px, transparent 2px 6px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* moving shimmer band */
+.sd-pinfab__shimmer {
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 80%;
+  height: 180%;
+  background: linear-gradient(115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(232, 165, 58, 0.18) 55%,
+    transparent 100%);
+  filter: blur(28px);
+  pointer-events: none;
+  z-index: 0;
+  transform: translateX(20%);
+  animation: sd-pinfab-shimmer 9s ease-in-out infinite;
+}
+
+@keyframes sd-pinfab-shimmer {
+  0%, 100% { transform: translateX(20%) rotate(2deg); opacity: 0.6; }
+  50%      { transform: translateX(-30%) rotate(-1deg); opacity: 0.9; }
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.sd-pinfab__head {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.4rem;
+}
+
+.sd-pinfab__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(165, 140, 112, 0.14);
+  border: 1px solid rgba(165, 140, 112, 0.32);
+  color: var(--pf-brown);
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  margin-bottom: 0.7rem;
+}
+
+.sd-pinfab__title {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--pf-teal);
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.sd-pinfab__sub {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.2rem;
+  color: rgba(47, 72, 88, 0.7);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── Hero (swatch + color name + inline CTA) ───────────── */
+.sd-pinfab__hero {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  align-items: stretch;
+  gap: 1.2rem;
+  padding: 0;
+  background: #fff;
+  border: 1px solid var(--pf-line);
+  border-radius: 14px;
+  margin-bottom: 1.2rem;
+  overflow: hidden;
+}
+
+/* ── Inline compact CTA (lives inside the hero card) ──── */
+.sd-pinfab__cta--inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  margin: auto 1rem auto 0;
+  background: linear-gradient(135deg, var(--pf-teal) 0%, #1c2e38 100%);
+  color: #fff;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 6px 14px -8px rgba(47, 72, 88, 0.55);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  align-self: center;
+}
+.sd-pinfab__cta--inline:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px -10px rgba(47, 72, 88, 0.7);
+}
+.sd-pinfab__cta--inline .sd-pinfab__cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  line-height: 1.1;
+}
+.sd-pinfab__cta--inline strong {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+.sd-pinfab__cta--inline small {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+}
+.sd-pinfab__cta--inline .sd-pinfab__cta-arrow {
+  color: var(--pf-gold);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+.sd-pinfab__cta--inline:hover .sd-pinfab__cta-arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 749px) {
+  .sd-pinfab__hero { grid-template-columns: auto 1fr; }
+  .sd-pinfab__cta--inline {
+    grid-column: 1 / -1;
+    margin: 0 1rem 1rem;
+    justify-content: center;
+  }
+}
+
+.sd-pinfab__swatch {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  align-self: center;
+  border-radius: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: none;
+}
+.sd-pinfab__swatch img {
+    height: 100%;
+    width: auto;
+}
+.sd-pinfab__hero-meta {
+  padding: 0.9rem 1.2rem 0.9rem 0;
+  justify-content: center;
+}
+
+.sd-pinfab__swatch-img {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.sd-pinfab__swatch-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(135deg, var(--pf-taupe) 0%, var(--pf-brown) 100%);
+}
+
+.sd-pinfab__swatch-ring {
+  display: none;
+}
+
+.sd-pinfab__hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.sd-pinfab__color-name {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--pf-teal);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.sd-pinfab__color-sub {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  color: rgba(47, 72, 88, 0.65);
+  letter-spacing: 0.02em;
+}
+
+.sd-pinfab__tags {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.sd-pinfab__tag {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #2d8b4c;
+  background: rgba(45, 139, 76, 0.12);
+  border: 1px solid rgba(45, 139, 76, 0.25);
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+}
+
+/* ── Specs grid ────────────────────────────────────────── */
+.sd-pinfab__specs {
+  list-style: none;
+  margin: 0 0 1.3rem;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.sd-pinfab__specs li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  align-items: center;
+  gap: 0.7rem;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--pf-line);
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.sd-pinfab__specs li:hover {
+  background: #fff;
+  border-color: var(--pf-brown);
+  transform: translateY(-1px);
+}
+
+.sd-pinfab__spec-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(232, 165, 58, 0.18) 0%, rgba(165, 140, 112, 0.18) 100%);
+  color: var(--pf-brown);
+  flex-shrink: 0;
+}
+
+.sd-pinfab__spec-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.sd-pinfab__spec-body strong {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pf-brown);
+  line-height: 1.1;
+}
+
+.sd-pinfab__spec-body span {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--pf-teal);
+  line-height: 1.25;
+}
+
+/* ── CTA (order swatches) ──────────────────────────────── */
+.sd-pinfab__cta {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 112px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  background: linear-gradient(135deg, var(--pf-teal) 0%, #1c2e38 100%);
+  color: #fff;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 12px 24px -14px rgba(47, 72, 88, 0.55);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.sd-pinfab__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -16px rgba(47, 72, 88, 0.65);
+}
+
+.sd-pinfab__cta-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--pf-brown) 0%, var(--pf-gold) 100%);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.sd-pinfab__cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.sd-pinfab__cta-text strong {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #fff;
+  line-height: 1.15;
+}
+
+.sd-pinfab__cta-text small {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.02em;
+}
+
+.sd-pinfab__cta-arrow {
+  color: var(--pf-gold);
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.sd-pinfab__cta:hover .sd-pinfab__cta-arrow {
+  transform: translateX(4px);
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 749px) {
+  .sd-pinfab          { padding: 1.5rem 1.3rem 1.3rem; border-radius: 16px; }
+  .sd-pinfab__title   { font-size: 1.7rem; }
+  .sd-pinfab__sub     { font-size: 1.1rem; }
+
+  .sd-pinfab__hero    { padding: 1rem; gap: 1rem; }
+  .sd-pinfab__swatch  { width: 64px; height: 64px; border-radius: 14px; }
+  .sd-pinfab__color-name { font-size: 1.5rem; }
+
+  .sd-pinfab__specs   { gap: 0.45rem; }
+  .sd-pinfab__specs li { padding: 0.6rem 0.7rem; grid-template-columns: 28px 1fr; gap: 0.55rem; }
+  .sd-pinfab__spec-ico { width: 28px; height: 28px; }
+  .sd-pinfab__spec-body span { font-size: 1.1rem; }
+
+  .sd-pinfab__cta     { padding: 0.85rem 1rem; gap: 0.7rem; grid-template-columns: 36px 1fr auto; }
+  .sd-pinfab__cta-ico { width: 36px; height: 36px; }
+  .sd-pinfab__cta-text strong { font-size: 1.2rem; }
+  .sd-pinfab__cta-text small  { font-size: 0.95rem; }
+}

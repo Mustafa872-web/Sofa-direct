@@ -1,0 +1,69 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hub": {
+      "type": "sd-ideas-hub",
+      "settings": {
+        "eyebrow": "Ideas & Advice",
+        "heading": "Inspiration & Expert Guides",
+        "body": "Measuring, styling, caring and choosing — everything you need to make your sofa feel right at home."
+      },
+      "blocks": {
+        "t1": { "type": "tile", "settings": { "title": "Measuring & Planning", "sub": "Get the fit right, first time", "link": "/pages/sofa-sizer" } },
+        "t2": { "type": "tile", "settings": { "title": "Style Your Living Room", "sub": "Layering, colour & layout", "link": "/pages/style-your-living" } },
+        "t3": { "type": "tile", "settings": { "title": "Materials & Care", "sub": "Leather, velvet, chenille", "link": "/pages/care-tips" } },
+        "t4": { "type": "tile", "settings": { "title": "Buying Guides", "sub": "Confident choices", "link": "/pages/buying-guide" } },
+        "t5": { "type": "tile", "settings": { "title": "Genuine Leathers", "sub": "Know your hides", "link": "/pages/genuine-leathers" } },
+        "t6": { "type": "tile", "settings": { "title": "Showroom Visit", "sub": "See it in person", "link": "/pages/showroom" } }
+      },
+      "block_order": ["t1", "t2", "t3", "t4", "t5", "t6"]
+    },
+    "spotlight": {
+      "type": "sd-ideas-spotlight",
+      "settings": {
+        "tag": "Featured Guide",
+        "heading": "How To Choose The Perfect Sofa",
+        "body": "From measuring your room to choosing the right fabric, our six-step guide walks you through every decision that matters before you commit.",
+        "link_label": "Read the guide",
+        "link": "/pages/buying-guide"
+      }
+    },
+    "grid_latest": {
+      "type": "sd-ideas-grid",
+      "settings": {
+        "heading": "Latest Guides",
+        "sub": "Fresh tips from our design team"
+      },
+      "blocks": {
+        "a1": { "type": "article", "settings": { "tag": "Measuring", "title": "Measuring A Room For A New Sofa", "text": "Five minutes with a tape measure saves a lot of heartache later.", "link": "/pages/guide-measuring" } },
+        "a2": { "type": "article", "settings": { "tag": "Styling", "title": "Layering Textures & Cushions", "text": "How to build a sofa that feels as good as it looks.", "link": "/pages/style-your-living" } },
+        "a3": { "type": "article", "settings": { "tag": "Care", "title": "Caring For Leather & Fabric", "text": "Little habits that keep your sofa showroom-fresh.", "link": "/pages/care-tips" } },
+        "a4": { "type": "article", "settings": { "tag": "Choosing", "title": "Corner, 3-Seater, Or Modular?", "text": "Match the shape to the way your family actually lives.", "link": "/pages/buying-guide" } },
+        "a5": { "type": "article", "settings": { "tag": "Delivery", "title": "What Happens On Delivery Day", "text": "Access checks, settling in, and the 48-hour acclimatise rule.", "link": "/pages/delivery-information" } },
+        "a6": { "type": "article", "settings": { "tag": "Finance", "title": "Split The Cost With DivideBuy", "text": "Zero-interest instalments in minutes at checkout.", "link": "/pages/dividebuy" } }
+      },
+      "block_order": ["a1", "a2", "a3", "a4", "a5", "a6"]
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "settings": {
+        "heading": "Still deciding?",
+        "body": "Our team is available 7 days a week — call 02476 581 053 or browse the collection at your leisure."
+      },
+      "blocks": {
+        "b1": { "type": "button", "settings": { "label": "Shop All Sofas", "link": "/collections/all" } },
+        "b2": { "type": "button", "settings": { "label": "Use The Sofa Sizer", "link": "/pages/sofa-sizer", "outline": true } }
+      },
+      "block_order": ["b1", "b2"]
+    }
+  },
+  "order": ["hub", "spotlight", "grid_latest", "cta"]
+}

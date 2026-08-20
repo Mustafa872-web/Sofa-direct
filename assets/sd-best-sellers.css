@@ -1,0 +1,465 @@
+/* ============================================================
+   SD Best Sellers — pixel-exact Figma match
+   Figma canvas: 1920px
+   Card width: 841.144px | Image ratio: 692:389.25
+   Info bar: 163px h | px-16px py-32px | border L/R/B
+   Text: title Bold 24px | subtitle Regular 20px | price Bold 24px
+   Swatches: variable sizes, gap ~4px
+   ============================================================ */
+
+/* ── Section ─────────────────────────────────────────────── */
+.sd-best-sellers {
+  padding: var(--sd-section-pad-desktop) 0;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+.sd-best-sellers__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4rem;
+  margin-bottom: 4.8rem;
+  text-align: center;
+}
+
+/* Badge — Figma: bg rgba(192,176,159,.5), border 2px, pill, px-32 py-12, semibold 20px */
+.sd-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(192, 176, 159, 0.5);
+  border: 2px solid #000;
+  border-radius: var(--sd-radius-pill);
+  padding: 1.2rem 3.2rem;
+  font-family: var(--sd-font-body);
+  font-weight: 600;
+  font-size: var(--sd-text-nav);   /* 2.0rem / 20px */
+  color: #000;
+  text-transform: capitalize;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+/* Heading — Recoleta Alt Black, 40px, uppercase, centred */
+.sd-best-sellers__heading {
+  font-family: var(--sd-font-display);
+  font-size: var(--sd-text-display-sm);   /* 4.0rem / 40px */
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.1;
+}
+
+/* ── Slider wrapper — contains arrows + track ────────────── */
+.sd-best-sellers__slider-wrap {
+  position: relative;
+  /* Match Figma 110px side margins; arrows sit inside this margin */
+  padding: 0 var(--sd-space-3xl);
+}
+
+/* Track outer clips overflowing slides */
+.sd-bs__track-outer {
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Track — flex row, gap set by JS per breakpoint */
+.sd-bs__track {
+  display: flex;
+  align-items: stretch;
+  gap: 2.4rem;                              /* 24px desktop — overridden by JS */
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* Slide — width set by JS */
+.sd-bs__slide {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ── Arrows — positioned at edges of padding zone ────────── */
+.sd-bs__arrow {
+  position: absolute;
+  top: calc((100% - 16.3rem) * 0.5);    /* centre on image area */
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 7.2rem;
+  height: 7.2rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, opacity 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Arrows sit just inside the padding lane so they overlap card edge */
+.sd-bs__arrow--prev { left: calc(var(--sd-space-3xl) - 3.6rem); }
+.sd-bs__arrow--next { right: calc(var(--sd-space-3xl) - 3.6rem); }
+
+.sd-bs__arrow:hover  { background: #fff; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18); }
+.sd-bs__arrow:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+.sd-bs__arrow:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+
+.sd-bs__arrow svg {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Product Card ─────────────────────────────────────────── */
+.sd-product-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 3.2rem;
+  height: 100%;
+  overflow: hidden;  /* ensure child border-radius works */
+}
+
+/* Image wrap — Figma exact ratio 692:389.25, top-radius 32px */
+.sd-product-card__image-wrap {
+  display: block;
+  aspect-ratio: 692 / 389.25;
+  overflow: hidden;
+  border-radius: 3.2rem 3.2rem 0 0;
+  background: #ebebeb;
+  flex-shrink: 0;
+}
+
+.sd-product-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.sd-product-card__image-wrap:hover .sd-product-card__img,
+.sd-product-card__image-wrap:focus .sd-product-card__img {
+  transform: scale(1.04);
+}
+
+.sd-product-card__img--placeholder { object-fit: contain; }
+.sd-product-card__img--placeholder svg { width: 100%; height: 100%; }
+
+/* Info bar — Figma: flex-col, h-163px, items-center justify-center, px-16 py-32
+   Border L / R / B only (no top border — image sits above) */
+.sd-product-card__info {
+  flex: 1;
+  min-height: 16.3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3.2rem 1.6rem;           /* Figma: py-32px px-16px */
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-top: none;
+  border-radius: 0 0 3.2rem 3.2rem;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Inner row — Figma: flex, gap-88px (approx), items-start */
+.sd-product-card__info-inner {
+  display: flex;
+  align-items: flex-start;          /* Figma: items-start */
+  justify-content: space-between;
+  gap: 2.4rem;
+  width: 100%;
+}
+
+/* Text column — name-wrap + price, gap-24px */
+.sd-product-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.sd-product-card__name-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Title — Montserrat Bold 24px */
+.sd-product-card__title,
+.sd-product-card__title a {
+  font-family: var(--sd-font-body);
+  font-weight: 700;
+  font-size: 2.4rem;
+  line-height: 1.2;
+  color: #000;
+  text-transform: capitalize;
+  text-decoration: none;
+  margin: 0;
+  display: block;
+}
+
+.sd-product-card__title a:hover { color: var(--sd-clr-accent-brown); }
+
+/* Subtitle — Montserrat Regular 20px */
+.sd-product-card__subtitle {
+  font-family: var(--sd-font-body);
+  font-size: 2.0rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #000;
+  margin: 0;
+}
+
+/* Price — Montserrat Bold 24px */
+.sd-product-card__price {
+  font-family: var(--sd-font-body);
+  font-weight: 700;
+  font-size: 2.4rem;
+  line-height: 1.2;
+  color: #000;
+  margin: 0;
+}
+
+/* Swatches — right side, fixed height, gap ~4px */
+.sd-product-card__swatches {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;                      /* Figma: gap-[3.799px] ≈ 4px */
+  flex-shrink: 0;
+  align-self: center;               /* vertically centre swatches vs text */
+}
+
+.sd-product-card__swatch {
+  height: 6.8rem;                   /* ~68px matches Figma swatch heights */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.sd-product-card__swatch img {
+  height: 100%;
+  width: auto;
+  max-width: 10rem;
+  object-fit: cover;
+  display: block;
+  border-radius: 0.4rem;
+}
+
+/* ── Progress Bars ──────────────────────────────────────── */
+.sd-bs__progress {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 2.4rem;
+  padding: 0 var(--sd-space-3xl);
+}
+
+.sd-bs__prog-bar {
+  flex: 1;
+  height: 0.4rem;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: var(--sd-radius-pill);
+  overflow: hidden;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sd-bs__prog-bar:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+
+.sd-bs__prog-bar.active { background: rgba(0, 0, 0, 0.15); }
+
+.sd-bs__prog-fill {
+  display: block;
+  height: 100%;
+  background: #000;
+  transform: translateX(-100%);
+  border-radius: 0;
+}
+
+.sd-bs__prog-fill.animating {
+  animation: sd-bs-fill linear forwards;
+}
+
+@keyframes sd-bs-fill {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+/* ── View All ───────────────────────────────────────────── */
+.sd-best-sellers__footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 3.2rem;
+}
+
+.sd-best-sellers__view-all {
+  font-family: var(--sd-font-body);
+  font-weight: 600;
+  font-size: var(--sd-text-sm);
+  color: #000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-transform: capitalize;
+  transition: opacity 0.15s;
+}
+
+.sd-best-sellers__view-all:hover { opacity: 0.7; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* ── Tablet  750px – 989px ── */
+@media screen and (max-width: 989px) {
+  .sd-best-sellers__slider-wrap,
+  .sd-bs__progress {
+    padding-left: 5.6rem;
+    padding-right: 5.6rem;
+  }
+
+  .sd-bs__arrow {
+    width: 4.8rem;
+    height: 4.8rem;
+  }
+
+  .sd-bs__arrow--prev { left: calc(5.6rem - 2.4rem); }
+  .sd-bs__arrow--next { right: calc(5.6rem - 2.4rem); }
+
+  .sd-bs__arrow svg { width: 2.0rem; height: 2.0rem; }
+
+  .sd-product-card__info {
+    padding: 2.4rem 1.6rem;
+    min-height: auto;
+  }
+
+  .sd-product-card__title,
+  .sd-product-card__title a { font-size: 1.8rem; }
+  .sd-product-card__subtitle { font-size: 1.6rem; }
+  .sd-product-card__price    { font-size: 1.8rem; }
+
+  .sd-product-card__swatch   { height: 5.2rem; }
+  .sd-product-card__swatch img { max-width: 7.5rem; }
+
+  .sd-product-card__text { gap: 1.6rem; }
+}
+
+/* ── Mobile  ≤ 749px — Figma iPhone mobile spec ── */
+@media screen and (max-width: 749px) {
+  .sd-best-sellers {
+    padding: var(--sd-section-pad-mobile) 0;
+  }
+
+  /* Header: Figma — badge 16px, heading 24px centered */
+  .sd-best-sellers__header {
+    gap: 2.0rem;
+    margin-bottom: 2.4rem;
+  }
+
+  .sd-best-sellers__heading {
+    font-size: 2.4rem;      /* Figma: 24px */
+    line-height: 1.0;
+  }
+
+  .sd-badge {
+    font-size: 1.6rem;
+    padding: 0.6rem 1.6rem;
+  }
+
+  /* Slider: near full-width cards, arrows overlap edges */
+  .sd-best-sellers__slider-wrap {
+    padding-left: 1.0rem;
+    padding-right: 1.0rem;
+  }
+
+  .sd-bs__progress {
+    padding-left: 1.6rem;
+    padding-right: 1.6rem;
+  }
+
+  .sd-bs__arrow {
+    width: 3.2rem;
+    height: 3.2rem;
+    top: 122px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+  }
+
+  .sd-bs__arrow--prev { left: 14px; }
+  .sd-bs__arrow--next { right: 14px; }
+
+  .sd-bs__arrow svg { width: 1.4rem; height: 1.4rem; }
+
+  .sd-bs__track { gap: 1.2rem !important; }
+
+  /* Card: 16px radius — Figma rounded-[16px] */
+  .sd-product-card {
+    border-radius: 1.6rem;
+  }
+
+  .sd-product-card__image-wrap {
+    border-radius: 1.6rem 1.6rem 0 0;
+  }
+
+  /* Info bar: Figma h-81.5px, px-8 py-16 */
+  .sd-product-card__info {
+    min-height: auto;
+    padding: 1.6rem 0.8rem;
+    border-radius: 0 0 1.6rem 1.6rem;
+  }
+
+  /* Inner row: text left + swatches right, items-center */
+  .sd-product-card__info-inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+  }
+
+  .sd-product-card__text {
+    gap: 1.2rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* All text: 12px — Figma spec */
+  .sd-product-card__title,
+  .sd-product-card__title a {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .sd-product-card__subtitle {
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+
+  .sd-product-card__price {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  /* Swatches: Figma ~33px height */
+  .sd-product-card__swatches {
+    align-self: center;
+    flex-shrink: 0;
+    gap: 0.2rem;
+  }
+
+  .sd-product-card__swatch     { height: 3.3rem; }
+  .sd-product-card__swatch img { max-width: 4.8rem; }
+}

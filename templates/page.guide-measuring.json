@@ -1,0 +1,174 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "sd_hero": {
+      "type": "sd-about-hero",
+      "settings": {
+        "badge_text": "",
+        "heading": "",
+        "body_text": ""
+      }
+    },
+    "body": {
+      "type": "sd-guide-body",
+      "blocks": {
+        "h1": {
+          "type": "heading",
+          "settings": {
+            "text": "Start with your sofa’s dimensions"
+          }
+        },
+        "r1": {
+          "type": "richtext",
+          "settings": {
+            "body": "<p>Measure <strong>width × height × depth</strong> — everything else depends on these.</p><p><strong>Width:</strong> Left to right (facing the sofa)<br/><strong>Height:</strong> Floor to the highest point (including cushions)<br/><strong>Depth:</strong> Front to back<br/></p>"
+          }
+        },
+        "richtext_nh9frG": {
+          "type": "richtext",
+          "settings": {
+            "body": "<p><strong>Tip:</strong> Measure the actual sofa — not the packaging. Packaging can add 2–4 inches per side.</p><p>Also note anything that reduces usable space:</p><ul><li>Radiators</li><li>Plug sockets</li><li>Window ledges</li><li>Skirting or protrusions</li></ul>"
+          }
+        },
+        "h2": {
+          "type": "heading",
+          "settings": {
+            "text": "Check the front door first"
+          }
+        },
+        "r2": {
+          "type": "richtext",
+          "settings": {
+            "body": "<p>Most delivery issues start here.</p><p>Measure:</p><ul><li><strong>Door width:</strong> Inner frame edge to edge</li><li><strong>Door height:</strong> Floor to top of frame</li><li><strong>Side clearance:</strong> Space near hinges for turning</li><li><strong>Front clearance:</strong> Room outside the door to manoeuvre<br/></li></ul>"
+          }
+        },
+        "q1": {
+          "type": "pullquote",
+          "settings": {
+            "text": "If it won’t fit through the door, it won’t fit in the room. Always check this first."
+          }
+        },
+        "h3": {
+          "type": "heading",
+          "settings": {
+            "text": "Then check every access point"
+          }
+        },
+        "r3": {
+          "type": "richtext",
+          "settings": {
+            "body": "<p>Work through the full route your sofa will take.</p>"
+          }
+        },
+        "h4": {
+          "type": "heading",
+          "settings": {
+            "text": "Hallways & internal doors"
+          }
+        },
+        "r4": {
+          "type": "richtext",
+          "settings": {
+            "body": "<ul><li>Measure the <strong>narrowest point</strong>, not the widest</li><li>Watch for tight turns and sharp angles</li></ul>"
+          }
+        },
+        "heading_h3dd6T": {
+          "type": "heading",
+          "settings": {
+            "text": "Staircases"
+          }
+        },
+        "richtext_PLqJtT": {
+          "type": "richtext",
+          "settings": {
+            "body": "<ul><li>Staircase width (tightest point)</li><li>Ceiling height/headroom</li><li>Landing space for turning</li><li>Number of turns</li></ul>"
+          }
+        },
+        "richtext_YCEJ4V": {
+          "type": "richtext",
+          "settings": {
+            "body": "<p><strong>Tip:</strong> If a landing is shallower than your sofa’s depth, it won’t pivot.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "h1",
+        "r1",
+        "richtext_nh9frG",
+        "h2",
+        "r2",
+        "q1",
+        "h3",
+        "r3",
+        "h4",
+        "r4",
+        "heading_h3dd6T",
+        "richtext_PLqJtT",
+        "richtext_YCEJ4V"
+      ],
+      "settings": {
+        "tag": "Measuring",
+        "read_time": "5 min read",
+        "heading": "Will Your New Sofa Actually Fit Through the Door?",
+        "lede": "Five minutes with a tape measure now saves a lot of frustration later.\nHere’s the exact checklist our delivery teams wish every customer ran before ordering."
+      }
+    },
+    "related": {
+      "type": "sd-ideas-grid",
+      "blocks": {
+        "a1": {
+          "type": "article",
+          "settings": {
+            "tag": "Tool",
+            "title": "Use The Sofa Sizer",
+            "text": "Drag-to-resize preview with live filtering on size, colour, type and price.",
+            "link_label": "Read more",
+            "link": "/pages/sofa-sizer"
+          }
+        },
+        "a2": {
+          "type": "article",
+          "settings": {
+            "tag": "Styling",
+            "title": "Style Your Living Room",
+            "text": "Anchor, layer, light — three principles that make any sofa look intentional.",
+            "link_label": "Read more",
+            "link": "/pages/style-your-living"
+          }
+        },
+        "a3": {
+          "type": "article",
+          "settings": {
+            "tag": "Buying",
+            "title": "The Full Buying Guide",
+            "text": "Materials, measurements, designs and aftercare in one place.",
+            "link_label": "Read more",
+            "link": "/pages/buying-guide"
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3"
+      ],
+      "settings": {
+        "heading": "Related Guides",
+        "sub": "Keep exploring"
+      }
+    }
+  },
+  "order": [
+    "sd_hero",
+    "body",
+    "related"
+  ]
+}

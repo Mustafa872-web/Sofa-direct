@@ -1,0 +1,427 @@
+{{ 'sd-hero.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%} Preload LCP image/poster so browser fetches it immediately {%- endcomment -%}
+{%- assign hero_video = section.settings.hero_video -%}
+{%- assign hero_image = section.settings.hero_image -%}
+{%- if hero_video != blank -%}
+  {%- if hero_image != blank -%}
+    <link rel="preload" as="image" fetchpriority="high" href="{{ hero_image | image_url: width: 1200 }}" imagesrcset="{{ hero_image | image_url: width: 750 }} 750w, {{ hero_image | image_url: width: 1200 }} 1200w, {{ hero_image | image_url: width: 1920 }} 1920w" imagesizes="100vw">
+  {%- elsif section.settings.asset_image != blank -%}
+    <link rel="preload" as="image" fetchpriority="high" href="{{ section.settings.asset_image | asset_url }}">
+  {%- endif -%}
+{%- elsif hero_image != blank -%}
+  <link rel="preload" as="image" fetchpriority="high" href="{{ hero_image | image_url: width: 1200 }}" imagesrcset="{{ hero_image | image_url: width: 750 }} 750w, {{ hero_image | image_url: width: 1200 }} 1200w, {{ hero_image | image_url: width: 1920 }} 1920w" imagesizes="100vw">
+{%- elsif section.settings.asset_image != blank -%}
+  <link rel="preload" as="image" fetchpriority="high" href="{{ section.settings.asset_image | asset_url }}">
+{%- endif -%}
+
+{%- liquid
+  assign heading    = section.settings.heading | default: 'Everyday Comfort'
+  assign badge_text = section.settings.badge_text | default: 'Relaxed Style - Made Better'
+  assign hero_video = section.settings.hero_video
+  assign hero_image = section.settings.hero_image
+  assign slide_duration = section.settings.slide_duration | default: 5
+  assign sofa_tabs = section.blocks | where: 'type', 'sofa_tab'
+  assign has_any_video = false
+  if hero_video != blank
+    assign has_any_video = true
+  endif
+  for block in section.blocks
+    if block.type == 'slide' and block.settings.slide_video != blank
+      assign has_any_video = true
+    endif
+  endfor
+-%}
+
+<div id="sd-hero-{{ section.id }}" class="sd-hero" data-duration="{{ slide_duration }}">
+
+  {%- comment -%} ── TOP: Badge + Heading ─────────────────────────────────── {%- endcomment -%}
+  <div class="sd-hero__top">
+    <div class="sd-hero__inner">
+      {%- if badge_text != blank -%}
+        <div class="sd-hero__badge"><span>{{ badge_text }}</span></div>
+      {%- endif -%}
+      <h1 class="sd-hero__heading">
+        {%- assign heading_parts = heading | split: ' | ' -%}
+        {%- for part in heading_parts -%}<span>{{ part }}</span>{%- endfor -%}
+      </h1>
+    </div>
+  </div>
+
+  {%- comment -%} ── MEDIA PANEL ──────────────────────────────────────────── {%- endcomment -%}
+  <div class="sd-hero__media-wrap">
+
+    {%- comment -%} ── SLIDES ── {%- endcomment -%}
+    <div class="sd-hero__slides">
+
+      {%- comment -%} Slide 0: video or main image {%- endcomment -%}
+      <div class="sd-hero__slide sd-hero__slide--active" data-slide="0">
+        {%- if hero_video != blank -%}
+          {%- assign poster_url = '' -%}
+          {%- if hero_image != blank -%}
+            {%- assign poster_url = hero_image | image_url: width: 1920 -%}
+          {%- elsif section.settings.asset_image != blank -%}
+            {%- assign poster_url = section.settings.asset_image | asset_url -%}
+          {%- endif -%}
+          <video class="sd-hero__video" id="sd-hero-video-{{ section.id }}" autoplay muted loop playsinline preload="metadata"{% if poster_url != '' %} poster="{{ poster_url }}"{% endif %}>
+            <source src="{{ hero_video }}" type="video/mp4">
+          </video>
+        {%- elsif hero_image != blank -%}
+          {%- assign a0 = hero_image.alt | escape -%}
+          {{ hero_image | image_url: width: 1920 | image_tag: loading: 'eager', fetchpriority: 'high', class: 'sd-hero__img', widths: '440,750,990,1200,1500,1920', sizes: '100vw', alt: a0 }}
+        {%- elsif section.settings.asset_image != blank -%}
+          <img src="{{ section.settings.asset_image | asset_url }}" class="sd-hero__img" alt="Hero" loading="eager" fetchpriority="high" width="1920" height="1080">
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'sd-hero__img sd-hero__img--placeholder' }}
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Extra slides from blocks {%- endcomment -%}
+      {%- assign si = 1 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'slide' -%}
+          <div class="sd-hero__slide" data-slide="{{ si }}" {{ block.shopify_attributes }}>
+            {%- if block.settings.slide_video != blank -%}
+              {%- assign slide_poster = '' -%}
+              {%- if block.settings.slide_image != blank -%}
+                {%- assign slide_poster = block.settings.slide_image | image_url: width: 1920 -%}
+              {%- endif -%}
+              <video class="sd-hero__video sd-hero__slide-video" muted loop playsinline preload="none"{% if slide_poster != '' %} poster="{{ slide_poster }}"{% endif %}>
+                <source src="{{ block.settings.slide_video }}" type="video/mp4">
+              </video>
+            {%- elsif block.settings.slide_image != blank -%}
+              {%- assign sa = block.settings.slide_image.alt | escape -%}
+              {{ block.settings.slide_image | image_url: width: 1920 | image_tag: loading: 'lazy', class: 'sd-hero__img', widths: '440,750,990,1200,1500,1920', sizes: '100vw', alt: sa }}
+            {%- else -%}
+              {{ 'lifestyle-2' | placeholder_svg_tag: 'sd-hero__img sd-hero__img--placeholder' }}
+            {%- endif -%}
+          </div>
+          {%- assign si = si | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+    </div>
+
+    <div class="sd-hero__overlay" aria-hidden="true"></div>
+
+    {%- comment -%} ── MUTE BUTTON top-right ── {%- endcomment -%}
+    {%- if has_any_video -%}
+      <button class="sd-hero__mute-btn" id="sd-hero-mute-{{ section.id }}" aria-label="Toggle sound">
+        {%- comment -%} Muted icon (X on speaker) {%- endcomment -%}
+        <svg class="sd-mute-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        {%- comment -%} Unmuted icon (sound waves) {%- endcomment -%}
+        <svg class="sd-mute-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
+    {%- endif -%}
+
+    {%- comment -%} ── TABS + PROGRESS BARS bottom ── {%- endcomment -%}
+    {%- if sofa_tabs.size > 0 -%}
+      <div class="sd-hero__nav">
+        {%- assign tab_i = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'sofa_tab' -%}
+            <button
+              class="sd-hero__nav-item{% if tab_i == 0 %} active{% endif %}"
+              data-nav="{{ tab_i }}"
+              data-url="{{ block.settings.sofa_url }}"
+              {{ block.shopify_attributes }}
+            >
+              <span class="sd-hero__nav-fill{% if tab_i == 0 %} animating{% endif %}" aria-hidden="true"></span>
+              <span class="sd-hero__nav-label">{{ block.settings.sofa_name }}</span>
+            </button>
+            {%- assign tab_i = tab_i | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>{%- comment -%}/.sd-hero__media-wrap{%- endcomment -%}
+
+</div>
+
+<script>
+(function() {
+  var hero = document.getElementById('sd-hero-{{ section.id }}');
+  if (!hero) return;
+
+  var duration    = (parseInt(hero.dataset.duration) || 5) * 1000;
+  var slides      = hero.querySelectorAll('.sd-hero__slide');
+  var navItems    = hero.querySelectorAll('.sd-hero__nav-item');
+  var fills       = hero.querySelectorAll('.sd-hero__nav-fill');
+  var muteBtn     = document.getElementById('sd-hero-mute-{{ section.id }}');
+  var current     = 0;
+  var timer       = null;
+  var timerPaused = false;
+  var timerStart  = null;
+  var timerLeft   = duration;
+  var totalSlides = Math.max(slides.length, navItems.length);
+
+  // Detect slow connection — replace active video with its poster/image
+  var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  var slowConn = conn && (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g' || conn.saveData);
+
+  if (slowConn) {
+    slides.forEach(function(s) {
+      var vid = s.querySelector('video');
+      if (!vid) return;
+      var poster = vid.getAttribute('poster');
+      if (poster) {
+        var img = document.createElement('img');
+        img.src = poster;
+        img.className = 'sd-hero__img';
+        img.alt = '';
+        s.replaceChild(img, vid);
+      } else {
+        vid.remove();
+      }
+    });
+  }
+
+  fills.forEach(function(f) {
+    f.style.animationDuration = duration + 'ms';
+  });
+
+  function pauseTimer() {
+    if (timerPaused) return;
+    timerPaused = true;
+    timerLeft -= (Date.now() - timerStart);
+    clearTimeout(timer);
+    // pause fill animation on current slide
+    var fill = fills[current];
+    if (fill) fill.style.animationPlayState = 'paused';
+  }
+
+  function resumeTimer() {
+    if (!timerPaused) return;
+    timerPaused = false;
+    timerStart = Date.now();
+    timer = setTimeout(function() { goTo(current + 1); }, timerLeft);
+    var fill = fills[current];
+    if (fill) fill.style.animationPlayState = 'running';
+  }
+
+  function attachVideoEvents(vid) {
+    // Pause slide timer while video is buffering
+    vid.addEventListener('waiting', pauseTimer);
+    vid.addEventListener('stalled', pauseTimer);
+    // Resume when enough data is ready
+    vid.addEventListener('playing', resumeTimer);
+    vid.addEventListener('canplay', function() {
+      if (timerPaused) resumeTimer();
+    });
+  }
+
+  function goTo(index) {
+    index = ((index % totalSlides) + totalSlides) % totalSlides;
+
+    clearTimeout(timer);
+    timerLeft  = duration;
+    timerStart = Date.now();
+    timerPaused = false;
+
+    slides.forEach(function(s, i) {
+      var isActive = i === index;
+      s.classList.toggle('sd-hero__slide--active', isActive);
+      var vid = s.querySelector('video');
+      if (vid) {
+        if (isActive) {
+          if (vid.preload === 'none') { vid.preload = 'auto'; vid.load(); }
+          vid.play().catch(function(){});
+        } else {
+          vid.pause();
+        }
+      }
+    });
+
+    navItems.forEach(function(n, i) { n.classList.toggle('active', i === index); });
+    fills.forEach(function(f, i) {
+      f.style.animationPlayState = 'running';
+      f.classList.remove('animating');
+      void f.offsetWidth;
+      if (i === index) f.classList.add('animating');
+    });
+
+    current = index;
+    if (typeof refreshMediaCursor === 'function') refreshMediaCursor();
+    timer = setTimeout(function() { goTo(current + 1); }, duration);
+  }
+
+  // Attach buffer events to all videos
+  slides.forEach(function(s) {
+    var vid = s.querySelector('video');
+    if (vid) attachVideoEvents(vid);
+  });
+
+  // Pause everything when tab is hidden, resume when visible
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      pauseTimer();
+      slides.forEach(function(s) {
+        var vid = s.querySelector('video');
+        if (vid) vid.pause();
+      });
+    } else {
+      var activeVid = slides[current] && slides[current].querySelector('video');
+      if (activeVid) activeVid.play().catch(function(){});
+      resumeTimer();
+    }
+  });
+
+  // Pause when hero scrolls out of viewport (saves bandwidth + battery)
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        var activeVid = slides[current] && slides[current].querySelector('video');
+        if (e.isIntersecting) {
+          if (activeVid) activeVid.play().catch(function(){});
+          resumeTimer();
+        } else {
+          if (activeVid) activeVid.pause();
+          pauseTimer();
+        }
+      });
+    }, { threshold: 0.1 }).observe(hero);
+  }
+
+  // Nav click
+  navItems.forEach(function(btn, i) {
+    btn.addEventListener('click', function() {
+      if (btn.classList.contains('active')) {
+        var url = btn.dataset.url;
+        if (url && url !== '' && url !== '#') window.location.href = url;
+      } else {
+        goTo(i);
+      }
+    });
+  });
+
+  // Make the video / media itself clickable → go to the active sofa's URL
+  var mediaWrap = hero.querySelector('.sd-hero__media-wrap');
+  function activeUrl() {
+    var nav = navItems[current];
+    var url = nav && nav.dataset.url;
+    return (url && url !== '' && url !== '#') ? url : null;
+  }
+  function refreshMediaCursor() {
+    if (mediaWrap) mediaWrap.style.cursor = activeUrl() ? 'pointer' : '';
+  }
+  if (mediaWrap) {
+    mediaWrap.addEventListener('click', function(e) {
+      // Don't hijack clicks on the mute button or the bottom nav tabs
+      if (e.target.closest('.sd-hero__mute-btn') || e.target.closest('.sd-hero__nav')) return;
+      var url = activeUrl();
+      if (url) window.location.href = url;
+    });
+  }
+
+  // Mute toggle
+  if (muteBtn) {
+    muteBtn.addEventListener('click', function() {
+      var vids = hero.querySelectorAll('video');
+      if (!vids.length) return;
+      var nowMuted = !vids[0].muted;
+      vids.forEach(function(v) { v.muted = nowMuted; });
+      muteBtn.classList.toggle('unmuted', !nowMuted);
+    });
+  }
+
+  goTo(0);
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Hero",
+  "tag": "section",
+  "class": "section sd-hero-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (use | to split lines)",
+      "default": "Everyday | Comfort"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Pill badge text",
+      "default": "Relaxed Style - Made Better"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image (Shopify media — overrides asset image)"
+    },
+    {
+      "type": "text",
+      "id": "asset_image",
+      "label": "Hero image filename (assets folder)",
+      "info": "Upload image to theme assets folder and enter filename e.g. sd-hero-bg.jpg — works on local dev without re-uploading",
+      "default": "sd-hero-bg.jpg"
+    },
+    {
+      "type": "text",
+      "id": "hero_video",
+      "label": "Hero video URL (.mp4)",
+      "info": "Direct .mp4 URL. Autoplays muted; mute button lets visitors toggle sound."
+    },
+    {
+      "type": "range",
+      "id": "slide_duration",
+      "label": "Seconds per slide",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "sofa_tab",
+      "name": "Sofa Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "sofa_name",
+          "label": "Sofa name",
+          "default": "Annecy"
+        },
+        {
+          "type": "url",
+          "id": "sofa_url",
+          "label": "Sofa URL"
+        }
+      ]
+    },
+    {
+      "type": "slide",
+      "name": "Extra Slide",
+      "settings": [
+        {
+          "type": "text",
+          "id": "slide_video",
+          "label": "Slide video URL (.mp4)",
+          "info": "Direct .mp4 URL. If set, video takes priority over image."
+        },
+        {
+          "type": "image_picker",
+          "id": "slide_image",
+          "label": "Slide image (used if no video)"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "SD Hero",
+      "blocks": [
+        { "type": "sofa_tab", "settings": { "sofa_name": "Annecy" } },
+        { "type": "sofa_tab", "settings": { "sofa_name": "Bishop" } },
+        { "type": "sofa_tab", "settings": { "sofa_name": "Tanya" } },
+        { "type": "sofa_tab", "settings": { "sofa_name": "Valencia" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

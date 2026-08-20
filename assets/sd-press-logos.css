@@ -1,0 +1,304 @@
+/* ============================================================
+   SD Press Logos — Premium "Press Wall" section
+   Uses Sofa Direct brand palette (cream, taupe, brown, teal)
+   matching the site header / logo color scheme.
+
+   Layout:  cream canvas → centered eyebrow + serif heading
+            → signature taupe band → white floating logo chips
+            → soft brown star footnote
+   ============================================================ */
+
+.sd-press {
+  --press-cream:  var(--color-sd-cream,  #FFFAEA);
+  --press-taupe:  var(--color-sd-tan,    #C0B09F);
+  --press-brown:  var(--color-sd-brown,  #A58C70);
+  --press-teal:   var(--color-sd-teal,   #2F4858);
+  --press-ink:    var(--color-sd-black,  #121212);
+  --press-white:  var(--color-sd-white,  #FFFFFF);
+
+  position: relative;
+  overflow: hidden;
+  padding: 9rem 0 9rem;
+  background:
+    linear-gradient(180deg, #fffdf3 0%, var(--press-cream) 100%);
+  color: var(--press-teal);
+  isolation: isolate;
+}
+
+/* ── Soft glow backdrop ─────────────────────────────────── */
+.sd-press__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sd-press__glow {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+}
+
+.sd-press__glow--a {
+  width: 42rem;
+  height: 42rem;
+  top: -14rem;
+  left: -10rem;
+  background: rgba(192, 176, 159, 0.45);
+}
+
+.sd-press__glow--b {
+  width: 38rem;
+  height: 38rem;
+  bottom: -12rem;
+  right: -10rem;
+  background: rgba(165, 140, 112, 0.30);
+}
+
+/* ── Inner / header ─────────────────────────────────────── */
+.sd-press__inner {
+  position: relative;
+  z-index: 2;
+}
+
+.sd-press__header {
+  text-align: center;
+  max-width: 76rem;
+  margin: 0 auto 4.4rem;
+}
+
+.sd-press__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  color: var(--press-brown);
+  margin-bottom: 1.8rem;
+}
+
+.sd-press__ornament {
+  display: block;
+  color: var(--press-brown);
+  opacity: 0.85;
+}
+
+.sd-press__eyebrow-text {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--press-brown);
+  white-space: nowrap;
+}
+
+.sd-press__heading {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-weight: 500;
+  font-size: clamp(2.8rem, 4vw, 5rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.4rem;
+  color: var(--press-teal);
+}
+
+.sd-press__subheading {
+  font-family: var(--sd-font-body, inherit);
+  font-size: clamp(1.45rem, 1.3vw, 1.7rem);
+  line-height: 1.6;
+  color: rgba(47, 72, 88, 0.72);
+  margin: 0 auto;
+  max-width: 60rem;
+}
+
+/* ── The signature taupe press band ─────────────────────── */
+.sd-press__band {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 4.2rem 0;
+  background:
+    linear-gradient(180deg,
+      rgba(192, 176, 159, 0.95) 0%,
+      var(--press-taupe) 50%,
+      rgba(165, 140, 112, 0.92) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 20px 50px -30px rgba(47, 72, 88, 0.45);
+}
+
+/* subtle decorative top/bottom hairlines */
+.sd-press__band-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
+}
+.sd-press__band-edge--top    { top: 0; }
+.sd-press__band-edge--bottom { bottom: 0; background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.10) 50%, transparent 100%); }
+
+/* ── Marquee ────────────────────────────────────────────── */
+.sd-press__track-wrap {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+
+.sd-press__track {
+  display: flex;
+  width: max-content;
+  animation: sd-press-scroll-left var(--sd-press-speed, 50s) linear infinite;
+  will-change: transform;
+}
+
+.sd-press__track-wrap:hover .sd-press__track {
+  animation-play-state: paused;
+}
+
+.sd-press__list {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.6rem, 2vw, 2.6rem);
+  margin: 0;
+  padding: 0 clamp(1.6rem, 2vw, 2.6rem);
+  list-style: none;
+  flex-shrink: 0;
+}
+
+.sd-press__item {
+  flex-shrink: 0;
+}
+
+/* The floating white logo "chips" — like little press-pass cards */
+.sd-press__chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--press-white);
+  border-radius: 14px;
+  height: 9.2rem;
+  min-width: 19rem;
+  padding: 1.6rem 3.2rem;
+  text-decoration: none;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 14px 28px -18px rgba(47, 72, 88, 0.35),
+    0 4px 10px -6px rgba(47, 72, 88, 0.18);
+  transition: transform 0.45s cubic-bezier(.2,.7,.2,1), box-shadow 0.45s ease;
+  overflow: hidden;
+}
+
+/* warm brown tab on top of each chip — brand accent detail */
+.sd-press__chip-tick {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38px;
+  height: 4px;
+  border-radius: 0 0 6px 6px;
+  background: linear-gradient(90deg, var(--press-brown) 0%, #c4a886 100%);
+  opacity: 0.9;
+}
+
+.sd-press__chip:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 22px 36px -16px rgba(47, 72, 88, 0.45),
+    0 8px 16px -8px rgba(47, 72, 88, 0.25);
+}
+
+.sd-press__img {
+  display: block;
+  height: auto;
+  max-height: 4.4rem;
+  width: auto;
+  max-width: 16rem;
+  object-fit: contain;
+  filter: grayscale(20%);
+  transition: filter 0.3s ease;
+}
+
+.sd-press__chip:hover .sd-press__img {
+  filter: grayscale(0);
+}
+
+.sd-press__placeholder {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: clamp(1.8rem, 2vw, 2.6rem);
+  font-weight: 700;
+  color: var(--press-ink);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+/* ── Footnote (stars + rating line) ─────────────────────── */
+.sd-press__footnote {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin: 3.6rem auto 0;
+  flex-wrap: wrap;
+}
+
+.sd-press__stars {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--press-brown);
+}
+
+.sd-press__rating-text {
+  margin: 0;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(47, 72, 88, 0.78);
+  text-transform: uppercase;
+}
+
+/* ── Keyframes ──────────────────────────────────────────── */
+@keyframes sd-press-scroll-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-press__track { animation: none; }
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 989px) {
+  .sd-press         { padding: 7rem 0; }
+  .sd-press__header { margin-bottom: 3.4rem; }
+  .sd-press__band   { padding: 3.4rem 0; }
+  .sd-press__chip   { height: 8rem; min-width: 16rem; padding: 1.2rem 2.4rem; }
+  .sd-press__img    { max-height: 3.8rem; max-width: 13rem; }
+}
+
+@media (max-width: 749px) {
+  .sd-press         { padding: 5.6rem 0; }
+  .sd-press__header { margin-bottom: 2.6rem; }
+  .sd-press__eyebrow { gap: 0.8rem; }
+  .sd-press__ornament { width: 28px; }
+  .sd-press__eyebrow-text { font-size: 1.1rem; letter-spacing: 0.24em; }
+
+  .sd-press__band   { padding: 2.6rem 0; }
+  .sd-press__list   { gap: 1.2rem; padding: 0 1.2rem; }
+  .sd-press__chip   { height: 6.8rem; min-width: 13rem; padding: 1rem 1.8rem; border-radius: 12px; }
+  .sd-press__chip-tick { width: 28px; height: 3px; }
+  .sd-press__img    { max-height: 3rem; max-width: 10rem; }
+
+  .sd-press__footnote { margin-top: 2.6rem; }
+  .sd-press__rating-text { font-size: 1.2rem; letter-spacing: 0.06em; }
+}

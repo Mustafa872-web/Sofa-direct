@@ -1,0 +1,187 @@
+{%- comment -%}
+  Floating WhatsApp + Call widget.
+
+  A fixed launcher button sits in a screen corner. Clicking it opens a small
+  panel with two actions:
+    - Start Conversation  -> opens WhatsApp chat (wa.me) with an optional
+      pre-filled message
+    - Call us             -> tel: link to the phone number
+
+  Rendered site-wide via {% section 'sd-whatsapp-call' %} in layout/theme.liquid.
+  Fully configurable from the theme editor.
+{%- endcomment -%}
+
+{%- assign wa = section.settings.whatsapp_number | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')' -%}
+{%- assign tel = section.settings.call_number | remove: ' ' -%}
+{%- assign pos = section.settings.position -%}
+
+{%- if wa != blank or tel != blank -%}
+  <div
+    class="sd-wac sd-wac--{{ pos }}"
+    id="sd-wac-{{ section.id }}"
+    style="--wac-accent:{{ section.settings.accent_color }}; --wac-wa:{{ section.settings.whatsapp_color }}; --wac-offset:{{ section.settings.offset }}px;"
+    data-sd-wac
+  >
+    {%- comment -%} -- Options panel -- {%- endcomment -%}
+    <div class="sd-wac__panel" id="sd-wac-panel-{{ section.id }}" role="dialog" aria-label="{{ section.settings.heading | escape }}" hidden>
+      <div class="sd-wac__head">
+        <span class="sd-wac__title">{{ section.settings.heading }}</span>
+        {%- if section.settings.subheading != blank -%}
+          <span class="sd-wac__sub">{{ section.settings.subheading }}</span>
+        {%- endif -%}
+        <button type="button" class="sd-wac__close" data-wac-close aria-label="Close">&times;</button>
+      </div>
+
+      <div class="sd-wac__actions">
+        {%- if wa != blank -%}
+          <a
+            class="sd-wac__action sd-wac__action--wa"
+            href="https://wa.me/{{ wa }}{% if section.settings.prefill != blank %}?text={{ section.settings.prefill | url_encode }}{% endif %}"
+            target="_blank"
+            rel="noopener"
+          >
+            <span class="sd-wac__action-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.519zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </span>
+            <span class="sd-wac__action-text">
+              <strong>{{ section.settings.wa_label }}</strong>
+              {%- if section.settings.wa_sub != blank -%}<small>{{ section.settings.wa_sub }}</small>{%- endif -%}
+            </span>
+          </a>
+        {%- endif -%}
+
+        {%- if tel != blank -%}
+          <a class="sd-wac__action sd-wac__action--call" href="tel:{{ tel }}">
+            <span class="sd-wac__action-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </span>
+            <span class="sd-wac__action-text">
+              <strong>{{ section.settings.call_label }}</strong>
+              {%- if section.settings.call_sub != blank -%}<small>{{ section.settings.call_sub }}</small>{%- endif -%}
+            </span>
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} -- Launcher button -- {%- endcomment -%}
+    <button type="button" class="sd-wac__launch" data-wac-toggle aria-expanded="false" aria-controls="sd-wac-panel-{{ section.id }}" aria-label="{{ section.settings.heading | escape }}">
+      <span class="sd-wac__launch-icon sd-wac__launch-icon--open" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.978-1.519zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+      </span>
+      <span class="sd-wac__launch-icon sd-wac__launch-icon--close" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </span>
+      {%- if section.settings.show_label -%}<span class="sd-wac__launch-label">{{ section.settings.launch_label }}</span>{%- endif -%}
+    </button>
+  </div>
+
+  <style>
+    .sd-wac{position:fixed;bottom:var(--wac-offset,20px);z-index:9998;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+    .sd-wac--right{right:var(--wac-offset,20px);align-items:flex-end}
+    .sd-wac--left{left:var(--wac-offset,20px);align-items:flex-start}
+    .sd-wac__launch{display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;background:var(--wac-wa,#25D366);color:#fff;border-radius:999px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.22);transition:transform .15s ease,box-shadow .15s ease}
+    .sd-wac__launch:hover{transform:scale(1.06);box-shadow:0 8px 26px rgba(0,0,0,.28)}
+    .sd-wac__launch-label{font-weight:600;font-size:14px;padding-right:6px;white-space:nowrap}
+    .sd-wac__launch-icon--close{display:none}
+    .sd-wac[data-open] .sd-wac__launch-icon--open{display:none}
+    .sd-wac[data-open] .sd-wac__launch-icon--close{display:inline-flex}
+    .sd-wac[data-open] .sd-wac__launch{background:var(--wac-accent,#1f2937)}
+    .sd-wac[data-open] .sd-wac__launch-label{display:none}
+    .sd-wac__panel{width:300px;max-width:calc(100vw - 40px);background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.18);overflow:hidden;transform-origin:bottom right;animation:sdwacIn .18s ease}
+    @keyframes sdwacIn{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
+    .sd-wac__head{position:relative;background:var(--wac-accent,#1f2937);color:#fff;padding:18px 20px}
+    .sd-wac__title{display:block;font-weight:700;font-size:16px}
+    .sd-wac__sub{display:block;font-size:13px;opacity:.85;margin-top:2px}
+    .sd-wac__close{position:absolute;top:10px;right:12px;background:transparent;border:0;color:#fff;font-size:24px;line-height:1;cursor:pointer;opacity:.8}
+    .sd-wac__close:hover{opacity:1}
+    .sd-wac__actions{padding:12px;display:flex;flex-direction:column;gap:8px}
+    .sd-wac__action{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;text-decoration:none;color:#1f2937;background:#f4f5f7;transition:background .15s ease}
+    .sd-wac__action:hover{background:#e9ebee}
+    .sd-wac__action-icon{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff}
+    .sd-wac__action--wa .sd-wac__action-icon{background:var(--wac-wa,#25D366)}
+    .sd-wac__action--call .sd-wac__action-icon{background:var(--wac-accent,#1f2937)}
+    .sd-wac__action-text{display:flex;flex-direction:column;line-height:1.25}
+    .sd-wac__action-text strong{font-size:15px}
+    .sd-wac__action-text small{font-size:12px;color:#6b7280}
+    @media (max-width:600px){.sd-wac__launch-label{display:none}}
+  </style>
+
+  <script>
+    (function(){
+      var root = document.getElementById('sd-wac-{{ section.id }}');
+      if(!root) return;
+      var toggle = root.querySelector('[data-wac-toggle]');
+      var panel = root.querySelector('#sd-wac-panel-{{ section.id }}');
+      var closeBtn = root.querySelector('[data-wac-close]');
+
+      function open(){ root.setAttribute('data-open',''); panel.hidden=false; toggle.setAttribute('aria-expanded','true'); }
+      function close(){ root.removeAttribute('data-open'); panel.hidden=true; toggle.setAttribute('aria-expanded','false'); }
+      function isOpen(){ return root.hasAttribute('data-open'); }
+
+      toggle.addEventListener('click', function(){ isOpen() ? close() : open(); });
+      if(closeBtn) closeBtn.addEventListener('click', close);
+      document.addEventListener('keydown', function(e){ if(e.key==='Escape' && isOpen()) close(); });
+      document.addEventListener('click', function(e){ if(isOpen() && !root.contains(e.target)) close(); });
+      // Close the panel after picking an action (so it isn't left open on return).
+      panel.querySelectorAll('.sd-wac__action').forEach(function(a){ a.addEventListener('click', close); });
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "WhatsApp & Call",
+  "tag": "section",
+  "class": "sd-wac-section",
+  "settings": [
+    { "type": "header", "content": "Contact numbers" },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp number (international, e.g. 447123456789)",
+      "info": "Country code without + or spaces. Leave blank to hide WhatsApp.",
+      "default": "447123456789"
+    },
+    {
+      "type": "text",
+      "id": "call_number",
+      "label": "Phone number to call (e.g. +442476581053)",
+      "info": "Leave blank to hide the Call option.",
+      "default": "02476581053"
+    },
+    {
+      "type": "textarea",
+      "id": "prefill",
+      "label": "WhatsApp pre-filled message",
+      "default": "Hi Sofa Direct, I have a question about"
+    },
+    { "type": "header", "content": "Panel text" },
+    { "type": "text", "id": "heading", "label": "Panel heading", "default": "How can we help?" },
+    { "type": "text", "id": "subheading", "label": "Panel subheading", "default": "We typically reply within minutes" },
+    { "type": "text", "id": "wa_label", "label": "WhatsApp button label", "default": "Start Conversation" },
+    { "type": "text", "id": "wa_sub", "label": "WhatsApp button subtext", "default": "Chat with us on WhatsApp" },
+    { "type": "text", "id": "call_label", "label": "Call button label", "default": "Call Us" },
+    { "type": "text", "id": "call_sub", "label": "Call button subtext", "default": "Mon-Sat 08:00-18:00" },
+    { "type": "header", "content": "Launcher button" },
+    { "type": "checkbox", "id": "show_label", "label": "Show text label on launcher", "default": true },
+    { "type": "text", "id": "launch_label", "label": "Launcher label", "default": "Chat with us" },
+    { "type": "header", "content": "Appearance" },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Position",
+      "options": [
+        { "value": "right", "label": "Bottom right" },
+        { "value": "left", "label": "Bottom left" }
+      ],
+      "default": "right"
+    },
+    { "type": "range", "id": "offset", "label": "Edge offset", "min": 10, "max": 48, "step": 2, "unit": "px", "default": 20 },
+    { "type": "color", "id": "whatsapp_color", "label": "WhatsApp / launcher colour", "default": "#25D366" },
+    { "type": "color", "id": "accent_color", "label": "Accent colour (panel header, call)", "default": "#1f2937" }
+  ],
+  "enabled_on": { "templates": ["*"] },
+  "presets": [{ "name": "WhatsApp & Call" }]
+}
+{% endschema %}

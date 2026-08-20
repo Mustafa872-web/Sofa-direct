@@ -1,0 +1,30 @@
+<link rel="stylesheet" href="{{ 'sd-info.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-info.css' | asset_url | stylesheet_tag }}</noscript>
+
+<section class="sd-info-intro">
+  <div class="sd-info-intro__inner">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="sd-info-intro__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h2 class="sd-info-intro__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+    {%- if section.settings.body != blank -%}
+      <div class="sd-info-intro__text">{{ section.settings.body }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Info Intro",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "richtext", "id": "body", "label": "Body" }
+  ],
+  "presets": [ { "name": "SD Info Intro" } ]
+}
+{% endschema %}

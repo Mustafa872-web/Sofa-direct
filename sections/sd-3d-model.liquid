@@ -1,0 +1,150 @@
+{% comment %}
+  Sofa Direct — Real 3D Model Viewer (.glb)
+  Uses Google's <model-viewer> web component.
+  Color variants: alag .glb file per color via metafields.
+{% endcomment %}
+
+{%- assign model_default = product.metafields.custom.model_3d -%}
+{%- assign color_models  = product.metafields.custom.model_3d_colors.value -%}
+
+<section class="sd-3d {{ section.settings.css_class }}"
+         data-section-id="{{ section.id }}"
+         style="--sd3d-bg: {{ section.settings.bg_color }};
+                --sd3d-accent: {{ section.settings.accent_color }};">
+  <div class="sd-3d__inner" style="max-width: {{ section.settings.max_width }}px;">
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="sd-3d__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if model_default != blank or color_models != blank -%}
+      <div class="sd-3d__stage">
+        <model-viewer
+          id="sd3d-viewer-{{ section.id }}"
+          class="sd-3d__viewer"
+          src="{%- if color_models != blank -%}{{ color_models.first.url }}{%- else -%}{{ model_default | file_url }}{%- endif -%}"
+          alt="{{ product.title | escape }} — 3D model"
+          camera-controls
+          touch-action="pan-y"
+          auto-rotate
+          auto-rotate-delay="2000"
+          rotation-per-second="20deg"
+          shadow-intensity="1"
+          exposure="1"
+          environment-image="neutral"
+          loading="eager"
+          reveal="auto"
+          ar
+          ar-modes="webxr scene-viewer quick-look"
+          style="height: {{ section.settings.height }}px;">
+
+          <div slot="progress-bar" class="sd-3d__progress"></div>
+
+          <button slot="ar-button" class="sd-3d__ar-btn" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+            View in your room
+          </button>
+        </model-viewer>
+
+        {%- if color_models != blank and color_models.size > 1 -%}
+          <div class="sd-3d__colors" role="radiogroup" aria-label="Choose colour">
+            {%- for file in color_models -%}
+              {%- assign fname = file.url | split: '/' | last | split: '?' | first | split: '.' | first | downcase -%}
+              <button type="button"
+                      class="sd-3d__swatch {% if forloop.first %}is-active{% endif %}"
+                      role="radio"
+                      aria-checked="{% if forloop.first %}true{% else %}false{% endif %}"
+                      data-model-url="{{ file.url }}"
+                      data-color-name="{{ fname }}"
+                      title="{{ fname | capitalize }}">
+                <span class="sd-3d__swatch-dot" data-color="{{ fname }}"></span>
+                <span class="sd-3d__swatch-label">{{ fname | capitalize }}</span>
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        <div class="sd-3d__hint">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span>Drag to rotate · scroll to zoom</span>
+        </div>
+      </div>
+    {%- else -%}
+      <div class="sd-3d__empty">
+        <p>3D model abhi upload nahi hua. Admin → Product → Metafields → <strong>3D Model</strong> mein <code>.glb</code> file upload karein.</p>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{%- comment -%} Lazy-load model-viewer only when section is in/near viewport — saves ~150KB JS on initial page load {%- endcomment -%}
+<script>
+  (function(){
+    var loaded = false;
+    function load(){
+      if (loaded) return; loaded = true;
+      var s = document.createElement('script');
+      s.type = 'module';
+      s.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js';
+      document.head.appendChild(s);
+    }
+    var el = document.getElementById('sd3d-viewer-{{ section.id }}');
+    if (!el || !('IntersectionObserver' in window)) { load(); return; }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ load(); io.disconnect(); }
+      });
+    }, { rootMargin: '300px' });
+    io.observe(el);
+  })();
+</script>
+
+<script>
+(function() {
+  var root = document.querySelector('[data-section-id="{{ section.id }}"]');
+  if (!root) return;
+  var viewer = root.querySelector('model-viewer');
+  var swatches = root.querySelectorAll('.sd-3d__swatch');
+  if (!viewer || !swatches.length) return;
+
+  swatches.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var url = btn.dataset.modelUrl;
+      if (!url) return;
+      swatches.forEach(function(b) {
+        b.classList.remove('is-active');
+        b.setAttribute('aria-checked', 'false');
+      });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-checked', 'true');
+      viewer.setAttribute('src', url);
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "3D Model Viewer",
+  "tag": "section",
+  "class": "sd-3d-section",
+  "settings": [
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Explore in 3D" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Max width (px)", "min": 800, "max": 1600, "step": 20, "default": 1200 },
+    { "type": "range", "id": "height", "label": "Viewer height (px)", "min": 360, "max": 900, "step": 20, "default": 560 },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "bg_color", "label": "Background", "default": "#f8f7f5" },
+    { "type": "color", "id": "accent_color", "label": "Accent", "default": "#3d5f65" },
+    { "type": "text", "id": "css_class", "label": "Extra CSS class" }
+  ],
+  "presets": [
+    { "name": "3D Model Viewer", "category": "Product" }
+  ]
+}
+{% endschema %}

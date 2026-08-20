@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="{{ 'sd-ideas.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-ideas.css' | asset_url | stylesheet_tag }}</noscript>
+
+<section class="sd-ideas-hub">
+  <div class="sd-ideas-hub__inner">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="sd-ideas-hub__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <h1 class="sd-ideas-hub__heading">{{ section.settings.heading }}</h1>
+    {%- endif -%}
+    {%- if section.settings.body != blank -%}
+      <p class="sd-ideas-hub__body">{{ section.settings.body }}</p>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="sd-ideas-hub__tiles">
+        {%- for block in section.blocks -%}
+          <a class="sd-ideas-tile" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+            <div class="sd-ideas-tile__media">
+              {%- if block.settings.image != blank -%}
+                <img src="{{ block.settings.image | image_url: width: 600 }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="600" height="400">
+              {%- endif -%}
+            </div>
+            <div class="sd-ideas-tile__body">
+              <h2 class="sd-ideas-tile__title">{{ block.settings.title }}</h2>
+              {%- if block.settings.sub != blank -%}
+                <p class="sd-ideas-tile__sub">{{ block.settings.sub }}</p>
+              {%- endif -%}
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ideas Hub Header",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Ideas & Advice" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Inspiration & Expert Guides" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "Measuring, styling, caring and choosing — everything you need to make your sofa feel right at home." }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category Tile",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "text", "id": "sub", "label": "Subtitle" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Ideas Hub Header" } ]
+}
+{% endschema %}

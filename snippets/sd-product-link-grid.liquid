@@ -1,0 +1,151 @@
+{%- comment -%}
+  Renders a labelled grid of linked products.
+  Params:
+    link_products — array of product objects (from metafield list.product_reference)
+    link_label    — label shown above grid
+    link_current  — (optional) current product, highlighted with .active
+    link_slug     — unique CSS slug for this block (e.g. 'sofa-type')
+    link_use_color — (optional bool) when true, each card shows the image + name
+                     pulled from each product's `custom.product_colors` metaobject
+                     (type `color`, fields: name, color_code, image). Link still
+                     goes to the product URL.
+    link_show_price    — (optional bool) when true, each standard card shows the
+                         product price (with "From" + compare-at when applicable).
+    link_show_quickadd — (optional bool) when true, each standard card (except the
+                         current product) gets a Quick add button that AJAX-adds the
+                         product's first available variant and opens the cart drawer.
+
+  Becomes a horizontal slider (scroll-snap + arrow buttons) when > 3 products.
+{%- endcomment -%}
+{%- if link_products != blank and link_products.size > 0 -%}
+
+  {%- if link_use_color -%}
+    {%- comment -%} ── Colour swatch grid (4-col rectangular swatches) ── {%- endcomment -%}
+    {%- assign current_color_name = '' -%}
+    {%- if link_current != blank -%}
+      {%- assign _cc = link_current.metafields.custom.product_colors.value -%}
+      {%- if _cc != blank and _cc.name != blank -%}
+        {%- assign current_color_name = _cc.name -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    <div class="sd-colourgrid" data-slug="{{ link_slug }}">
+      <p class="sd-colourgrid__label">
+        {{ link_label }}:
+        <span class="sd-colourgrid__current">{{ current_color_name }}</span>
+      </p>
+      <div class="sd-colourgrid__grid">
+        {%- for cp in link_products -%}
+          {%- assign _cp_tags = cp.tags | join: ',' | downcase | split: ',' -%}
+          {%- if _cp_tags contains 'none sale item' -%}{%- continue -%}{%- endif -%}
+          {%- assign color_obj = cp.metafields.custom.product_colors.value -%}
+          {%- assign card_img  = blank -%}
+          {%- assign card_name = cp.title -%}
+          {%- assign card_code = blank -%}
+          {%- if color_obj != blank -%}
+            {%- assign card_img  = color_obj.image -%}
+            {%- if color_obj.name != blank -%}{%- assign card_name = color_obj.name -%}{%- endif -%}
+            {%- assign card_code = color_obj.color_code -%}
+          {%- endif -%}
+          {%- if card_img == blank -%}{%- assign card_img = cp.featured_image -%}{%- endif -%}
+          {%- assign is_cur = false -%}
+          {%- if link_current != blank and cp.id == link_current.id -%}{%- assign is_cur = true -%}{%- endif -%}
+          <a href="{{ cp.url }}" class="sd-colourgrid__swatch{% if is_cur %} active{% endif %}"
+             title="{{ card_name | escape }}" aria-label="{{ card_name | escape }}">
+            {%- if card_img != blank -%}
+              {{- card_img | image_url: width: 120 | image_tag:
+                  loading: 'lazy', width: 58, height: 59,
+                  alt: card_name, class: 'sd-colourgrid__img' -}}
+            {%- elsif card_code != blank -%}
+              <span class="sd-colourgrid__fill" style="background:{{ card_code }}"></span>
+            {%- endif -%}
+            {%- if is_cur -%}
+              <span class="sd-colourgrid__check" aria-hidden="true">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+            {%- endif -%}
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+
+  {%- else -%}
+    {%- comment -%} ── Standard linked-product grid / slider ── {%- endcomment -%}
+    {%- assign link_is_slider = false -%}
+    {%- if link_products.size > 3 -%}{%- assign link_is_slider = true -%}{%- endif -%}
+    <div class="sd-linkgrid{% if link_is_slider %} sd-linkgrid--slider{% endif %}" data-slug="{{ link_slug }}">
+      <p class="sd-linkgrid__label">{{ link_label }}</p>
+      <div class="sd-linkgrid__viewport">
+        <button type="button" class="sd-linkgrid__nav sd-linkgrid__nav--prev" aria-label="Previous">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="sd-linkgrid__track">
+          {%- for cp in link_products -%}
+            {%- assign _cp_tags = cp.tags | join: ',' | downcase | split: ',' -%}
+            {%- if _cp_tags contains 'none sale item' -%}{%- continue -%}{%- endif -%}
+            {%- assign size_mf = cp.metafields.custom.size -%}
+            {%- if size_mf == blank -%}{%- assign size_mf = cp.metafields.custom.sofa_size -%}{%- endif -%}
+            {%- assign size_val = '' -%}
+            {%- if size_mf != blank and size_mf.value != blank -%}{%- assign size_val = size_mf.value -%}{%- endif -%}
+            {%- assign is_active = false -%}
+            {%- if link_current != blank and cp.id == link_current.id -%}{%- assign is_active = true -%}{%- endif -%}
+            {%- assign cp_variant = cp.selected_or_first_available_variant -%}
+            <div class="sd-linkgrid__card{% if is_active %} active{% endif %}">
+              <a href="{{ cp.url }}" class="sd-linkgrid__link">
+                <div class="sd-linkgrid__media">
+                  {%- if cp.featured_image -%}
+                    {{- cp.featured_image | image_url: width: 400 | image_tag:
+                        loading: 'lazy', widths: '200,300,400',
+                        sizes: '(min-width:990px) 18vw, 33vw',
+                        alt: cp.title, class: 'sd-linkgrid__img' -}}
+                  {%- endif -%}
+                  {%- if is_active -%}
+                    <span class="sd-linkgrid__badge" aria-hidden="true">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                  {%- endif -%}
+                </div>
+                {%- if size_val != blank -%}
+                  <span class="sd-linkgrid__size">{{ size_val }}</span>
+                {%- endif -%}
+                {%- if link_show_price -%}
+                  <span class="sd-linkgrid__price">
+                    {%- if cp.price_varies -%}<span class="sd-linkgrid__price-from">From</span> {% endif -%}
+                    <span class="sd-linkgrid__price-now{% if cp.compare_at_price > cp.price %} on-sale{% endif %}">{{ cp.price | money }}</span>
+                    {%- if cp.compare_at_price > cp.price -%}
+                      <s class="sd-linkgrid__price-was">{{ cp.compare_at_price | money }}</s>
+                    {%- endif -%}
+                  </span>
+                {%- endif -%}
+              </a>
+              {%- if link_show_quickadd and is_active == false -%}
+                {%- if cp.available and cp_variant != blank -%}
+                  <button
+                    type="button"
+                    class="sd-linkgrid__qadd"
+                    data-sd-qadd
+                    data-variant-id="{{ cp_variant.id }}"
+                    data-product-title="{{ cp.title | escape }}"
+                    aria-label="Quick add {{ cp.title | escape }} to cart"
+                  >
+                    <svg class="sd-linkgrid__qadd-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <span class="sd-linkgrid__qadd-label">Quick add</span>
+                  </button>
+                {%- else -%}
+                  <button type="button" class="sd-linkgrid__qadd is-soldout" disabled>Sold out</button>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
+        <button type="button" class="sd-linkgrid__nav sd-linkgrid__nav--next" aria-label="Next">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <div class="sd-linkgrid__scrollbar" data-sd-scrollbar aria-hidden="true">
+        <span class="sd-linkgrid__scrollbar-thumb" data-sd-scrollbar-thumb></span>
+      </div>
+    </div>
+  {%- endif -%}
+
+{%- endif -%}

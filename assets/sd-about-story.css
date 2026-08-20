@@ -1,0 +1,154 @@
+/* ============================================================
+   SD About Story — Trustpilot row + image
+   ============================================================
+   Desktop: 2-col layout, left text (697px) + right image (960px)
+   Trustpilot: 92x92 icon
+   Body: Montserrat Regular 20px, lh 29.25px
+   Image: 960x442, overflow hidden
+   Gap: 153px
+   ============================================================ */
+
+.sd-about-story {
+  padding: 6.4rem 0 0;
+}
+
+.sd-about-story__inner {
+  width: min(100%, 1700px);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10.0rem;
+}
+
+.sd-about-story__text-col {
+  flex: 0 0 auto;
+  max-width: 69.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  align-items: flex-start;
+}
+
+.sd-about-story__icon {
+  width: 9.2rem;
+  height: 9.2rem;
+  object-fit: contain;
+}
+
+.sd-about-story__body {
+  font-family: Montserrat, sans-serif;
+  font-size: 2.0rem;
+  font-weight: 400;
+  line-height: 1.46;
+  color: #000;
+  margin: 0;
+}
+
+.sd-about-story__image-col {
+  flex: 1;
+  height: 44.2rem;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.sd-about-story__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sd-about-story__img--mobile {
+  display: none;
+}
+
+@media screen and (min-width: 990px) {
+  .sd-about-story__inner {
+    width: 100%;
+    margin: 0;
+    gap: 0;
+  }
+
+  .sd-about-story__text-col {
+    flex: 0 0 50%;
+    max-width: none;
+    padding: 0 10.0rem 0 11.0rem;
+    box-sizing: border-box;
+  }
+
+  .sd-about-story__image-col {
+    flex: 0 0 50%;
+  }
+}
+
+/* ── Tablet ── */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .sd-about-story__inner {
+    gap: 4.0rem;
+    padding: 0 4.0rem;
+  }
+
+  .sd-about-story__text-col {
+    max-width: 38rem;
+  }
+
+  .sd-about-story__body {
+    font-size: 1.6rem;
+  }
+
+  .sd-about-story__image-col {
+    height: 36.0rem;
+  }
+
+  .sd-about-story__icon {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+}
+
+/* ── Mobile ── */
+@media screen and (max-width: 749px) {
+  .sd-about-story {
+    padding: 3.2rem 0 1.6rem;
+  }
+
+  .sd-about-story__inner {
+    flex-direction: column;
+    gap: 2.4rem;
+    padding: 0 1.6rem;
+  }
+
+  .sd-about-story__text-col {
+    width: 100%;
+    max-width: 100%;
+    gap: 1.6rem;
+    align-items: flex-start;
+  }
+
+  .sd-about-story__icon {
+    width: 5.2rem;
+    height: 5.2rem;
+  }
+
+  .sd-about-story__body {
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .sd-about-story__image-col {
+    display: block;
+    width: calc(100% + 3.2rem);
+    margin-left: -1.6rem;
+    margin-right: -1.6rem;
+    height: 24.0rem;
+  }
+
+  .sd-about-story__image-col--has-mobile-image .sd-about-story__img--desktop {
+    display: none;
+  }
+
+  .sd-about-story__image-col--has-mobile-image .sd-about-story__img--mobile {
+    display: block;
+  }
+}

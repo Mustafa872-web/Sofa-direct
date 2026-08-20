@@ -1,0 +1,431 @@
+/* ============================================================
+   SD Contact Page
+   ============================================================ */
+
+.sd-contact {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(110rem 52rem at 90% -10%, rgba(165, 140, 112, 0.22), transparent 55%),
+    radial-gradient(80rem 45rem at -10% 100%, rgba(47, 72, 88, 0.12), transparent 62%),
+    linear-gradient(180deg, #f7f4ef 0%, #f2ede7 100%);
+}
+
+.sd-contact__shape {
+  position: absolute;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 50%;
+  filter: blur(1.2rem);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.sd-contact__shape--one {
+  top: -9rem;
+  right: -8rem;
+  background: rgba(165, 140, 112, 0.55);
+}
+
+.sd-contact__shape--two {
+  bottom: -10rem;
+  left: -8rem;
+  background: rgba(47, 72, 88, 0.35);
+}
+
+.sd-contact__container {
+  position: relative;
+  z-index: 1;
+  max-width: 136rem;
+}
+
+.sd-contact__hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3.2rem;
+  align-items: stretch;
+  margin-bottom: 4.0rem;
+}
+
+.sd-contact__hero-copy {
+  padding: 4rem;
+  border-radius: 3.2rem;
+  background: rgba(255, 255, 255, 0.74);
+  border: 0.1rem solid rgba(0, 0, 0, 0.07);
+  backdrop-filter: blur(0.6rem);
+}
+
+.sd-contact__badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 99rem;
+  padding: 0.7rem 1.8rem;
+  margin-bottom: 1.6rem;
+  border: 0.15rem solid #000;
+  background: rgba(192, 176, 159, 0.45);
+  color: #000;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sd-contact__title {
+  margin: 0;
+  color: #141414;
+  font-family: var(--sd-font-display);
+  font-size: clamp(4.0rem, 5vw, 7.0rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.sd-contact__subtitle {
+  margin: 2rem 0 0;
+  color: rgba(0, 0, 0, 0.8);
+  font-family: Montserrat, sans-serif;
+  font-size: clamp(1.6rem, 1.75vw, 2.1rem);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.sd-contact__page-content {
+  margin-top: 2.0rem;
+  color: rgba(0, 0, 0, 0.73);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.65;
+}
+
+.sd-contact__hero-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3.2rem;
+  min-height: 38rem;
+  box-shadow: 0 1.8rem 4.5rem rgba(0, 0, 0, 0.12);
+}
+
+.sd-contact__hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sd-contact__hero-image--mobile {
+  display: none;
+}
+
+.sd-contact__layout {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 3.2rem;
+  align-items: stretch;
+}
+
+.sd-contact__info,
+.sd-contact__form-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 3.2rem;
+  background: #fff;
+  border: 0.1rem solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1.2rem 3rem rgba(0, 0, 0, 0.08);
+  padding: 3.2rem;
+}
+
+.sd-contact__panel-title {
+  margin: 0 0 1.8rem;
+  color: #000;
+  font-family: var(--sd-font-display);
+  font-size: clamp(2.4rem, 2.4vw, 3.4rem);
+  font-weight: 900;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.sd-contact__methods {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+}
+
+.sd-contact__method-card {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr;
+  gap: 1.2rem;
+  align-items: start;
+  padding: 1.4rem;
+  border-radius: 1.8rem;
+  background: #f8f7f4;
+  border: 0.1rem solid rgba(0, 0, 0, 0.07);
+}
+
+.sd-contact__method-icon {
+  width: 4.6rem;
+  height: 4.6rem;
+  border-radius: 999rem;
+  background: rgba(47, 72, 88, 0.1);
+  color: #2f4858;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sd-contact__method-icon svg {
+  width: 2.1rem;
+  height: 2.1rem;
+}
+
+.sd-contact__method-title {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.76);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.sd-contact__method-value {
+  margin: 0.4rem 0 0;
+  color: #000;
+  text-decoration: none;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.sd-contact__method-value:hover {
+  color: #2f4858;
+}
+
+.sd-contact__method-detail {
+  margin: 0.5rem 0 0;
+  color: rgba(0, 0, 0, 0.68);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.45;
+}
+
+.sd-contact__quick-help {
+  margin-top: 2.2rem;
+}
+
+.sd-contact__quick-help-title {
+  margin: 0 0 1.2rem;
+  color: #000;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.sd-contact__quick-help-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.sd-contact__quick-help-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 99rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.17);
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 0.75rem 1.35rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.sd-contact__quick-help-link:hover {
+  background: #ebe5dd;
+  transform: translateY(-0.1rem);
+}
+
+.sd-contact__form-intro {
+  margin: 0 0 2rem;
+  color: rgba(0, 0, 0, 0.72);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.45rem;
+  line-height: 1.5;
+}
+
+.sd-contact__form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.sd-contact__field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.sd-contact__field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.sd-contact__label {
+  color: rgba(0, 0, 0, 0.78);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.sd-contact__input,
+.sd-contact__select,
+.sd-contact__textarea {
+  width: 100%;
+  border: 0.1rem solid rgba(0, 0, 0, 0.2);
+  border-radius: 1.4rem;
+  background: #fff;
+  color: #000;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.45rem;
+  line-height: 1.35;
+  padding: 1.1rem 1.3rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sd-contact__textarea {
+  min-height: 15rem;
+  resize: vertical;
+}
+
+.sd-contact__input:focus,
+.sd-contact__select:focus,
+.sd-contact__textarea:focus {
+  outline: none;
+  border-color: #2f4858;
+  box-shadow: 0 0 0 0.25rem rgba(47, 72, 88, 0.12);
+}
+
+.sd-contact__field-error {
+  color: #8d1e2e;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.2rem;
+}
+
+.sd-contact__form-status {
+  margin: 0;
+  border-radius: 1.2rem;
+  padding: 1rem 1.2rem;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.sd-contact__form-status--success {
+  color: #0a5e43;
+  background: rgba(10, 94, 67, 0.1);
+  border: 0.1rem solid rgba(10, 94, 67, 0.25);
+}
+
+.sd-contact__form-status--error {
+  color: #8d1e2e;
+  background: rgba(141, 30, 46, 0.1);
+  border: 0.1rem solid rgba(141, 30, 46, 0.25);
+}
+
+.sd-contact__submit {
+  margin-top: 0.4rem;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  border: none;
+  border-radius: 99rem;
+  background: #2f4858;
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  padding: 1.1rem 2.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.sd-contact__submit:hover {
+  transform: translateY(-0.1rem);
+  background: #243845;
+}
+
+@media screen and (max-width: 989px) {
+  .sd-contact__hero,
+  .sd-contact__layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .sd-contact__hero-media {
+    min-height: 28rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .sd-contact__hero-copy,
+  .sd-contact__info,
+  .sd-contact__form-panel {
+    border-radius: 2rem;
+    padding: 2rem 1.6rem;
+  }
+
+  .sd-contact__title {
+    font-size: 3.2rem;
+    line-height: 0.95;
+  }
+
+  .sd-contact__subtitle {
+    font-size: 1.35rem;
+  }
+
+  .sd-contact__hero-media {
+    min-height: auto;
+    height: 22rem;
+    border-radius: 2rem;
+  }
+
+  .sd-contact__hero-media--has-mobile .sd-contact__hero-image--desktop {
+    display: none;
+  }
+
+  .sd-contact__hero-media--has-mobile .sd-contact__hero-image--mobile {
+    display: block;
+  }
+
+  .sd-contact__panel-title {
+    font-size: 2.4rem;
+  }
+
+  .sd-contact__method-value {
+    font-size: 1.45rem;
+  }
+
+  .sd-contact__field-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .sd-contact__submit {
+    width: 100%;
+    justify-content: center;
+  }
+}

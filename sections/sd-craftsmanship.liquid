@@ -1,0 +1,332 @@
+<link rel="stylesheet" href="{{ 'sd-craftsmanship.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-craftsmanship.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign eyebrow      = section.settings.eyebrow
+  assign heading      = section.settings.heading
+  assign description  = section.settings.description
+  assign image        = section.settings.image
+  assign stat_value   = section.settings.stat_value
+  assign stat_label   = section.settings.stat_label
+  assign show_britain = section.settings.show_made_in_britain
+  assign cta_label    = section.settings.cta_label
+  assign cta_url      = section.settings.cta_url
+  assign video_url    = section.settings.video_url
+-%}
+
+<section
+  id="sd-craft-{{ section.id }}"
+  class="sd-craft"
+  aria-label="{{ heading | default: 'Our craftsmanship' | escape }}"
+>
+  {%- comment -%} Decorative gold corner ornament {%- endcomment -%}
+  <span class="sd-craft__corner sd-craft__corner--tl" aria-hidden="true"></span>
+  <span class="sd-craft__corner sd-craft__corner--br" aria-hidden="true"></span>
+
+  <div class="sd-craft__inner page-width">
+
+    {%- comment -%} ── LEFT: Editorial image with floating extras ── {%- endcomment -%}
+    <div class="sd-craft__visual">
+      <div class="sd-craft__image-wrap">
+        {%- if image != blank -%}
+          {{
+            image
+            | image_url: width: 1200
+            | image_tag:
+              class: 'sd-craft__image',
+              widths: '480,720,960,1200',
+              sizes: '(min-width: 990px) 50vw, 100vw',
+              alt: image.alt | default: heading,
+              loading: 'lazy'
+          }}
+        {%- else -%}
+          <div class="sd-craft__image-placeholder" aria-hidden="true">
+            <svg viewBox="0 0 80 80" width="60" height="60" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+              <path d="M12 50c4-6 12-10 28-10s24 4 28 10v18H12z"/>
+              <path d="M16 50V36c0-5 3-8 8-8h32c5 0 8 3 8 8v14"/>
+              <path d="M24 50v-8M56 50v-8"/>
+            </svg>
+            <span>Add a craftsmanship image</span>
+          </div>
+        {%- endif -%}
+
+        {%- if video_url != blank -%}
+          <a href="{{ video_url }}" class="sd-craft__play" target="_blank" rel="noopener" aria-label="Watch our story">
+            <span class="sd-craft__play-ring" aria-hidden="true"></span>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </a>
+        {%- endif -%}
+
+        {%- comment -%} Floating stat card — bottom-left of image {%- endcomment -%}
+        {%- if stat_value != blank -%}
+          <div class="sd-craft__stat-card" aria-hidden="true">
+            <strong class="sd-craft__stat-value">{{ stat_value }}</strong>
+            {%- if stat_label != blank -%}
+              <span class="sd-craft__stat-label">{{ stat_label }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- if show_britain -%}
+          <div class="sd-craft__britain" aria-label="Made in Britain">
+            <span class="sd-craft__britain-flag" aria-hidden="true">
+              <svg viewBox="0 0 30 18" width="22" height="14">
+                <rect width="30" height="18" fill="#012169"/>
+                <path d="M0 0L30 18M30 0L0 18" stroke="#fff" stroke-width="2.6"/>
+                <path d="M0 0L30 18M30 0L0 18" stroke="#C8102E" stroke-width="1.2"/>
+                <path d="M15 0V18M0 9H30" stroke="#fff" stroke-width="3.4"/>
+                <path d="M15 0V18M0 9H30" stroke="#C8102E" stroke-width="1.8"/>
+              </svg>
+            </span>
+            <div class="sd-craft__britain-text">
+              <strong>Made in Britain</strong>
+              <span>Hand-finished in UK</span>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} ── RIGHT: Content ── {%- endcomment -%}
+    <div class="sd-craft__content">
+
+      {%- if eyebrow != blank -%}
+        <p class="sd-craft__eyebrow">
+          <span class="sd-craft__eyebrow-line" aria-hidden="true"></span>
+          <span>{{ eyebrow }}</span>
+        </p>
+      {%- endif -%}
+
+      {%- if heading != blank -%}
+        <h2 class="sd-craft__heading">{{ heading }}</h2>
+      {%- endif -%}
+
+      {%- if description != blank -%}
+        <p class="sd-craft__description">{{ description }}</p>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="sd-craft__pillars" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'pillar' -%}
+              <li class="sd-craft__pillar" {{ block.shopify_attributes }}>
+                <span class="sd-craft__pillar-icon" aria-hidden="true">
+                  {%- case block.settings.icon -%}
+                    {%- when 'frame' -%}
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 14h10M7 17h6"/></svg>
+                    {%- when 'leaf' -%}
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3c-9 0-16 7-16 16 0 0 9 0 13-4 4-4 3-12 3-12z"/><path d="M5 19c5-5 9-9 13-13"/></svg>
+                    {%- when 'hand' -%}
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 014 0v5"/><path d="M13 11V4.5a2 2 0 014 0V12"/><path d="M17 13V9a2 2 0 014 0v9c0 2-2 4-5 4h-4c-2 0-4-1-5-3l-3-5 2-2 3 3"/></svg>
+                    {%- when 'shield' -%}
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>
+                    {%- when 'thread' -%}
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c4-3 8-3 12 0s8 3 12 0" transform="scale(0.7) translate(2 4)"/><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="9" r="1.5"/><circle cx="18" cy="12" r="1.5"/></svg>
+                    {%- when 'sparkle' -%}
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/></svg>
+                    {%- else -%}
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-6 4 2 8-6-4-6 4 2-8-6-4h7z"/></svg>
+                  {%- endcase -%}
+                </span>
+                <div class="sd-craft__pillar-body">
+                  <h3 class="sd-craft__pillar-title">{{ block.settings.title }}</h3>
+                  {%- if block.settings.description != blank -%}
+                    <p class="sd-craft__pillar-desc">{{ block.settings.description }}</p>
+                  {%- endif -%}
+                </div>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if cta_label != blank and cta_url != blank -%}
+        <a href="{{ cta_url }}" class="sd-craft__cta">
+          <span>{{ cta_label }}</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7"/>
+          </svg>
+        </a>
+      {%- endif -%}
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function () {
+  var section = document.getElementById('sd-craft-{{ section.id }}');
+  if (!section) return;
+  function activate() { section.classList.add('is-visible'); }
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { activate(); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.10 });
+    observer.observe(section);
+  } else { activate(); }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Craftsmanship Story",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Our Craft"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Built to Live,\nDesigned to Last"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Every sofa we make is hand-finished in Britain using time-honoured techniques and the finest materials. Built to be lived in — and built to last for generations."
+    },
+    {
+      "type": "header",
+      "content": "Editorial Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Craftsmanship image",
+      "info": "Editorial photo of a sofa, fabric close-up, frame, or upholstery workshop."
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Play button video URL (optional)",
+      "info": "Adds a floating play button over the image."
+    },
+    {
+      "type": "header",
+      "content": "Floating stat card"
+    },
+    {
+      "type": "text",
+      "id": "stat_value",
+      "label": "Stat value",
+      "default": "25+"
+    },
+    {
+      "type": "text",
+      "id": "stat_label",
+      "label": "Stat label",
+      "default": "Years Crafting Sofas in Britain"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_made_in_britain",
+      "label": "Show “Made in Britain” flag badge",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Discover Our Craft"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Craft pillar",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "frame",    "label": "Frame / structure" },
+            { "value": "leaf",     "label": "Leaf / sustainable" },
+            { "value": "hand",     "label": "Hand / handmade" },
+            { "value": "shield",   "label": "Shield / warranty" },
+            { "value": "thread",   "label": "Thread / stitching" },
+            { "value": "sparkle",  "label": "Sparkle / quality" }
+          ],
+          "default": "frame"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Hand-Crafted Frames"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Solid hardwood frames, glued, screwed and dowelled to last for decades of daily use."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Craftsmanship Story",
+      "blocks": [
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "frame",
+            "title": "Hand-Crafted Frames",
+            "description": "Solid hardwood frames, glued, screwed and dowelled to last for decades of daily use."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "leaf",
+            "title": "Premium Materials",
+            "description": "Genuine full-grain leather and luxuriously soft fabrics — hand-selected for every range."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "hand",
+            "title": "Master Upholstery",
+            "description": "Each sofa is finished by skilled British craftsmen who've honed their craft for generations."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "shield",
+            "title": "Our Lifetime Promise",
+            "description": "5-year frame warranty and a 14-day comfort guarantee — built into every sofa we make."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

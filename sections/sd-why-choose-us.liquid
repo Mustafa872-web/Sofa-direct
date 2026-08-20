@@ -1,0 +1,315 @@
+<link rel="stylesheet" href="{{ 'sd-why-choose-us.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-why-choose-us.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign badge_text = section.settings.badge_text | default: 'Why Choose Sofa Direct'
+  assign heading    = section.settings.heading    | default: 'Sofas that feel as good as they look.'
+  assign subheading = section.settings.subheading | default: "Four promises that have made us the UK's most loved boutique sofa brand."
+-%}
+
+<section
+  id="sd-wcu-{{ section.id }}"
+  class="sd-wcu{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  aria-label="{{ heading | escape }}"
+>
+  <div class="sd-wcu__bg" aria-hidden="true">
+    <span class="sd-wcu__halo sd-wcu__halo--1"></span>
+    <span class="sd-wcu__halo sd-wcu__halo--2"></span>
+  </div>
+
+  <div class="sd-wcu__container page-width">
+
+    <header class="sd-wcu__header">
+      {%- if badge_text != blank -%}
+        <span class="sd-wcu__badge">
+          <span class="sd-wcu__badge-dot"></span>
+          {{ badge_text }}
+          <span class="sd-wcu__badge-dot"></span>
+        </span>
+      {%- endif -%}
+      {%- if heading != blank -%}
+        <h2 class="sd-wcu__heading">
+          <span class="sd-wcu__heading-flourish sd-wcu__heading-flourish--l" aria-hidden="true">
+            <svg viewBox="0 0 60 16" preserveAspectRatio="none"><path d="M0 8 Q15 0 30 8 T60 8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </span>
+          <span class="sd-wcu__heading-text">{{ heading }}</span>
+          <span class="sd-wcu__heading-flourish sd-wcu__heading-flourish--r" aria-hidden="true">
+            <svg viewBox="0 0 60 16" preserveAspectRatio="none"><path d="M0 8 Q15 0 30 8 T60 8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </span>
+        </h2>
+      {%- endif -%}
+      {%- if subheading != blank -%}
+        <p class="sd-wcu__subheading">{{ subheading }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="sd-wcu__grid">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'pillar' -%}
+            {%- liquid
+              assign icon = block.settings.icon | default: 'crown'
+              assign idx = forloop.index | prepend: '0' | slice: -2, 2
+            -%}
+            <article class="sd-wcu__card sd-wcu__card--{{ forloop.index }}" style="--sd-wcu-delay: {{ forloop.index0 | times: 100 }}ms" {{ block.shopify_attributes }}>
+              <span class="sd-wcu__card-ribbon" aria-hidden="true">
+                <span class="sd-wcu__card-ribbon-text">Promise {{ idx }}</span>
+              </span>
+
+              <span class="sd-wcu__card-corner sd-wcu__card-corner--tl" aria-hidden="true"></span>
+              <span class="sd-wcu__card-corner sd-wcu__card-corner--br" aria-hidden="true"></span>
+
+              <span class="sd-wcu__card-seal" aria-hidden="true">
+                <svg viewBox="0 0 32 32" fill="none">
+                  <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 1.5"/>
+                  <circle cx="16" cy="16" r="9.5" stroke="currentColor" stroke-width="0.6"/>
+                  <path d="M11.5 16.5 14.5 19.5 21 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+
+              <span class="sd-wcu__card-num" aria-hidden="true">{{ idx }}</span>
+
+              <span class="sd-wcu__card-icon" aria-hidden="true">
+                <span class="sd-wcu__card-icon-sparkle sd-wcu__card-icon-sparkle--1"></span>
+                <span class="sd-wcu__card-icon-sparkle sd-wcu__card-icon-sparkle--2"></span>
+                <span class="sd-wcu__card-icon-sparkle sd-wcu__card-icon-sparkle--3"></span>
+                <span class="sd-wcu__card-icon-inner">
+                {%- case icon -%}
+                  {%- when 'crown' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 22h24v4H4zM4 22l3-13 5 6 4-9 4 9 5-6 3 13"/>
+                      <circle cx="7" cy="9" r="1.2" fill="currentColor"/>
+                      <circle cx="16" cy="6" r="1.2" fill="currentColor"/>
+                      <circle cx="25" cy="9" r="1.2" fill="currentColor"/>
+                    </svg>
+                  {%- when 'shield' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 3 5 7v8c0 7 5 12 11 14 6-2 11-7 11-14V7L16 3z"/>
+                      <path d="m11 16 3.5 3.5L21 13"/>
+                    </svg>
+                  {%- when 'truck' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="8" width="18" height="14" rx="1"/>
+                      <path d="M20 12h5l4 4v6h-9"/>
+                      <circle cx="8" cy="25" r="2.5"/>
+                      <circle cx="23" cy="25" r="2.5"/>
+                    </svg>
+                  {%- when 'card' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="7" width="26" height="18" rx="2.5"/>
+                      <path d="M3 13h26M8 19h3M14 19h3"/>
+                    </svg>
+                  {%- when 'leaf' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M27 5C19 5 7 9 7 21c0 4 2 6 4 6s4-2 4-2"/>
+                      <path d="M27 5C26 18 18 24 11 26"/>
+                    </svg>
+                  {%- when 'heart' -%}
+                    <svg viewBox="0 0 32 32" fill="currentColor">
+                      <path d="M16 28S4 21 4 12c0-4 3-7 7-7 3 0 5 2 5 2s2-2 5-2c4 0 7 3 7 7 0 9-12 16-12 16z"/>
+                    </svg>
+                  {%- when 'sparkle' -%}
+                    <svg viewBox="0 0 32 32" fill="currentColor">
+                      <path d="m16 3 2.5 8.5L27 14l-8.5 2.5L16 25l-2.5-8.5L5 14l8.5-2.5L16 3z"/>
+                    </svg>
+                  {%- when 'chair' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 18h20v-4a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v4z"/>
+                      <path d="M4 18v6M28 18v6M8 24h16M10 24v3M22 24v3"/>
+                    </svg>
+                  {%- when 'hand' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10 16v-7a2 2 0 1 1 4 0v6"/>
+                      <path d="M14 14V7a2 2 0 1 1 4 0v8"/>
+                      <path d="M18 15V9a2 2 0 1 1 4 0v9"/>
+                      <path d="M22 16v-3a2 2 0 1 1 4 0v7c0 6-4 9-9 9s-9-3-9-9v-5"/>
+                    </svg>
+                  {%- when 'recycle' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M11 4l-4 7h6l-3-5"/>
+                      <path d="M22 9l-4 0 2 4 4-6-2-2"/>
+                      <path d="M7 14l-3 5 3 5h6"/>
+                      <path d="M27 18l-3 5h-6l3 5"/>
+                      <path d="M16 21l3 4-3 4"/>
+                    </svg>
+                  {%- when 'box' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 10l12-6 12 6v12l-12 6-12-6V10z"/>
+                      <path d="M4 10l12 6 12-6M16 16v12"/>
+                      <path d="M10 7l12 6"/>
+                    </svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 32 32" fill="currentColor"><circle cx="16" cy="16" r="6"/></svg>
+                {%- endcase -%}
+                </span>
+              </span>
+
+              <h3 class="sd-wcu__card-title">{{ block.settings.title | default: 'Crafted in Britain' }}</h3>
+              <p class="sd-wcu__card-desc">{{ block.settings.description | default: 'Designed and assembled in the UK by skilled craftsmen since 2010.' }}</p>
+
+              <span class="sd-wcu__card-line" aria-hidden="true"></span>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Bottom trust strip {%- endcomment -%}
+    {%- if section.settings.show_trust_strip -%}
+      <div class="sd-wcu__strip">
+        {%- assign strip_items = section.settings.trust_strip_text | split: '|' -%}
+        {%- for item in strip_items -%}
+          {%- assign item_clean = item | strip -%}
+          {%- if item_clean != blank -%}
+            <span class="sd-wcu__strip-item">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+              {{ item_clean }}
+            </span>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Why Choose Us",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Eyebrow badge",
+      "default": "Why Choose Sofa Direct"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Sofas that feel as good as they look."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Four promises that have made us the UK's most loved boutique sofa brand."
+    },
+    {
+      "type": "header",
+      "content": "Bottom trust strip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_strip",
+      "label": "Show trust strip below cards",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust_strip_text",
+      "label": "Trust badges (separate with | )",
+      "default": "5-Year Frame Warranty | Free UK Returns | 0% Finance Available | UK Family Business",
+      "info": "Use the pipe character | to separate items."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pillar",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "crown",   "label": "Crown" },
+            { "value": "shield",  "label": "Shield" },
+            { "value": "truck",   "label": "Delivery truck" },
+            { "value": "card",    "label": "Credit card (finance)" },
+            { "value": "leaf",    "label": "Leaf (eco)" },
+            { "value": "heart",   "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" },
+            { "value": "chair",   "label": "Sofa / chair" },
+            { "value": "hand",    "label": "Hand (craft)" },
+            { "value": "recycle", "label": "Recycle (removal)" },
+            { "value": "box",     "label": "Box (packing)" }
+          ],
+          "default": "crown"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Crafted in Britain"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Designed and assembled in the UK by skilled craftsmen since 2010."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Why Choose Us",
+      "blocks": [
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "truck",
+            "title": "Free UK Shipping",
+            "description": "Complimentary delivery on every order across mainland UK. No hidden fees, ever."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "shield",
+            "title": "5-Year Frame Warranty",
+            "description": "Premium hardwood frames built to outlast trends. We stand behind every sofa with a 5-year guarantee."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "recycle",
+            "title": "Sofa Removal",
+            "description": "We'll take away your old sofa on delivery day. Responsibly recycled - one less worry for you."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "box",
+            "title": "Premium Packing",
+            "description": "Heavy-duty protective wrap and corner padding on every sofa. Arrives flawless, every time."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "icon": "card",
+            "title": "0% Interest-Free Finance",
+            "description": "Spread the cost over 12 months at 0% APR. Subject to status - fast online approval."
+          }
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

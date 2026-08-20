@@ -1,0 +1,86 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-about-hero",
+      "settings": {
+        "image": "shopify://shop_images/Group_2_1.webp",
+        "badge_text": "About Us",
+        "heading": "Comfort\nMade Simple",
+        "body_text": "At Sofa Direct, we believe buying a sofa shouldn't be complicated — or expensive. That's why we focus on what really matters: stylish designs, everyday comfort, and prices that make sense."
+      }
+    },
+    "story": {
+      "type": "sd-about-story",
+      "settings": {
+        "icon": "shopify://shop_images/trust_11646971_1.webp",
+        "body_text": "We work directly with trusted manufacturers to bring you quality sofas without the traditional showroom markups. By keeping things streamlined and efficient, we're able to offer better value — without compromising on comfort or durability.",
+        "image": "shopify://shop_images/Frame_2.webp"
+      }
+    },
+    "pricing": {
+      "type": "sd-about-pricing",
+      "blocks": {
+        "feature-1": {
+          "type": "feature",
+          "settings": {
+            "text": "Quality materials"
+          }
+        },
+        "feature-2": {
+          "type": "feature",
+          "settings": {
+            "text": "Comfortable seating"
+          }
+        },
+        "feature-3": {
+          "type": "feature",
+          "settings": {
+            "text": "Reliable UK delivery"
+          }
+        },
+        "feature-4": {
+          "type": "feature",
+          "settings": {
+            "text": "Flexible finance options"
+          }
+        }
+      },
+      "block_order": [
+        "feature-1",
+        "feature-2",
+        "feature-3",
+        "feature-4"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/Frame_1.webp",
+        "heading": "Direct Pricing.\nNo Unnecessary\nExtras.",
+        "body_text": "We don't believe in inflated prices or complicated sales tactics. What you see is honest pricing, clear options and straightforward service."
+      }
+    },
+    "cta": {
+      "type": "sd-about-cta",
+      "settings": {
+        "image": "shopify://shop_images/Frame_3_4e8df2bc-9006-47e0-a927-3488502814e9.webp",
+        "heading": "Here To Make It Easy",
+        "body_text": "From browsing to delivery, we aim to keep the process smooth and stress-free. Our team is here to help you choose the right sofa for your space — without the pressure.",
+        "button_text": "Safety & Care Tips",
+        "button_url": "https://sofa-direct.co.uk/pages/safety-tips"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "story",
+    "pricing",
+    "cta"
+  ]
+}

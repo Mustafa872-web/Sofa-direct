@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Model Viewer Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1a1a2e;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #e94560, #0f3460);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.subtitle {
+      color: #aaa;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+    }
+    .models-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .model-card {
+      background: #16213e;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+    .model-card:hover { transform: translateY(-5px); }
+    .model-card iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
+    .model-card .info {
+      padding: 20px;
+    }
+    .model-card .info h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      color: #e94560;
+    }
+    .model-card .info p {
+      color: #8892b0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .badge {
+      display: inline-block;
+      background: #e94560;
+      color: #fff;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      margin-top: 10px;
+    }
+
+    /* Model Viewer (Google) */
+    model-viewer {
+      width: 100%;
+      height: 400px;
+      background-color: #1a1a2e;
+      --poster-color: transparent;
+    }
+  </style>
+  <!-- Google Model Viewer -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+</head>
+<body>
+
+  <h1>3D Model Viewer Demo</h1>
+  <p class="subtitle">Sofa Direct — 3D Product Preview Functionality Test</p>
+
+  <div class="models-grid">
+
+    <!-- 1. Sketchfab Embed — Koi Fish -->
+    <div class="model-card">
+      <iframe
+        title="Koi Fish 3D Model"
+        src="https://sketchfab.com/models/d3b77259513c4e82b0c05a6d31e1bfc7/embed?autostart=1&ui_theme=dark"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        allowfullscreen>
+      </iframe>
+      <div class="info">
+        <h3>Koi Fish — Sketchfab Embed</h3>
+        <p>Sketchfab iframe embed. Rotate, zoom, and interact with the 3D model. This method works with any Sketchfab model URL.</p>
+        <span class="badge">iframe embed</span>
+      </div>
+    </div>
+
+    <!-- 2. Sketchfab Embed — Sofa/Chair -->
+    <div class="model-card">
+      <iframe
+        title="Sofa 3D Model"
+        src="https://sketchfab.com/models/76a7e5e6c5064073b41f5c30c2a2c70e/embed?autostart=1&ui_theme=dark"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        allowfullscreen>
+      </iframe>
+      <div class="info">
+        <h3>Sofa — Sketchfab Embed</h3>
+        <p>Furniture 3D model for product visualization. Perfect for sofa product pages.</p>
+        <span class="badge">iframe embed</span>
+      </div>
+    </div>
+
+    <!-- 3. Google Model Viewer — Astronaut (GLB) -->
+    <div class="model-card">
+      <model-viewer
+        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+        alt="Astronaut 3D Model"
+        auto-rotate
+        camera-controls
+        shadow-intensity="1"
+        interaction-prompt="auto"
+        ar>
+      </model-viewer>
+      <div class="info">
+        <h3>Astronaut — Google Model Viewer</h3>
+        <p>Uses Google's &lt;model-viewer&gt; web component. Supports .glb/.gltf files. Best for self-hosted 3D models on product pages.</p>
+        <span class="badge">model-viewer (GLB)</span>
+      </div>
+    </div>
+
+    <!-- 4. Google Model Viewer — Chair -->
+    <div class="model-card">
+      <model-viewer
+        src="https://modelviewer.dev/shared-assets/models/SheenChair.glb"
+        alt="Chair 3D Model"
+        auto-rotate
+        camera-controls
+        shadow-intensity="1"
+        interaction-prompt="auto"
+        ar>
+      </model-viewer>
+      <div class="info">
+        <h3>Chair — Google Model Viewer</h3>
+        <p>Furniture example using &lt;model-viewer&gt;. This is the recommended approach for Shopify product 3D previews.</p>
+        <span class="badge">model-viewer (GLB)</span>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

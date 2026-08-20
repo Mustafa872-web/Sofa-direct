@@ -1,0 +1,443 @@
+<link rel="stylesheet" href="{{ 'sd-best-sellers.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-best-sellers.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign badge_text = section.settings.badge_text | default: "Best Seller's"
+  assign heading = section.settings.heading | default: 'Find your perfect fit in minutes.'
+  assign cards_per_view = section.settings.cards_per_view | default: 2
+  assign slide_duration = section.settings.slide_duration | default: 5
+  assign cards = section.blocks | where: 'type', 'card'
+-%}
+
+<div
+  id="sd-best-sellers-{{ section.id }}"
+  class="sd-best-sellers{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  data-cards-per-view="{{ cards_per_view }}"
+  data-slide-duration="{{ slide_duration }}"
+>
+  {{- '<!-- Best Sellers section -->' -}}
+
+  {%- comment -%} ── Header ── {%- endcomment -%}
+  <div class="sd-best-sellers__header page-width">
+    <div class="sd-badge" aria-label="{{ badge_text }}">{{ badge_text }}</div>
+    <h2 class="sd-best-sellers__heading">{{ heading }}</h2>
+  </div>
+
+  {%- comment -%} ── Slider ── {%- endcomment -%}
+  <div class="sd-best-sellers__slider-wrap" role="region" aria-label="Best Sellers carousel">
+    {%- comment -%} Prev arrow {%- endcomment -%}
+    <button class="sd-bs__arrow sd-bs__arrow--prev" aria-label="Previous slide" type="button">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M15 18L9 12L15 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div class="sd-bs__track-outer">
+      <div class="sd-bs__track" id="sd-bs-track-{{ section.id }}">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'card' -%}
+            <div class="sd-bs__slide" {{ block.shopify_attributes }}>
+              <article class="sd-product-card">
+                {%- comment -%} Image {%- endcomment -%}
+                <a
+                  href="{{ block.settings.card_url | default: '#' }}"
+                  class="sd-product-card__image-wrap"
+                  aria-label="{{ block.settings.title | default: 'View product' | escape }}"
+                  tabindex="0"
+                  style="aspect-ratio:692/389;display:block;overflow:hidden;"
+                >
+                  {%- if block.settings.card_image != blank -%}
+                    {%- assign img_alt = block.settings.card_image.alt | default: block.settings.title | escape -%}
+                    {{
+                      block.settings.card_image
+                      | image_url: width: 1200
+                      | image_tag:
+                        class: 'sd-product-card__img',
+                        widths: '480,768,900,1200',
+                        sizes: '(max-width: 749px) 100vw, (max-width: 989px) 100vw, 50vw',
+                        alt: img_alt,
+                        loading: 'lazy'
+                    }}
+                  {%- else -%}
+                    {{ 'product-1' | placeholder_svg_tag: 'sd-product-card__img sd-product-card__img--placeholder' }}
+                  {%- endif -%}
+                </a>
+
+                {%- comment -%} Info bar — flex-col wrapper centers the row inside 163px {%- endcomment -%}
+                <div class="sd-product-card__info">
+                  <div class="sd-product-card__info-inner">
+                    {%- comment -%} Text column {%- endcomment -%}
+                    <div class="sd-product-card__text">
+                      <div class="sd-product-card__name-wrap">
+                        <p class="sd-product-card__title">
+                          <a href="{{ block.settings.card_url | default: '#' }}">
+                            {{- block.settings.title | default: 'Sofa Name' -}}
+                          </a>
+                        </p>
+                        {%- if block.settings.subtitle != blank -%}
+                          <p class="sd-product-card__subtitle">{{ block.settings.subtitle }}</p>
+                        {%- endif -%}
+                      </div>
+                      <p class="sd-product-card__price">{{ block.settings.price | default: '£0.00' }}</p>
+                    </div>
+
+                    {%- comment -%} Swatches — right side {%- endcomment -%}
+                    {%- assign has_swatches = false -%}
+                    {%- if block.settings.swatch_1 != blank
+                      or block.settings.swatch_2 != blank
+                      or block.settings.swatch_3 != blank
+                    -%}
+                      {%- assign has_swatches = true -%}
+                    {%- endif -%}
+                    {%- if has_swatches -%}
+                      <div class="sd-product-card__swatches" aria-label="Colour options">
+                        {%- if block.settings.swatch_1 != blank -%}
+                          <div class="sd-product-card__swatch">
+                            {{
+                              block.settings.swatch_1
+                              | image_url: width: 160
+                              | image_tag: widths: '80,120,160', sizes: '80px', alt: block.settings.swatch_1.alt
+                              | default: 'Colour option 1', loading: 'lazy'
+                            }}
+                          </div>
+                        {%- endif -%}
+                        {%- if block.settings.swatch_2 != blank -%}
+                          <div class="sd-product-card__swatch">
+                            {{
+                              block.settings.swatch_2
+                              | image_url: width: 160
+                              | image_tag: widths: '80,120,160', sizes: '80px', alt: block.settings.swatch_2.alt
+                              | default: 'Colour option 2', loading: 'lazy'
+                            }}
+                          </div>
+                        {%- endif -%}
+                        {%- if block.settings.swatch_3 != blank -%}
+                          <div class="sd-product-card__swatch">
+                            {{
+                              block.settings.swatch_3
+                              | image_url: width: 160
+                              | image_tag: widths: '80,120,160', sizes: '80px', alt: block.settings.swatch_3.alt
+                              | default: 'Colour option 3', loading: 'lazy'
+                            }}
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </article>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- comment -%} Placeholder cards when no blocks added {%- endcomment -%}
+        {%- if cards.size == 0 -%}
+          {%- for i in (1..2) -%}
+            <div class="sd-bs__slide">
+              <article class="sd-product-card">
+                <div class="sd-product-card__image-wrap">
+                  {{ 'product-' | append: i | placeholder_svg_tag: 'sd-product-card__img' }}
+                </div>
+                <div class="sd-product-card__info">
+                  <div class="sd-product-card__info-inner">
+                    <div class="sd-product-card__text">
+                      <div class="sd-product-card__name-wrap">
+                        <p class="sd-product-card__title">Sample Sofa Name</p>
+                        <p class="sd-product-card__subtitle">3 Seater Corner Sofa</p>
+                      </div>
+                      <p class="sd-product-card__price">£1,299.99</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%} Next arrow {%- endcomment -%}
+    <button class="sd-bs__arrow sd-bs__arrow--next" aria-label="Next slide" type="button">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M9 18L15 12L9 6" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+  {%- comment -%} ── View All ── {%- endcomment -%}
+  {%- if section.settings.view_all_url != blank -%}
+    <div class="sd-best-sellers__footer page-width">
+      <a href="{{ section.settings.view_all_url }}" class="sd-best-sellers__view-all">View all</a>
+    </div>
+  {%- endif -%}
+</div>
+
+<script>
+  (function () {
+    'use strict';
+
+    var wrap = document.getElementById('sd-best-sellers-{{ section.id }}');
+    if (!wrap) return;
+
+    var track = wrap.querySelector('.sd-bs__track');
+    var slides = Array.prototype.slice.call(wrap.querySelectorAll('.sd-bs__slide'));
+    var btnPrev = wrap.querySelector('.sd-bs__arrow--prev');
+    var btnNext = wrap.querySelector('.sd-bs__arrow--next');
+    var bars = Array.prototype.slice.call(wrap.querySelectorAll('.sd-bs__prog-bar'));
+    var fills = Array.prototype.slice.call(wrap.querySelectorAll('.sd-bs__prog-fill'));
+    var maxPerView = parseInt(wrap.dataset.cardsPerView, 10) || 2;
+    var duration = (parseInt(wrap.dataset.slideDuration, 10) || 5) * 1000;
+    var current = 0;
+    var total = slides.length;
+    var timer = null;
+    var resizeId = null;
+
+    fills.forEach(function (f) {
+      f.style.animationDuration = duration + 'ms';
+    });
+
+    function getPerView() {
+      /* Below 1200px show a single card; ≥1200px use the
+         section setting (default 2). */
+      if (window.innerWidth < 1200) return 1;
+      return maxPerView;
+    }
+
+    function getGap() {
+      if (window.innerWidth < 750) return 12;
+      if (window.innerWidth < 1200) return 20;
+      return 24;
+    }
+
+    function setSizes() {
+      var pv = getPerView();
+      var gap = getGap();
+      slides.forEach(function (s) {
+        s.style.flex = '0 0 calc((100% - ' + gap * (pv - 1) + 'px) / ' + pv + ')';
+      });
+      track.style.gap = gap + 'px';
+      goTo(current, false, true /* skipTimer */);
+    }
+
+    function goTo(index, fromAuto, skipTimer) {
+      var pv = getPerView();
+      var max = Math.max(0, total - pv);
+
+      if (!fromAuto && index > max) return;
+      current = ((index % total) + total) % total;
+      current = Math.min(current, max);
+
+      track.style.transform =
+        'translateX(-' + current * (100 / pv + getGap() / (slides[0] ? slides[0].offsetWidth : 1)) + '%)';
+
+      /* simpler: use offsetWidth-based pixel offset */
+      var slideW = slides[0] ? slides[0].offsetWidth : 0;
+      var gap = getGap();
+      track.style.transform = 'translateX(-' + current * (slideW + gap) + 'px)';
+
+      if (btnPrev) btnPrev.disabled = current === 0;
+      if (btnNext) btnNext.disabled = current >= max;
+
+      bars.forEach(function (b, i) {
+        b.classList.toggle('active', i === current);
+      });
+      fills.forEach(function (f, i) {
+        f.classList.remove('animating');
+        void f.offsetWidth;
+        if (i === current) f.classList.add('animating');
+      });
+
+      clearTimeout(timer);
+      if (!skipTimer) {
+        timer = setTimeout(function () {
+          goTo(current + 1, true);
+        }, duration);
+      }
+    }
+
+    /* Kick off auto-advance */
+    function startAuto() {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        goTo(current + 1, true);
+      }, duration);
+    }
+
+    btnPrev &&
+      btnPrev.addEventListener('click', function () {
+        goTo(current - 1);
+        startAuto();
+      });
+    btnNext &&
+      btnNext.addEventListener('click', function () {
+        goTo(current + 1);
+        startAuto();
+      });
+
+    bars.forEach(function (b, i) {
+      b.addEventListener('click', function () {
+        goTo(i);
+        startAuto();
+      });
+      b.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          goTo(i);
+          startAuto();
+        }
+      });
+    });
+
+    /* Touch / swipe */
+    var touchStartX = 0;
+    track.addEventListener(
+      'touchstart',
+      function (e) {
+        touchStartX = e.touches[0].clientX;
+      },
+      { passive: true }
+    );
+    track.addEventListener(
+      'touchend',
+      function (e) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 40) {
+          goTo(dx < 0 ? current + 1 : current - 1);
+          startAuto();
+        }
+      },
+      { passive: true }
+    );
+
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeId);
+      resizeId = setTimeout(setSizes, 120);
+    });
+
+    setSizes();
+    startAuto();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "SD Best Sellers",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Best Seller's"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find your perfect fit in minutes."
+    },
+    {
+      "type": "range",
+      "id": "cards_per_view",
+      "label": "Cards visible at once (desktop)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "slide_duration",
+      "label": "Auto-advance interval (seconds)",
+      "min": 3,
+      "max": 15,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "View All URL"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Product Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "card_image",
+          "label": "Card image"
+        },
+        {
+          "type": "url",
+          "id": "card_url",
+          "label": "Product URL"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Product title",
+          "default": "Annecy Genuine Leather"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle / description",
+          "default": "Grey Electric Power Recliner 3 Seater Sofa"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "£1,599.99"
+        },
+        {
+          "type": "header",
+          "content": "Variant swatches (up to 3)"
+        },
+        {
+          "type": "image_picker",
+          "id": "swatch_1",
+          "label": "Swatch 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "swatch_2",
+          "label": "Swatch 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "swatch_3",
+          "label": "Swatch 3"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "SD Best Sellers",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "title": "Annecy Genuine Leather",
+            "subtitle": "Grey Electric Power Recliner 3 Seater Sofa",
+            "price": "£1,599.99"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "Bishop Silver Alaska Fabric",
+            "subtitle": "U Shape High Back Corner Sofa",
+            "price": "£1,299.99"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

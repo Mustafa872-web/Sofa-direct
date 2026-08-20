@@ -1,0 +1,121 @@
+/* Sofa Direct — 3D Model Viewer */
+.sd-3d {
+  background: var(--sd3d-bg, #f8f7f5);
+  padding: 6rem 2rem;
+}
+.sd-3d__inner { margin: 0 auto; }
+.sd-3d__heading {
+  font-family: Montserrat, sans-serif;
+  font-size: 3.2rem; font-weight: 700;
+  color: #1a1a1a; text-align: center; margin: 0 0 3rem;
+}
+.sd-3d__stage {
+  position: relative;
+  background: #fff;
+  border-radius: 2rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,.08);
+  overflow: hidden;
+}
+.sd-3d__viewer {
+  width: 100%;
+  display: block;
+  background: linear-gradient(135deg, #f8f7f5 0%, #ecebe7 100%);
+  --poster-color: transparent;
+  --progress-bar-color: var(--sd3d-accent, #3d5f65);
+}
+.sd-3d__progress {
+  height: 3px; background: var(--sd3d-accent, #3d5f65);
+  transition: width .2s;
+}
+.sd-3d__ar-btn {
+  position: absolute; top: 1.6rem; right: 1.6rem;
+  display: inline-flex; align-items: center; gap: .7rem;
+  background: #fff; border: 1px solid rgba(0,0,0,.08);
+  border-radius: 999px; padding: .8rem 1.4rem;
+  font-family: Montserrat, sans-serif; font-size: 1.25rem; font-weight: 600;
+  color: #1a1a1a; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  transition: transform .15s, box-shadow .15s, background .15s;
+}
+.sd-3d__ar-btn:hover {
+  background: #f4f3f0;
+  box-shadow: 0 4px 14px rgba(0,0,0,.1);
+  transform: translateY(-1px);
+}
+.sd-3d__hint {
+  position: absolute; bottom: 1.6rem; left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: .6rem;
+  background: rgba(255,255,255,.85); backdrop-filter: blur(6px);
+  border-radius: 999px; padding: .6rem 1.2rem;
+  font-family: Montserrat, sans-serif; font-size: 1.15rem; font-weight: 500;
+  color: rgba(0,0,0,.55); pointer-events: none;
+}
+
+/* Color swatches */
+.sd-3d__colors {
+  position: absolute; bottom: 1.6rem; right: 1.6rem;
+  display: flex; gap: .8rem; flex-wrap: wrap;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  padding: .6rem .8rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+}
+.sd-3d__swatch {
+  display: inline-flex; align-items: center; gap: .6rem;
+  background: transparent; border: none; cursor: pointer;
+  padding: .4rem .9rem; border-radius: 999px;
+  font-family: Montserrat, sans-serif; font-size: 1.2rem; font-weight: 600;
+  color: #1a1a1a; transition: background .15s, transform .15s;
+}
+.sd-3d__swatch:hover { background: #f2f2f2; transform: translateY(-1px); }
+.sd-3d__swatch.is-active {
+  background: var(--sd3d-accent, #3d5f65); color: #fff;
+}
+.sd-3d__swatch-dot {
+  width: 1.8rem; height: 1.8rem; border-radius: 50%;
+  background: #ccc; box-shadow: inset 0 0 0 2px rgba(0,0,0,.08);
+  flex-shrink: 0;
+}
+/* Common color dots — extend as needed */
+.sd-3d__swatch-dot[data-color="grey"],
+.sd-3d__swatch-dot[data-color="gray"]   { background: #8a8a8a; }
+.sd-3d__swatch-dot[data-color="blue"]   { background: #3a5a7a; }
+.sd-3d__swatch-dot[data-color="navy"]   { background: #1f2a44; }
+.sd-3d__swatch-dot[data-color="beige"]  { background: #d9c7a7; }
+.sd-3d__swatch-dot[data-color="cream"]  { background: #f1ead8; }
+.sd-3d__swatch-dot[data-color="black"]  { background: #1a1a1a; }
+.sd-3d__swatch-dot[data-color="brown"]  { background: #6b4a2b; }
+.sd-3d__swatch-dot[data-color="caramel"]{ background: #b07d4a; }
+.sd-3d__swatch-dot[data-color="tan"]    { background: #c19a6b; }
+.sd-3d__swatch-dot[data-color="green"]  { background: #4a6b4a; }
+.sd-3d__swatch-dot[data-color="charcoal"]{ background: #36393d; }
+.sd-3d__swatch-dot[data-color="mustard"]{ background: #c89a2a; }
+.sd-3d__swatch-dot[data-color="pink"]   { background: #d6a5a5; }
+.sd-3d__swatch-dot[data-color="red"]    { background: #a53a3a; }
+
+.sd-3d__empty {
+  text-align: center; padding: 6rem 2rem;
+  background: #fff; border-radius: 2rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,.06);
+}
+.sd-3d__empty p {
+  font-family: Montserrat, sans-serif; font-size: 1.5rem;
+  color: rgba(0,0,0,.55); margin: 0; line-height: 1.6;
+}
+.sd-3d__empty code {
+  background: #f2f2f2; padding: .2rem .6rem; border-radius: .4rem;
+  font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+  .sd-3d { padding: 4rem 1.2rem; }
+  .sd-3d__heading { font-size: 2.4rem; margin-bottom: 2rem; }
+  .sd-3d__stage { border-radius: 1.4rem; }
+  .sd-3d__ar-btn { top: 1rem; right: 1rem; font-size: 1.15rem; padding: .7rem 1.2rem; }
+  .sd-3d__colors { bottom: 1rem; right: 1rem; left: 1rem; justify-content: center; }
+  .sd-3d__hint { display: none; }
+  .sd-3d__swatch-label { display: none; }
+  .sd-3d__swatch { padding: .4rem; }
+}

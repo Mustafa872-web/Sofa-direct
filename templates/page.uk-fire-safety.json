@@ -1,0 +1,215 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-info-hero",
+      "blocks": {
+        "c1": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "BS 5852:2006 Tested"
+          }
+        },
+        "c2": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Permanent Safety Labels"
+          }
+        },
+        "c3": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Residential Certified"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "disabled": true,
+      "settings": {
+        "badge_text": "UK Fire Safety",
+        "heading": "Our Commitment to Consumer Protection",
+        "body_text": "At Sofa-Direct, your safety is our utmost priority. All our upholstered furniture complies with UK fire safety law. We are committed to ensuring that every upholstered piece of furniture we provide must exceed the minimum UK legal safety thresholds. We aim to offer more than comfort."
+      }
+    },
+    "intro": {
+      "type": "sd-info-intro",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "What Is UKFR?",
+        "heading": "The UK's Gold Standard For Upholstery Safety",
+        "body": "<p>UKFR is the United Kingdom Fire Resistance Standard, which means that every piece of furniture has to pass fire safety tests set by UK law.  This law ensures that materials like leather, fabric and foam don’t catch fire instantly. Moreover, it allows fire to burn slowly and allows people to evacuate the place if a fire event occurs.<br/><br/></p>"
+      }
+    },
+    "why": {
+      "type": "sd-info-cards",
+      "blocks": {
+        "b1": {
+          "type": "card",
+          "settings": {
+            "number": "01",
+            "title": "Safety First",
+            "text": "High-density, fire-retardant materials prevent the rapid \"flashover\" effect often seen in non-compliant furniture.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "b2": {
+          "type": "card",
+          "settings": {
+            "number": "02",
+            "title": "Regulatory Compliance",
+            "text": "For property owners, providing compliant furniture is a non-negotiable statutory obligation.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "b3": {
+          "type": "card",
+          "settings": {
+            "number": "03",
+            "title": "Trusted Quality",
+            "text": "Many home insurance policies are void if a fire is found to have been accelerated by non-compliant, illegal furniture.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3"
+      ],
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Why It Matters",
+        "heading": "Three Reasons UKFR Protects You",
+        "bg": "cream"
+      }
+    },
+    "compliance": {
+      "type": "sd-info-cards",
+      "blocks": {
+        "c1": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Residential Use (Our Warranty)",
+            "text": "Domestic Standards (BS 5852: Part 1): Designed for private homes where the risk of mass ignition is lower.",
+            "sub1": "Who this applies to:",
+            "list1": "Private Homeowners\nPrivate Landlords\nSocial Housing Providers",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "c2": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Commercial Use (Please Ask)",
+            "text": "Commercial Standards (BS 7176 / Crib 5): Required for hospitals, hotels, and public buildings. These items must pass more intense \"Crib 5\" flame tests to account for higher foot traffic and increased risk.",
+            "sub1": "Who this applies to",
+            "list1": "HMO Landlords\nCare Home Operators\nOffice & Public Venues",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": true
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2"
+      ],
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Our Promise",
+        "heading": "Residential vs Commercial Standards",
+        "bg": "white"
+      }
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "blocks": {
+        "btn1": {
+          "type": "button",
+          "settings": {
+            "label": "Email Us",
+            "link": "mailto:sales@furnitureinstore.co.uk",
+            "outline": false
+          }
+        },
+        "btn2": {
+          "type": "button",
+          "settings": {
+            "label": "Call 02476 581 053",
+            "link": "tel:02476 581 053",
+            "outline": true
+          }
+        }
+      },
+      "block_order": [
+        "btn1",
+        "btn2"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "Questions About UKFR?",
+        "body": "Our team can confirm the compliance status of any product — just get in touch."
+      }
+    },
+    "sd_about_hero_GBMpgM": {
+      "type": "sd-about-hero",
+      "name": "SD About Hero",
+      "settings": {
+        "image": "shopify://shop_images/UK_Fire_Safety.webp",
+        "badge_text": "",
+        "heading": "UK Fire Safety",
+        "body_text": ""
+      }
+    },
+    "page_c9H4Mh": {
+      "type": "page",
+      "name": "t:sections.page.presets.name",
+      "settings": {
+        "page": "uk-fire-safety",
+        "heading_size": "h1",
+        "color_scheme": "scheme-e852916b-d7ac-410f-95d8-59ec044e6d79",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "intro",
+    "why",
+    "compliance",
+    "cta",
+    "sd_about_hero_GBMpgM",
+    "page_c9H4Mh"
+  ]
+}

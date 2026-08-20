@@ -1,0 +1,107 @@
+<link rel="stylesheet" href="{{ 'sd-about-cta.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-about-cta.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign heading  = section.settings.heading | default: 'Here To Make It Easy'
+  assign btn_text = section.settings.button_text | default: 'Safety & Care Tips'
+  assign btn_url  = section.settings.button_url | default: '#'
+-%}
+
+<section class="sd-about-cta{% if section.settings.mobile_image != blank %} sd-about-cta--has-mobile-image{% endif %}" aria-label="{{ heading | escape }}">
+
+  {%- if section.settings.image != blank -%}
+    {{
+      section.settings.image
+      | image_url: width: 1920
+      | image_tag:
+        class: 'sd-about-cta__image sd-about-cta__image--desktop',
+        widths: '600,900,1200,1920',
+        sizes: '100vw',
+        alt: heading,
+        loading: 'lazy'
+    }}
+  {%- else -%}
+    {{ 'lifestyle-2' | placeholder_svg_tag: 'sd-about-cta__image sd-about-cta__image--desktop' }}
+  {%- endif -%}
+
+  {%- if section.settings.mobile_image != blank -%}
+    {{
+      section.settings.mobile_image
+      | image_url: width: 900
+      | image_tag:
+        class: 'sd-about-cta__image sd-about-cta__image--mobile',
+        widths: '375,550,750,900',
+        sizes: '100vw',
+        alt: heading,
+        loading: 'lazy'
+    }}
+  {%- endif -%}
+
+  <div class="sd-about-cta__overlay" aria-hidden="true"></div>
+
+  <div class="sd-about-cta__content">
+    <h2 class="sd-about-cta__heading">{{ heading }}</h2>
+
+    {%- if section.settings.body_text != blank -%}
+      <p class="sd-about-cta__text">{{ section.settings.body_text }}</p>
+    {%- endif -%}
+
+    {%- if btn_text != blank -%}
+      <a href="{{ btn_url }}" class="sd-about-cta__btn">
+        {{ btn_text }}
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {%- endif -%}
+  </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "SD About CTA",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Background image (mobile)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Here To Make It Easy"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "From browsing to delivery, we aim to keep the process smooth and stress-free. Our team is here to help you choose the right sofa for your space — without the pressure."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Safety & Care Tips"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD About CTA"
+    }
+  ]
+}
+{% endschema %}

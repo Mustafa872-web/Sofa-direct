@@ -1,0 +1,478 @@
+/* ============================================================
+   SD Product Info — Inline Finance CALCULATOR
+   Interactive widget at the top of the product info column.
+   Sliders + term pills + live breakdown.
+   Uses Sofa Direct brand palette (cream / taupe / brown / teal).
+   ============================================================ */
+
+.sd-pifc {
+  --pifc-cream:  var(--color-sd-cream, #FFFAEA);
+  --pifc-taupe:  var(--color-sd-tan,   #C0B09F);
+  --pifc-brown:  var(--color-sd-brown, #A58C70);
+  --pifc-teal:   var(--color-sd-teal,  #2F4858);
+  --pifc-ink:    var(--color-sd-black, #121212);
+  --pifc-white:  #ffffff;
+  --pifc-line:   rgba(165, 140, 112, 0.28);
+
+  position: relative;
+  display: block;
+  margin: 1.6rem 0 2rem;
+  background: linear-gradient(180deg, #fffdf3 0%, var(--pifc-cream) 100%);
+  border: 1px solid var(--pifc-line);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 12px 28px -18px rgba(47, 72, 88, 0.32);
+  overflow: hidden;
+}
+
+/* ── Top bar (clickable tab) ──────────────────────────── */
+.sd-pifc__bar {
+  appearance: none;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  background: var(--pifc-teal);
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.25s ease;
+}
+
+.sd-pifc__bar:hover { background: #243846; }
+.sd-pifc__bar:focus-visible { outline: 2px solid var(--pifc-brown); outline-offset: -2px; }
+
+.sd-pifc__bar-sub strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.sd-pifc__bar-l {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.sd-pifc__bar-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.sd-pifc__bar-txt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sd-pifc__bar-title {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+.sd-pifc__bar-sub {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+}
+
+.sd-pifc__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.sd-pifc__bar:hover .sd-pifc__toggle { background: rgba(255, 255, 255, 0.22); }
+
+.sd-pifc__chev {
+  transition: transform 0.3s ease;
+}
+
+.sd-pifc.is-collapsed .sd-pifc__chev {
+  transform: rotate(-90deg);
+}
+
+/* ── Panel (everything below the bar — hidden when collapsed) ── */
+.sd-pifc__panel {
+  max-height: 2000px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.45s ease, opacity 0.3s ease;
+}
+
+.sd-pifc.is-collapsed .sd-pifc__panel {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Readout ───────────────────────────────────────────── */
+.sd-pifc__readout {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.8rem 1.6rem 1.4rem;
+  border-bottom: 1px dashed var(--pifc-line);
+  flex-wrap: wrap;
+}
+
+.sd-pifc__monthly {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  color: var(--pifc-teal);
+  line-height: 1;
+}
+
+.sd-pifc__monthly-currency {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: var(--pifc-brown);
+}
+
+.sd-pifc__monthly-num {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: clamp(3.6rem, 4.2vw, 4.8rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.sd-pifc__monthly-per {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(47, 72, 88, 0.65);
+}
+
+.sd-pifc__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(165, 140, 112, 0.14);
+  color: var(--pifc-brown);
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(165, 140, 112, 0.3);
+}
+
+.sd-pifc__pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pifc-brown);
+  box-shadow: 0 0 0 3px rgba(165, 140, 112, 0.25);
+}
+
+/* ── Body ──────────────────────────────────────────────── */
+.sd-pifc__body {
+  padding: 1.4rem 1.6rem 0.6rem;
+}
+
+.sd-pifc__field {
+  display: block;
+  margin-bottom: 1.2rem;
+  min-height: 0;
+}
+
+.sd-pifc__field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.sd-pifc__label {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pifc-teal);
+}
+
+/* Price number-input pill */
+.sd-pifc__price-input {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1.5px solid var(--pifc-line);
+  border-radius: 10px;
+  padding: 0.2rem 0.6rem 0.2rem 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sd-pifc__price-input:focus-within {
+  border-color: var(--pifc-brown);
+  box-shadow: 0 0 0 3px rgba(165, 140, 112, 0.18);
+}
+
+.sd-pifc__price-symbol {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--pifc-brown);
+  margin-right: 0.2rem;
+}
+
+.sd-pifc__price-field {
+  appearance: textfield;
+  -moz-appearance: textfield;
+  border: 0;
+  background: transparent;
+  outline: none;
+  width: 8ch;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--pifc-teal);
+  text-align: right;
+  padding: 0.3rem 0;
+}
+
+.sd-pifc__price-field::-webkit-outer-spin-button,
+.sd-pifc__price-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.sd-pifc__deposit-readout {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--pifc-teal);
+}
+
+.sd-pifc__deposit-amt {
+  font-weight: 500;
+  font-size: 1.15rem;
+  color: rgba(47, 72, 88, 0.6);
+}
+
+/* ── Custom range slider ───────────────────────────────── */
+.sd-pifc__slider {
+  --thumb-c: var(--pifc-teal);
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(192, 176, 159, 0.45);
+  outline: none;
+  cursor: pointer;
+}
+.sd-pifc__slider--brown { --thumb-c: var(--pifc-brown); }
+
+.sd-pifc__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--thumb-c);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 10px -2px rgba(47, 72, 88, 0.4);
+  cursor: grab;
+  transition: transform 0.15s ease;
+}
+.sd-pifc__slider::-webkit-slider-thumb:active { transform: scale(1.1); cursor: grabbing; }
+
+.sd-pifc__slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--thumb-c);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 10px -2px rgba(47, 72, 88, 0.4);
+  cursor: grab;
+}
+
+/* ── Term pills ────────────────────────────────────────── */
+.sd-pifc__terms {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+
+.sd-pifc__term {
+  appearance: none;
+  background: #fff;
+  border: 1.5px solid var(--pifc-line);
+  border-radius: 10px;
+  padding: 0.7rem 0.3rem;
+  cursor: pointer;
+  color: var(--pifc-teal);
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sd-pifc__term small {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.sd-pifc__term:hover {
+  border-color: var(--pifc-brown);
+  transform: translateY(-1px);
+}
+
+.sd-pifc__term.is-active {
+  background: var(--pifc-teal);
+  border-color: var(--pifc-teal);
+  color: #fff;
+  box-shadow: 0 6px 14px -6px rgba(47, 72, 88, 0.45);
+}
+
+/* ── Breakdown list ────────────────────────────────────── */
+.sd-pifc__break {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 1rem 1.1rem;
+  background: rgba(192, 176, 159, 0.13);
+  border: 1px dashed var(--pifc-line);
+  border-radius: 12px;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.sd-pifc__break li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.25rem;
+}
+
+.sd-pifc__break-l {
+  color: rgba(47, 72, 88, 0.72);
+  letter-spacing: 0.02em;
+}
+
+.sd-pifc__break-v {
+  font-weight: 700;
+  color: var(--pifc-teal);
+}
+
+.sd-pifc__break--hi {
+  border-top: 1px solid rgba(165, 140, 112, 0.35);
+  padding-top: 0.65rem;
+  margin-top: 0.2rem;
+}
+
+.sd-pifc__break--hi .sd-pifc__break-l { color: var(--pifc-teal); font-weight: 700; }
+.sd-pifc__break--hi .sd-pifc__break-v { font-size: 1.45rem; color: var(--pifc-brown); }
+
+/* ── CTA row ───────────────────────────────────────────── */
+.sd-pifc__cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 1.1rem 1.6rem 1.4rem;
+  border-top: 1px solid var(--pifc-line);
+  background: rgba(255, 250, 234, 0.6);
+  flex-wrap: wrap;
+}
+
+.sd-pifc__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--pifc-brown);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sd-pifc__cta:hover {
+  background: var(--pifc-teal);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px -8px rgba(47, 72, 88, 0.5);
+}
+
+.sd-pifc__cta svg { transition: transform 0.2s ease; }
+.sd-pifc__cta:hover svg { transform: translateX(2px); }
+
+.sd-pifc__legal {
+  font-size: 1.05rem;
+  color: rgba(47, 72, 88, 0.55);
+  letter-spacing: 0.02em;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 749px) {
+  .sd-pifc__bar         { padding: 0.85rem 1.1rem; }
+  .sd-pifc__bar-title   { font-size: 1.25rem; }
+  .sd-pifc__bar-sub     { font-size: 0.95rem; }
+  .sd-pifc__toggle-label { display: none; }
+  .sd-pifc__toggle      { padding: 0.4rem 0.55rem; }
+
+  .sd-pifc__readout     { padding: 1.4rem 1.2rem 1.1rem; gap: 0.6rem; }
+  .sd-pifc__monthly-num { font-size: 3.4rem; }
+  .sd-pifc__monthly-currency { font-size: 2rem; }
+
+  .sd-pifc__body        { padding: 1.1rem 1.2rem 0.4rem; }
+
+  .sd-pifc__terms       { grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
+  .sd-pifc__term        { padding: 0.55rem 0.2rem; font-size: 1.35rem; }
+  .sd-pifc__term small  { font-size: 0.85rem; }
+
+  .sd-pifc__cta-row     { padding: 1rem 1.2rem 1.2rem; }
+  .sd-pifc__legal       { display: none; }
+}

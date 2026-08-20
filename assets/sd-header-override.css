@@ -1,0 +1,413 @@
+/* ============================================================
+   SD Header Override — exact Figma match
+   Logo LEFT | Nav CENTERED | Icons RIGHT
+   ============================================================ */
+
+
+
+/* ---- Sticky header — force sticky on the section-group wrapper regardless of grid context ---- */
+.section-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+/* ---- Header wrapper ---- */
+.header-wrapper {
+  background-color: rgb(var(--sd-clr-light-gray-rgb)) !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  transition: box-shadow 0.2s ease;
+  max-height: 90px;           /* cap total header height */
+  overflow: visible;          /* allow dropdowns to escape */
+}
+
+.header-wrapper--border-bottom { border-bottom: none !important; }
+
+/* Subtle shadow when sticky */
+sticky-header .header-wrapper,
+.scrolled-past-header .header-wrapper {
+  background-color: rgb(var(--sd-clr-light-gray-rgb)) !important;
+  box-shadow: var(--sd-shadow-card) !important;
+}
+
+/* ============================================================
+   DESKTOP ≥ 990px
+   3-col grid: 1fr | auto | 1fr — keeps nav truly centred
+   ============================================================ */
+@media screen and (min-width: 990px) {
+
+  /* Constrain desktop header to ~80px total height */
+  .header {
+    padding-top: 1.2rem !important;
+    padding-bottom: 1.2rem !important;
+    min-height: 0 !important;
+  }
+
+  .header--middle-left {
+    grid-template-areas: '. heading icons' !important;
+    grid-template-columns: 1fr auto 1fr !important;
+    column-gap: 2rem !important;
+    align-items: center;
+  }
+
+  .header--middle-left .header__heading,
+  .header--middle-left > h1.header__heading {
+    grid-area: heading;
+    justify-self: center;
+    align-self: center;
+  }
+
+  .header--middle-left .header__inline-menu {
+    grid-area: navigation;
+    justify-self: center;
+    align-self: center;
+    margin-left: 0 !important;
+  }
+
+  .header--middle-left .header__icons {
+    grid-area: icons;
+    justify-self: end;
+    align-self: center;
+    padding-right: 0 !important;
+  }
+
+  /* ---- NAV LINKS ---- */
+  .header__inline-menu .list-menu--inline {
+    display: flex !important;
+    gap: 1.5rem !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .header__inline-menu .header__menu-item,
+  .header__inline-menu .list-menu__item--link {
+    font-family: var(--sd-font-body) !important;
+    font-size: var(--sd-text-nav) !important;   /* 2.0rem */
+    font-weight: 500 !important;
+    color: #000 !important;
+    text-transform: capitalize !important;
+    letter-spacing: 0 !important;
+    padding: 1.2rem 0 !important;
+    line-height: 1.2 !important;
+    text-decoration: none !important;
+    transition: color 0.15s ease;
+  }
+
+  .header__inline-menu .header__menu-item:hover,
+  .header__inline-menu .list-menu__item--link:hover {
+    color: var(--sd-clr-teal) !important;
+    text-decoration: none !important;
+  }
+
+  .header__inline-menu .header__menu-item:hover span,
+  .header__menu-item:hover span {
+    text-decoration: none !important;
+  }
+
+  /* Dropdown chevron */
+  .header__inline-menu .icon-caret {
+    width: 1.0rem !important;
+    height: 0.6rem !important;
+    margin-left: 0.8rem !important;
+    opacity: 0.7;
+  }
+
+  .header__inline-menu summary.list-menu__item {
+    padding-right: 2.0rem !important;
+  }
+
+  /* ---- ICON ROW ---- */
+  .header__icons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 2.4rem !important;           /* 24px between icons — use gap not margin */
+  }
+
+  /* Reset per-icon margin so gap handles spacing uniformly */
+  .header__icon,
+  .header__icon--cart {
+    width: 3.2rem !important;
+    height: 3.2rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: opacity 0.15s ease;
+  }
+
+  .header__icon:hover,
+  .header__icon--cart:hover { opacity: 0.7; }
+
+  /* SVG size: 24px hit area within 32px button */
+  .header__icon .icon,
+  .header__icon--cart .icon,
+  .header__icon svg,
+  .header__icon--cart svg {
+    width: 2.4rem !important;
+    height: 2.4rem !important;
+    color: #000;
+  }
+
+  .header__icon .svg-wrapper,
+  .header__icon--cart .svg-wrapper {
+    width: auto !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .header__icon--account { display: flex !important; }
+
+  /* Hide search close icon in resting state */
+  .header__icon--search .icon-close { display: none !important; }
+
+  /* ── Search icon — force visible, summary-specific fixes ── */
+  .header__search { display: inline-flex !important; align-items: center !important; }
+  .header__search details { line-height: 0; }
+  .header__icon--search.header__icon--summary {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    list-style: none !important;     /* remove summary disclosure triangle */
+    cursor: pointer;
+  }
+  .header__icon--search.header__icon--summary::-webkit-details-marker { display: none !important; }
+  .header__icon--search.header__icon--summary::marker { content: "" !important; }
+  .header__icon--search > span {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .header__icon--search .svg-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2.4rem !important;
+    height: 2.4rem !important;
+    color: #000 !important;
+  }
+  .header__icon--search .svg-wrapper svg,
+  .header__icon--search svg.icon-search {
+    width: 2.4rem !important;
+    height: 2.4rem !important;
+    color: #000 !important;
+    stroke: currentColor !important;
+    display: block !important;
+  }
+  /* When modal is open, swap search → close */
+  details[open] .header__icon--search .svg-wrapper:not(.header__icon-close) { display: none !important; }
+  details[open] .header__icon--search .header__icon-close { display: flex !important; }
+
+  /* Cart badge */
+  .cart-count-bubble {
+    min-width: 1.6rem;
+    height: 1.6rem;
+    font-size: 0.9rem;
+    line-height: 1.6rem;
+    padding: 0 0.3rem;
+  }
+
+}
+
+/* ============================================================
+   LOGO — cap image height to fit the shortened header
+   ============================================================ */
+.header__heading-logo {
+  max-height: 54px !important;
+  width: auto !important;
+}
+
+/* ============================================================
+   LOGO TEXT (no image uploaded) — Bebas Neue / Bayon
+   ============================================================ */
+.header__heading-link .h2 {
+  font-family: var(--sd-font-brand) !important;
+  font-size: 3.4rem !important;
+  font-weight: 400 !important;
+  color: #000 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1 !important;
+}
+
+/* ============================================================
+   DROPDOWN MENUS
+   ============================================================ */
+.header__submenu .list-menu__item--link,
+.header__submenu .header__menu-item {
+  font-family: var(--sd-font-body) !important;
+  font-weight: 400 !important;
+  font-size: 1.8rem !important;
+  color: rgba(0, 0, 0, 0.75) !important;
+  text-transform: capitalize !important;
+  transition: color 0.15s ease;
+}
+
+.header__submenu .list-menu__item--link:hover {
+  color: var(--sd-clr-teal) !important;
+}
+
+/* ============================================================
+   TABLET  750px – 989px
+   Dawn renders mobile layout here (hamburger + centred logo)
+   ============================================================ */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .header {
+    padding-top: 1.6rem !important;
+    padding-bottom: 1.6rem !important;
+  }
+
+  .header__heading-link .h2 {
+    font-size: 3.0rem !important;
+  }
+
+  .header__icon .icon,
+  .header__icon--cart .icon,
+  .header__icon svg,
+  .header__icon--cart svg {
+    width: 2.4rem !important;
+    height: 2.4rem !important;
+  }
+
+  /* Keep icons grouped on the right with proper gap */
+  .header__icons {
+    gap: 2.0rem !important;
+    flex-shrink: 0 !important;
+    min-width: 0 !important;
+  }
+}
+
+/* ============================================================
+   MOBILE  ≤ 749px
+   ============================================================ */
+@media screen and (max-width: 749px) {
+  .header-wrapper { background-color: rgb(var(--sd-clr-light-gray-rgb)) !important; }
+
+  .header {
+    padding-top: 1.4rem !important;
+    padding-bottom: 1.4rem !important;
+  }
+
+  /* When header is in sticky state on mobile — fix total height to 110px */
+  sticky-header.shopify-section-header-sticky .header-wrapper,
+  .scrolled-past-header sticky-header .header-wrapper,
+  sticky-header.shopify-section-header-sticky .header,
+  .scrolled-past-header sticky-header .header {
+    min-height: 66px !important;
+    max-height: 110px !important;
+    height: 66px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .header__heading-link .h2 {
+    font-size: 2.6rem !important;
+  }
+
+  .header__icon .icon,
+  .header__icon--cart .icon,
+  .header__icon svg,
+  .header__icon--cart svg {
+    width: 2.4rem !important;
+    height: 2.4rem !important;
+  }
+
+  .header__icons {
+    gap: 1.6rem !important;
+    flex-shrink: 0 !important;
+    min-width: 0 !important;
+  }
+
+  /* Hamburger icon reset */
+  header-drawer {
+    margin-left: 0 !important;
+  }
+
+  /* Prevent logo from overflowing on very small screens */
+  .header__heading-link {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .header__heading-link .h2 {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .header-wrapper {
+    max-height: 110px;
+}
+}
+
+/* ============================================================
+   SEARCH ICON — universal fix (applies on all breakpoints)
+   The <summary> + <details-modal> structure needs explicit display
+   rules; otherwise the search icon can render invisibly.
+   ============================================================ */
+.header__search {
+  display: inline-flex !important;
+  align-items: center;
+}
+.header__search details { line-height: 0; }
+.header__icon--search.header__icon--summary {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  list-style: none !important;
+  cursor: pointer;
+}
+.header__icon--search.header__icon--summary::-webkit-details-marker { display: none !important; }
+.header__icon--search.header__icon--summary::marker { content: "" !important; }
+.header__icon--search > span {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.header__icon--search .svg-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2.4rem !important;
+  height: 2.4rem !important;
+  color: #000 !important;
+}
+.header__icon--search .svg-wrapper svg,
+.header__icon--search svg.icon-search {
+  width: 2.4rem !important;
+  height: 2.4rem !important;
+  color: #000 !important;
+  stroke: currentColor !important;
+  display: block !important;
+}
+/* Hide close icon in resting state, show only when modal open */
+.header__icon--search .header__icon-close { display: none !important; }
+details[open] .header__icon--search .svg-wrapper:not(.header__icon-close) { display: none !important; }
+details[open] .header__icon--search .header__icon-close { display: flex !important; }
+
+/* ── Mobile-only header tweaks ──────────────────────────────── */
+@media screen and (max-width: 749px) {
+  /* Pull the search icon slightly inward so it sits closer to the
+     account/cart icons on small viewports. */
+  summary.header__icon.header__icon--search.header__icon--summary.link.focus-inset.modal__toggle {
+    margin-right: -15px;
+  }
+}
+
+/* ── Extra-small screens (<380px) — tighter header padding ──── */
+@media screen and (max-width: 379px) {
+  header.header.header--top-center.header--mobile-left.page-width.header--has-menu.header--has-account {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+}
+
+/* ── Mobile: sticky header section + tight margin ─────────────── */
+@media screen and (max-width: 749px) {
+  .section-header {
+    position: sticky !important;
+    margin-bottom: -1px !important;
+  }
+}

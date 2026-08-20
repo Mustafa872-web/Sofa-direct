@@ -1,0 +1,315 @@
+<link rel="stylesheet" href="{{ 'sd-shop-the-look.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-shop-the-look.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign section_width = section.settings.section_width | default: 'container'
+
+  comment
+    Read scene metaobject from product metafield (custom.shop_the_look)
+    Scene has: image + hotspots (list of shop_look_hotspot metaobjects)
+    Each hotspot has: product + position_x + position_y + custom_description
+  endcomment
+
+  assign scene = product.metafields.custom.shop_the_look.value
+  assign bg_image = blank
+  assign hotspots = blank
+  if scene != blank
+    assign bg_image = scene.image.value
+    assign hotspots = scene.hotspots.value
+  endif
+  if bg_image == blank
+    assign bg_image = section.settings.fallback_image
+  endif
+
+-%}
+
+{%- if bg_image != blank -%}
+
+  <div class="sd-stl-outer sd-stl-outer--{{ section_width }}">
+
+    {%- if section.settings.show_heading -%}
+      <div class="sd-stl__heading-wrap">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="sd-stl__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="sd-stl__subheading">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <section
+      id="sd-stl-{{ section.id }}"
+      class="sd-stl"
+      aria-label="Shop the look"
+    >
+      <div class="sd-stl__backdrop" data-stl-backdrop aria-hidden="true"></div>
+
+      <div class="sd-stl__img-wrap">
+        {%- assign img_alt = bg_image.alt | default: product.title | escape -%}
+        {{
+          bg_image
+          | image_url: width: 1920
+          | image_tag:
+            class: 'sd-stl__img',
+            widths: '440,750,990,1200,1500,1920',
+            sizes: '100vw',
+            alt: img_alt,
+            loading: 'lazy',
+            fetchpriority: 'low'
+        }}
+      </div>
+
+      {%- if section.settings.debug_coords -%}
+        <div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.88);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;font-family:monospace;line-height:1.6;z-index:50;max-width:420px">
+          <strong style="color:#ffe066">SHOP-THE-LOOK DEBUG</strong><br>
+          Scene: {% if scene != blank %}<span style="color:#7ee787">✓ found</span>{% else %}<span style="color:#ff9090">✗ no scene metaobject</span>{% endif %}<br>
+          Hotspots: {% if hotspots != blank %}{{ hotspots.size }} found{% else %}<span style="color:#ff9090">0</span>{% endif %}
+          {%- if hotspots != blank -%}
+            {%- for h in hotspots -%}
+              <br>#{{ forloop.index }}:
+              pos_x={{ h.pos_x.value | default: 'nil' }},
+              position_x={{ h.position_x.value | default: 'nil' }},
+              x={{ h.x.value | default: 'nil' }} |
+              pos_y={{ h.pos_y.value | default: 'nil' }},
+              position_y={{ h.position_y.value | default: 'nil' }},
+              y={{ h.y.value | default: 'nil' }}
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if hotspots != blank -%}
+        <div class="sd-stl__hotspots">
+          {%- for hot in hotspots -%}
+            {%- assign linked = hot.product.value -%}
+            {%- if linked != blank -%}
+              {%- liquid
+                assign x = 50
+                assign y = 50
+                assign x_set = false
+                assign y_set = false
+
+                if hot.pos_x.value != blank
+                  assign x = hot.pos_x.value | times: 1
+                  assign x_set = true
+                elsif hot.position_x.value != blank
+                  assign x = hot.position_x.value | times: 1
+                  assign x_set = true
+                elsif hot.x.value != blank
+                  assign x = hot.x.value | times: 1
+                  assign x_set = true
+                endif
+
+                if hot.pos_y.value != blank
+                  assign y = hot.pos_y.value | times: 1
+                  assign y_set = true
+                elsif hot.position_y.value != blank
+                  assign y = hot.position_y.value | times: 1
+                  assign y_set = true
+                elsif hot.y.value != blank
+                  assign y = hot.y.value | times: 1
+                  assign y_set = true
+                endif
+
+                assign card_desc = hot.custom_description.value
+                if card_desc == blank
+                  assign card_desc = hot.description.value
+                endif
+                if card_desc == blank
+                  assign card_desc = linked.description | strip_html | strip_newlines | truncate: 140
+                endif
+
+                assign flip = false
+                if x > 55
+                  assign flip = true
+                endif
+              -%}
+              <div
+                class="sd-stl__hotspot{% if flip %} sd-stl__hotspot--flip{% endif %}"
+                style="left:{{ x }}%;top:{{ y }}%;"
+                data-stl-hotspot
+                data-debug-x="{{ x }}"
+                data-debug-y="{{ y }}"
+                data-debug-set="{% if x_set and y_set %}1{% else %}0{% endif %}"
+              >
+                <span class="sd-stl__pulse" aria-hidden="true"></span>
+                <button class="sd-stl__marker" type="button" aria-expanded="false" aria-label="View {{ linked.title | escape }}" data-stl-toggle>
+                  <span class="sd-stl__marker-icon" aria-hidden="true"></span>
+                </button>
+                <div class="sd-stl__card" role="tooltip" data-stl-card>
+                  <span class="sd-stl__pill sd-stl__pill--title">{{ linked.title | escape }}</span>
+                  {%- if linked.price != blank -%}
+                    <span class="sd-stl__pill">
+                      {%- if linked.compare_at_price > linked.price -%}From {{ linked.price | money }}{%- else -%}{{ linked.price | money }}{%- endif -%}
+                    </span>
+                  {%- endif -%}
+                  {%- if card_desc != blank -%}<p class="sd-stl__card-body">{{ card_desc }}</p>{%- endif -%}
+                  <div class="sd-stl__card-cta">
+                    <a href="{{ linked.url }}" class="sd-stl__card-link">View Details</a>
+                    <svg class="sd-stl__card-arrow" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10.5" cy="10.5" r="10" fill="white"/><path d="M8 6L13 10.5L8 15" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </section>
+
+  </div>
+
+  <script>
+  (function () {
+    var section = document.getElementById('sd-stl-{{ section.id }}');
+    if (!section) return;
+
+    function activate() { section.classList.add('is-visible'); }
+
+    if ('IntersectionObserver' in window) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { activate(); obs.unobserve(e.target); }
+        });
+      }, { threshold: 0.08 });
+      obs.observe(section);
+    } else {
+      activate();
+    }
+
+    var hotspots = section.querySelectorAll('[data-stl-hotspot]');
+    var backdrop = section.querySelector('[data-stl-backdrop]');
+
+    function closeAll() {
+      hotspots.forEach(function (h) {
+        h.classList.remove('is-active');
+        var btn = h.querySelector('[data-stl-toggle]');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      });
+      section.classList.remove('has-active-hotspot');
+    }
+
+    function openHotspot(hotspot) {
+      var wasActive = hotspot.classList.contains('is-active');
+      closeAll();
+      if (!wasActive) {
+        hotspot.classList.add('is-active');
+        var btn = hotspot.querySelector('[data-stl-toggle]');
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+        section.classList.add('has-active-hotspot');
+      }
+    }
+
+    hotspots.forEach(function (h) {
+      var btn = h.querySelector('[data-stl-toggle]');
+      if (btn) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          openHotspot(h);
+        });
+      }
+    });
+
+    if (backdrop) backdrop.addEventListener('click', closeAll);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAll();
+    });
+  })();
+  </script>
+
+{%- elsif request.design_mode -%}
+  <div class="sd-stl__placeholder-wrap" style="padding:40px 20px;text-align:center;border:2px dashed #ccc;margin:20px;">
+    <p style="color:#666;font-size:14px;line-height:1.8;">
+      <strong>Shop The Look — setup guide</strong><br><br>
+      Add these <strong>metafields</strong> to this product in Shopify Admin → Products → (this product) → Metafields:<br><br>
+      <strong>Background image (required):</strong><br>
+      &nbsp;&nbsp;<code>custom.stl_image</code> — File reference (image)<br><br>
+      <strong>Hotspot 1:</strong><br>
+      &nbsp;&nbsp;<code>custom.stl_product_1</code> — Product reference<br>
+      &nbsp;&nbsp;<code>custom.stl_x_1</code> — Decimal (0–100, left→right %)<br>
+      &nbsp;&nbsp;<code>custom.stl_y_1</code> — Decimal (0–100, top→bottom %)<br><br>
+      <strong>Hotspot 2:</strong><br>
+      &nbsp;&nbsp;<code>custom.stl_product_2</code> — Product reference<br>
+      &nbsp;&nbsp;<code>custom.stl_x_2</code> — Decimal &nbsp;<code>custom.stl_y_2</code> — Decimal<br><br>
+      <strong>Hotspot 3:</strong><br>
+      &nbsp;&nbsp;<code>custom.stl_product_3</code> — Product reference<br>
+      &nbsp;&nbsp;<code>custom.stl_x_3</code> — Decimal &nbsp;<code>custom.stl_y_3</code> — Decimal<br><br>
+      Or set a Fallback background in section settings below (works without metafields).
+    </p>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "SD Shop Look Product",
+  "tag": "section",
+  "class": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Set metafields on each product: custom.stl_image (background), custom.stl_product_1/2/3 (products), custom.stl_x_1/y_1 … x_3/y_3 (positions 0–100)."
+    },
+    {
+      "type": "checkbox",
+      "id": "debug_coords",
+      "label": "🐞 Debug: show computed X/Y values",
+      "info": "Shows the actual coordinates being read for each hotspot. Turn off after configuring metafields.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop the look"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Click any dot to explore the products in this scene"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        { "value": "full",      "label": "Full width" },
+        { "value": "container", "label": "Container (1700px)" }
+      ],
+      "default": "container"
+    },
+    {
+      "type": "header",
+      "content": "Fallback image"
+    },
+    {
+      "type": "image_picker",
+      "id": "fallback_image",
+      "label": "Fallback background",
+      "info": "Used when custom.stl_image metafield is not set on the product."
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Shop The Look (Product)"
+    }
+  ]
+}
+{% endschema %}

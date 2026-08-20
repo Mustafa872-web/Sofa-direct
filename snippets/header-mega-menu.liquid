@@ -1,0 +1,400 @@
+{% comment %}
+  SD Mega Menu — Block-based multi mega menu
+  Each "Mega Menu" block in the header section links to a nav item by title.
+  Add multiple blocks for different nav items (Sofas, Armchairs, etc.)
+
+  Menu structure expected (in Shopify Admin > Navigation):
+  Main Menu
+  └── Sofas (or any top-level with children)
+      ├── Fabric Sofas
+      │   ├── Traditional Sofas
+      │   └── ...
+      ├── Leather Sofas
+      │   └── ...
+      └── Shop by Size
+          └── ...
+
+  Usage: {% render 'header-mega-menu' %}
+{% endcomment %}
+
+{{ 'sd-mega-menu.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  sd-mega-menu-lux.css styles only the expanded mega-menu panel
+  which appears on hover/focus — non-critical for first paint.
+  Non-blocking load with <noscript> fallback.
+{%- endcomment -%}
+<link rel="stylesheet" href="{{ 'sd-mega-menu-lux.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-mega-menu-lux.css' | asset_url | stylesheet_tag }}</noscript>
+<script src="{{ 'sd-nav.js' | asset_url }}" defer="defer"></script>
+
+<nav class="header__inline-menu">
+  <ul class="list-menu list-menu--inline" role="list">
+    {%- for link in section.settings.menu.links -%}
+      <li>
+        {%- if link.links != blank -%}
+
+          {%- comment -%}
+            Find the matching mega_menu block for this nav item.
+            Match by comparing link.title (downcased) to block.settings.menu_handle (downcased).
+          {%- endcomment -%}
+          {%- assign mega_block = nil -%}
+          {%- assign link_title_down = link.title | downcase | strip -%}
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'mega_menu' -%}
+              {%- assign block_handle_down = block.settings.menu_handle | downcase | strip -%}
+              {%- if block_handle_down == link_title_down -%}
+                {%- assign mega_block = block -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+
+          <header-menu data-link-url="{{ link.url }}">
+            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu sd-megamenu">
+              <summary
+                id="HeaderMenu-{{ link.handle }}"
+                class="header__menu-item list-menu__item link focus-inset"
+                data-nav-href="{{ link.url }}"
+              >
+                <span
+                  {%- if link.child_active %}
+                    class="header__active-menu-item"
+                  {% endif %}
+                >
+                  {{- link.title | escape -}}
+                </span>
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+              </summary>
+
+              {%- comment -%}
+                Layout decision: if no mega block OR promo image is blank → 5-column nav layout (no featured column).
+                Otherwise → 4-column nav layout + featured column.
+              {%- endcomment -%}
+              {%- assign promo_empty = false -%}
+              {%- if mega_block == nil or mega_block.settings.promo_image == blank -%}
+                {%- assign promo_empty = true -%}
+              {%- endif -%}
+              {%- comment -%} Featured-column show/hide toggle: when off, hide it and let nav use full width {%- endcomment -%}
+              {%- if mega_block and mega_block.settings.show_featured == false -%}
+                {%- assign promo_empty = true -%}
+              {%- endif -%}
+              {%- if promo_empty -%}
+                {%- assign max_cols = 5 -%}
+              {%- else -%}
+                {%- assign max_cols = 5 -%}
+              {%- endif -%}
+
+              {%- comment -%} ── Mega menu panel ── {%- endcomment -%}
+              <div
+                class="sd-megamenu__panel"
+                tabindex="-1"
+                {% if mega_block %}{{ mega_block.shopify_attributes }}{% endif %}
+              >
+                <div class="sd-megamenu__inner">
+                  <div class="sd-megamenu__grid{% if promo_empty %} sd-megamenu__grid--cols5{% endif %}">
+
+                    {%- comment -%}
+                      LAYOUT (controlled by promo_empty / max_cols computed above):
+                        • Promo present → 4 nav columns + featured column (max 8 nav items in 4×2 grid).
+                        • Promo empty   → 5 nav columns (max 10 nav items in 5×2 grid).
+                    {%- endcomment -%}
+                    {%- comment -%}
+                      Pull "By Price" out of the normal column flow so it does NOT take its
+                      own column — it is rendered stacked BELOW the "By Color" column instead.
+                      (Shopify Liquid has no `push` filter, so we capture it + count separately
+                      and skip it inside the single-pass column loop below.)
+                    {%- endcomment -%}
+                    {%- assign price_child = nil -%}
+                    {%- assign nav_count = 0 -%}
+                    {%- for cl in link.links -%}
+                      {%- assign cl_t = cl.title | downcase | strip -%}
+                      {%- if cl_t == 'by price' -%}
+                        {%- assign price_child = cl -%}
+                      {%- else -%}
+                        {%- assign nav_count = nav_count | plus: 1 -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+
+                    {%- assign rendered_cols = 0 -%}
+                    {%- for childlink in link.links -%}
+                      {%- assign col_title_down = childlink.title | downcase | strip -%}
+                      {%- if col_title_down == 'by price' -%}{%- continue -%}{%- endif -%}
+                      {%- if rendered_cols >= max_cols -%}{%- break -%}{%- endif -%}
+                      {%- assign rendered_cols = rendered_cols | plus: 1 -%}
+
+                      {%- assign col_span_mod = '' -%}
+                      {%- if nav_count == 1 -%}
+                        {%- assign col_span_mod = ' sd-megamenu__col--span4' -%}
+                      {%- elsif nav_count == 2 -%}
+                        {%- assign col_span_mod = ' sd-megamenu__col--span2' -%}
+                      {%- endif -%}
+
+                      {%- comment -%}
+                        Detect "Shop by Colour / By Color" column. Swatches render only here;
+                        elsewhere only the text label shows.
+                      {%- endcomment -%}
+                      {%- assign is_color_col = false -%}
+                      {%- if col_title_down contains 'colour' or col_title_down contains 'color' -%}
+                        {%- assign is_color_col = true -%}
+                      {%- endif -%}
+
+                      {%- comment -%}
+                        Column thumbnail: auto-pull from the linked collection's image
+                        (skipped on the colour column; those have swatches instead).
+                      {%- endcomment -%}
+                      {%- assign col_thumb = nil -%}
+                      {%- if mega_block and mega_block.settings.show_col_thumbs and is_color_col == false -%}
+                        {%- assign col_obj = childlink.object -%}
+                        {%- if col_obj != nil -%}
+                          {%- if col_obj.image != blank -%}
+                            {%- assign col_thumb = col_obj.image -%}
+                          {%- elsif col_obj.featured_image != blank -%}
+                            {%- assign col_thumb = col_obj.featured_image -%}
+                          {%- endif -%}
+                        {%- endif -%}
+                      {%- endif -%}
+
+                      <div class="sd-megamenu__col sd-megamenu__col--stacked{{ col_span_mod }}">
+                        <div class="sd-megamenu__col-group{% if is_color_col %} sd-megamenu__col-group--colors{% endif %}{% if col_thumb %} sd-megamenu__col-group--has-thumb{% endif %}">
+                          <p class="sd-megamenu__col-title h3">
+                            <a href="{{ childlink.url }}" class="sd-megamenu__col-title-link">
+                              {%- if col_thumb -%}
+                                <span class="sd-megamenu__col-thumb" aria-hidden="true">
+                                  {{- col_thumb | image_url: width: 96 | image_tag: loading: 'lazy', widths: '48,96,144', sizes: '48px', alt: '' -}}
+                                </span>
+                              {%- endif -%}
+                              <span class="sd-megamenu__col-title-text">{{ childlink.title | escape }}</span>
+                            </a>
+                          </p>
+                          {%- if childlink.links != blank -%}
+                            {%- assign gc_count = childlink.links.size -%}
+                            {%- assign cols_mod = '' -%}
+                            {%- if nav_count <= 2 and gc_count > 12 -%}
+                              {%- assign cols_mod = ' sd-megamenu__links--3col' -%}
+                            {%- elsif nav_count <= 2 and gc_count > 6 -%}
+                              {%- assign cols_mod = ' sd-megamenu__links--2col' -%}
+                            {%- endif -%}
+                            <ul class="sd-megamenu__links{{ cols_mod }}">
+                              {%- for grandchildlink in childlink.links -%}
+                                {%- assign gc_col = grandchildlink.object -%}
+                                {%- assign gc_color = nil -%}
+                                {%- assign gc_image = nil -%}
+                                {%- if is_color_col and gc_col != nil -%}
+                                  {%- assign gc_meta = gc_col.metafields.custom.menu_color.value -%}
+                                  {%- if gc_meta != nil -%}
+                                    {%- assign gc_color = gc_meta.color_code -%}
+                                    {%- assign gc_image = gc_meta.image -%}
+                                  {%- endif -%}
+                                {%- endif -%}
+                                {%- assign has_swatch = false -%}
+                                {%- if gc_color != blank or gc_image != blank -%}
+                                  {%- assign has_swatch = true -%}
+                                {%- endif -%}
+                                <li{% if forloop.index > 8 %} data-nav-more-item hidden{% endif %}>
+                                  <a
+                                    href="{{ grandchildlink.url }}"
+                                    class="sd-megamenu__link{% if has_swatch %} sd-megamenu__link--swatch sd-megamenu__link--swatch-only{% endif %}"
+                                    {% if grandchildlink.current %} aria-current="page"{% endif %}
+                                    {% if has_swatch %} aria-label="{{ grandchildlink.title | escape }}" title="{{ grandchildlink.title | escape }}"{% endif %}
+                                  >
+                                    {%- if gc_color != blank -%}
+                                      <span class="sd-megamenu__swatch sd-megamenu__swatch--color" style="background: {{ gc_color }};" aria-hidden="true"></span>
+                                    {%- elsif gc_image != blank -%}
+                                      <span class="sd-megamenu__swatch sd-megamenu__swatch--img" aria-hidden="true">
+                                        {{- gc_image | image_url: width: 40 | image_tag: loading: 'lazy', alt: '' -}}
+                                      </span>
+                                    {%- endif -%}
+                                    {%- unless has_swatch -%}
+                                      <span class="sd-megamenu__link-text">{{ grandchildlink.title | escape }}</span>
+                                    {%- endunless -%}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                              {%- if childlink.links.size > 8 -%}
+                                <li data-nav-show-more-wrap>
+                                  <button type="button" class="sd-nav__show-more-btn" data-nav-show-more>
+                                    + {{ childlink.links.size | minus: 8 }} more
+                                  </button>
+                                </li>
+                              {%- endif -%}
+                            </ul>
+                          {%- endif -%}
+                        </div>
+
+                        {%- comment -%}
+                          Stack the "By Price" group directly UNDER the colour swatches,
+                          inside the same column.
+                        {%- endcomment -%}
+                        {%- if is_color_col and price_child != nil -%}
+                          <div class="sd-megamenu__col-group sd-megamenu__col-group--bottom sd-megamenu__col-group--price">
+                            <p class="sd-megamenu__col-title h3">
+                              <a href="{{ price_child.url }}" class="sd-megamenu__col-title-link">
+                                <span class="sd-megamenu__col-title-text">{{ price_child.title | escape }}</span>
+                              </a>
+                            </p>
+                            {%- if price_child.links != blank -%}
+                              <ul class="sd-megamenu__links">
+                                {%- for grandchildlink in price_child.links -%}
+                                  <li{% if forloop.index > 8 %} data-nav-more-item hidden{% endif %}>
+                                    <a
+                                      href="{{ grandchildlink.url }}"
+                                      class="sd-megamenu__link"
+                                      {% if grandchildlink.current %} aria-current="page"{% endif %}
+                                    >
+                                      <span class="sd-megamenu__link-text">{{ grandchildlink.title | escape }}</span>
+                                    </a>
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+                            {%- endif -%}
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    {%- endfor -%}
+
+                    {%- comment -%}
+                      FEATURED COLUMN: shown only when the mega_menu block has a promo image.
+                      When the promo card is empty, the grid expands to 5 nav columns instead.
+                    {%- endcomment -%}
+                    {%- unless promo_empty -%}
+                      {%- comment -%}
+                        Featured-column mode resolution:
+                          • If any featured_product_N is set → render Featured Products list.
+                          • Else → render the existing Promo Card + Info Card pair.
+                      {%- endcomment -%}
+                      {%- assign fp1 = mega_block.settings.featured_product_1 -%}
+                      {%- assign fp2 = mega_block.settings.featured_product_2 -%}
+                      {%- assign fp3 = mega_block.settings.featured_product_3 -%}
+                      {%- assign has_featured = false -%}
+                      {%- if fp1 != blank or fp2 != blank or fp3 != blank -%}
+                        {%- assign has_featured = true -%}
+                      {%- endif -%}
+
+                      <div class="sd-megamenu__col sd-megamenu__featured">
+                        {%- if has_featured -%}
+                          <div class="sd-megamenu__featured-products">
+                            <h4 class="sd-megamenu__featured-heading">
+                              {{ mega_block.settings.featured_heading | default: 'Featured' }}
+                            </h4>
+                            <ul class="sd-megamenu__featured-list" role="list">
+                              {%- render 'header-mega-menu-featured-item', product: fp1 -%}
+                              {%- render 'header-mega-menu-featured-item', product: fp2 -%}
+                              {%- render 'header-mega-menu-featured-item', product: fp3 -%}
+                            </ul>
+                          </div>
+                        {%- else -%}
+                          {%- comment -%} Promo card ── {%- endcomment -%}
+                          <div class="sd-megamenu__promo-card">
+                            <div class="sd-megamenu__promo-img-wrap">
+                              {%- if mega_block.settings.promo_image != blank -%}
+                                {{
+                                  mega_block.settings.promo_image
+                                  | image_url: width: 600
+                                  | image_tag:
+                                    class: 'sd-megamenu__promo-img',
+                                    widths: '300,450,600',
+                                    sizes: '280px',
+                                    alt: mega_block.settings.promo_title,
+                                    loading: 'lazy'
+                                }}
+                              {%- else -%}
+                                <div style="width:100%;height:100%;background:#b8a99a;"></div>
+                              {%- endif -%}
+                              <div class="sd-megamenu__promo-img-overlay" aria-hidden="true"></div>
+                            </div>
+                            <div class="sd-megamenu__promo-body">
+                              <h4 class="sd-megamenu__promo-title">
+                                {{ mega_block.settings.promo_title | default: 'Valencia Range' }}
+                              </h4>
+                              <p class="sd-megamenu__promo-desc">
+                                {{ mega_block.settings.promo_desc | default: 'Modern comfort with clean lines and supportive seating — designed for everyday living.' }}
+                              </p>
+                              <a
+                                href="{{ mega_block.settings.promo_url | default: '#' }}"
+                                class="sd-megamenu__promo-cta"
+                              >
+                                {{ mega_block.settings.promo_cta | default: 'Shop Now' }}
+                              </a>
+                            </div>
+                          </div>
+
+                          {%- comment -%} Info card ── {%- endcomment -%}
+                          <div class="sd-megamenu__info-card">
+                            <h4 class="sd-megamenu__info-title">
+                              {{ mega_block.settings.info_title | default: 'New In & Sale' }}
+                            </h4>
+                            <p class="sd-megamenu__info-desc">
+                              {{ mega_block.settings.info_desc | default: 'Discover the latest arrivals and limited-time sofa offers.' }}
+                            </p>
+                            <a
+                              href="{{ mega_block.settings.info_url | default: '#' }}"
+                              class="sd-megamenu__info-cta"
+                            >
+                              {{ mega_block.settings.info_cta | default: 'View Offers' }}
+                            </a>
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    {%- endunless -%}
+
+                  </div>
+
+                  {%- comment -%} ── Bottom bar (only if block exists) ── {%- endcomment -%}
+                  {%- if mega_block -%}
+                    <div class="sd-megamenu__bottom">
+                      <div class="sd-megamenu__bottom-links">
+                        {%- if mega_block.settings.quick1_label != blank -%}
+                          <a href="{{ mega_block.settings.quick1_url | default: '#' }}" class="sd-megamenu__bottom-link">
+                            {{ mega_block.settings.quick1_label }}
+                          </a>
+                        {%- endif -%}
+                        {%- if mega_block.settings.quick2_label != blank -%}
+                          <a href="{{ mega_block.settings.quick2_url | default: '#' }}" class="sd-megamenu__bottom-link">
+                            {{ mega_block.settings.quick2_label }}
+                          </a>
+                        {%- endif -%}
+                        {%- if mega_block.settings.quick3_label != blank -%}
+                          <a href="{{ mega_block.settings.quick3_url | default: '#' }}" class="sd-megamenu__bottom-link">
+                            {{ mega_block.settings.quick3_label }}
+                          </a>
+                        {%- endif -%}
+                        {%- if mega_block.settings.quick4_label != blank -%}
+                          <a href="{{ mega_block.settings.quick4_url | default: '#' }}" class="sd-megamenu__bottom-link">
+                            {{ mega_block.settings.quick4_label }}
+                          </a>
+                        {%- endif -%}
+                      </div>
+                      <a href="{{ link.url }}" class="sd-megamenu__bottom-view-all">
+                        View all {{ link.title | downcase }} →
+                      </a>
+                    </div>
+                  {%- endif -%}
+
+                </div>
+              </div>
+
+            </details>
+          </header-menu>
+
+        {%- else -%}
+          <a
+            id="HeaderMenu-{{ link.handle }}"
+            href="{{ link.url }}"
+            class="header__menu-item list-menu__item link link--text focus-inset"
+            {% if link.current %}
+              aria-current="page"
+            {% endif %}
+          >
+            <span
+              {%- if link.current %}
+                class="header__active-menu-item"
+              {% endif %}
+            >
+              {{- link.title | escape -}}
+            </span>
+          </a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</nav>

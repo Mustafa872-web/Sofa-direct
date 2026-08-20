@@ -1,0 +1,25 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "sd-main-article",
+      "settings": {
+        "show_toc": true,
+        "share_label": "Share this article",
+        "show_related": true,
+        "related_posts_count": 3
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

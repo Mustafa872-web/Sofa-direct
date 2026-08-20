@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="{{ 'sd-ideas.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-ideas.css' | asset_url | stylesheet_tag }}</noscript>
+
+<section class="sd-guide">
+  <article class="sd-guide__inner">
+    <div class="sd-guide__meta">
+      {%- if section.settings.tag != blank -%}
+        <span class="sd-guide__tag">{{ section.settings.tag }}</span>
+      {%- endif -%}
+      {%- if section.settings.read_time != blank -%}
+        <span>{{ section.settings.read_time }}</span>
+      {%- endif -%}
+    </div>
+    {%- if section.settings.heading != blank -%}
+      <h1 class="sd-guide__title">{{ section.settings.heading }}</h1>
+    {%- endif -%}
+    {%- if section.settings.lede != blank -%}
+      <p class="sd-guide__lede">{{ section.settings.lede }}</p>
+    {%- endif -%}
+    {%- if section.settings.hero_image != blank -%}
+      <div class="sd-guide__hero">
+        <img src="{{ section.settings.hero_image | image_url: width: 1400 }}" alt="{{ section.settings.heading | escape }}" loading="lazy" width="1400" height="900">
+      </div>
+    {%- endif -%}
+    <div class="sd-guide__content">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'richtext' -%}
+            <div {{ block.shopify_attributes }}>{{ block.settings.body }}</div>
+          {%- when 'heading' -%}
+            <h2 {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+          {%- when 'subheading' -%}
+            <h3 {{ block.shopify_attributes }}>{{ block.settings.text }}</h3>
+          {%- when 'image' -%}
+            {%- if block.settings.image != blank -%}
+              <figure {{ block.shopify_attributes }} style="margin:20px 0;border-radius:14px;overflow:hidden;">
+                <img src="{{ block.settings.image | image_url: width: 1200 }}" alt="{{ block.settings.caption | escape }}" loading="lazy" width="1200" height="800" style="width:100%;height:auto;display:block;">
+                {%- if block.settings.caption != blank -%}
+                  <figcaption style="font-size:13px;color:#6b5b4b;margin-top:8px;">{{ block.settings.caption }}</figcaption>
+                {%- endif -%}
+              </figure>
+            {%- endif -%}
+          {%- when 'pullquote' -%}
+            <blockquote class="sd-guide__pullquote" {{ block.shopify_attributes }}>{{ block.settings.text }}</blockquote>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </article>
+</section>
+
+{% schema %}
+{
+  "name": "Guide Body",
+  "settings": [
+    { "type": "text", "id": "tag", "label": "Tag", "default": "Guide" },
+    { "type": "text", "id": "read_time", "label": "Read time", "default": "5 min read" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "lede", "label": "Lede paragraph" },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image" }
+  ],
+  "blocks": [
+    { "type": "heading", "name": "Heading", "settings": [ { "type": "text", "id": "text", "label": "Text" } ] },
+    { "type": "subheading", "name": "Subheading", "settings": [ { "type": "text", "id": "text", "label": "Text" } ] },
+    { "type": "richtext", "name": "Rich text", "settings": [ { "type": "richtext", "id": "body", "label": "Body" } ] },
+    { "type": "image", "name": "Image", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image" },
+      { "type": "text", "id": "caption", "label": "Caption" }
+    ]},
+    { "type": "pullquote", "name": "Pull Quote", "settings": [ { "type": "textarea", "id": "text", "label": "Quote" } ] }
+  ],
+  "presets": [ { "name": "Guide Body" } ]
+}
+{% endschema %}

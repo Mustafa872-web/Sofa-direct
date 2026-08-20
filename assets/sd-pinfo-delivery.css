@@ -1,0 +1,416 @@
+/* ============================================================
+   SD Product Info — Delivery & Installation tab
+   Click-to-open tab matching the finance calculator pattern.
+   Uses Sofa Direct brand palette.
+   ============================================================ */
+
+.sd-pidel {
+  --pid-cream:  var(--color-sd-cream, #FFFAEA);
+  --pid-taupe:  var(--color-sd-tan,   #C0B09F);
+  --pid-brown:  var(--color-sd-brown, #A58C70);
+  --pid-teal:   var(--color-sd-teal,  #2F4858);
+  --pid-line:   rgba(165, 140, 112, 0.28);
+
+  position: relative;
+  display: block;
+  margin: 0 0 2rem;
+  background: linear-gradient(180deg, #fffdf3 0%, var(--pid-cream) 100%);
+  border: 1px solid var(--pid-line);
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 12px 28px -20px rgba(47, 72, 88, 0.28);
+  overflow: hidden;
+}
+
+/* ── Bar (clickable tab) ────────────────────────────────── */
+.sd-pidel__bar {
+  appearance: none;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.4rem;
+  background: var(--pid-teal);
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.25s ease;
+}
+
+.sd-pidel__bar:hover { background: #243846; }
+.sd-pidel__bar:focus-visible { outline: 2px solid var(--pid-teal); outline-offset: -2px; }
+
+.sd-pidel__bar-l {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.sd-pidel__bar-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.sd-pidel__bar-txt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sd-pidel__bar-title {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+.sd-pidel__bar-sub {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 0.02em;
+  margin-top: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  line-height: 1.25;
+}
+.sd-pidel__bar-sub-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.sd-pidel__bar-sub-sep {
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 400;
+}
+
+.sd-pidel__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6dd58c;
+  box-shadow: 0 0 0 3px rgba(109, 213, 140, 0.25);
+  animation: sd-pidel-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes sd-pidel-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(109, 213, 140, 0.25); }
+  50%      { box-shadow: 0 0 0 6px rgba(109, 213, 140, 0.12); }
+}
+
+.sd-pidel__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.sd-pidel__bar:hover .sd-pidel__toggle { background: rgba(255, 255, 255, 0.28); }
+
+.sd-pidel__chev {
+  transition: transform 0.3s ease;
+}
+
+.sd-pidel.is-collapsed .sd-pidel__chev {
+  transform: rotate(-90deg);
+}
+
+/* ── Panel ─────────────────────────────────────────────── */
+.sd-pidel__panel {
+  max-height: 1400px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.45s ease, opacity 0.3s ease;
+}
+
+.sd-pidel.is-collapsed .sd-pidel__panel {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Postcode estimate ─────────────────────────────────── */
+.sd-pidel__est {
+  padding: 1.4rem 1.6rem 1.2rem;
+  border-bottom: 1px dashed var(--pid-line);
+}
+
+.sd-pidel__est-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.sd-pidel__est-label {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pid-teal);
+}
+
+.sd-pidel__est-eta {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--pid-brown);
+}
+
+.sd-pidel__pc-form {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.sd-pidel__pc-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  background: #fff;
+  border: 1.5px solid var(--pid-line);
+  border-radius: 10px;
+  padding: 0 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sd-pidel__pc-input:focus-within {
+  border-color: var(--pid-brown);
+  box-shadow: 0 0 0 3px rgba(165, 140, 112, 0.18);
+}
+
+.sd-pidel__pc-ico { color: var(--pid-brown); flex-shrink: 0; }
+
+.sd-pidel__pc {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  outline: none;
+  width: 100%;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--pid-teal);
+  padding: 0.8rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sd-pidel__pc::placeholder {
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(47, 72, 88, 0.4);
+}
+
+.sd-pidel__pc-btn {
+  appearance: none;
+  background: var(--pid-teal);
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 1.4rem;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.sd-pidel__pc-btn:hover { background: #1c2e38; transform: translateY(-1px); }
+
+.sd-pidel__pc-result {
+  margin-top: 0.9rem;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.2rem;
+  color: var(--pid-teal);
+  min-height: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.sd-pidel__pc-result strong { color: var(--pid-brown); }
+.sd-pidel__pc-result svg { color: #6dd58c; flex-shrink: 0; }
+
+.sd-pidel__pc-warn {
+  color: rgba(47, 72, 88, 0.6);
+  font-size: 1.15rem;
+}
+
+/* ── Options list ──────────────────────────────────────── */
+.sd-pidel__opts {
+  list-style: none;
+  margin: 0;
+  padding: 1.2rem 1.6rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.sd-pidel__opt {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  background: #fff;
+  border: 1px solid var(--pid-line);
+  border-radius: 10px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.sd-pidel__opt:hover {
+  border-color: var(--pid-brown);
+  transform: translateY(-1px);
+}
+
+.sd-pidel__opt-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(192, 176, 159, 0.22);
+  color: var(--pid-teal);
+}
+
+.sd-pidel__opt-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.sd-pidel__opt-body strong {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--pid-teal);
+}
+
+.sd-pidel__opt-body span {
+  font-size: 1.1rem;
+  color: rgba(47, 72, 88, 0.7);
+  line-height: 1.35;
+}
+
+.sd-pidel__opt-tag {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(165, 140, 112, 0.15);
+  color: var(--pid-brown);
+  white-space: nowrap;
+}
+
+.sd-pidel__opt-tag--free {
+  background: rgba(109, 213, 140, 0.18);
+  color: #2d8b4c;
+}
+
+/* ── Footer ────────────────────────────────────────────── */
+.sd-pidel__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 1rem 1.6rem 1.2rem;
+  border-top: 1px solid var(--pid-line);
+  background: rgba(255, 250, 234, 0.6);
+  flex-wrap: wrap;
+}
+
+.sd-pidel__foot-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--pid-teal);
+  letter-spacing: 0.02em;
+}
+
+.sd-pidel__foot-note svg { color: #2d8b4c; }
+
+.sd-pidel__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pid-brown);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.sd-pidel__more:hover { color: var(--pid-teal); }
+.sd-pidel__more svg { transition: transform 0.2s ease; }
+.sd-pidel__more:hover svg { transform: translateX(2px); }
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 749px) {
+  .sd-pidel             { border-radius: 0; margin: 0 0 0.9rem; }
+  .sd-pidel__bar         { padding: 0.85rem 1.1rem; align-items: center; }
+  .sd-pidel__bar-sub     { flex-direction: column; align-items: flex-start; gap: 2px; font-size: 1rem; }
+  .sd-pidel__bar-sub-sep { display: none; }
+  .sd-pidel__bar-sub-item { white-space: normal; }
+  .sd-pidel__bar-title   { font-size: 1.25rem; }
+  .sd-pidel__bar-sub     { font-size: 0.95rem; }
+  .sd-pidel__toggle-label { display: none; }
+  .sd-pidel__toggle      { padding: 0.4rem 0.55rem; }
+
+  .sd-pidel__est         { padding: 1.1rem 1.2rem 1rem; }
+  .sd-pidel__pc-form     { flex-direction: column; gap: 0.5rem; }
+  .sd-pidel__pc-btn      { padding: 0.9rem 1.4rem; }
+
+  .sd-pidel__opts        { padding: 1rem 1.2rem; }
+  .sd-pidel__opt         { grid-template-columns: 28px 1fr auto; gap: 0.7rem; padding: 0.75rem 0.85rem; }
+  .sd-pidel__opt-ico     { width: 28px; height: 28px; }
+  .sd-pidel__opt-body strong { font-size: 1.15rem; }
+  .sd-pidel__opt-body span   { font-size: 1.05rem; }
+
+  .sd-pidel__foot        { padding: 0.9rem 1.2rem 1rem; }
+}

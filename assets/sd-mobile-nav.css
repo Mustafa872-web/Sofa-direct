@@ -1,0 +1,504 @@
+/* ===========================================================
+   SD Mobile Navigation — Furniture Village style
+   Slide-in panel from left with grid cards + drill-in sub-views.
+   Active only on mobile (≤749px). Desktop menu untouched.
+   =========================================================== */
+
+:root {
+  --sdmn-z: 9999;
+  --sdmn-bg: #ffffff;
+  --sdmn-fg: #1f1f1f;
+  --sdmn-muted: #6e6e6e;
+  --sdmn-border: #e6e6e6;
+  --sdmn-card-bg: #f4f4f4;
+  /* Use theme's primary accent (brown #A58C70). Falls back to red. */
+  --sdmn-cta: var(--sd-clr-accent-brown, #b30000);
+  --sdmn-cta-fg: #ffffff;
+  --sdmn-icon-bg: #f4f4f4;
+}
+
+/* ── Trigger button (only on mobile) ───────────────────────── */
+.sd-mobile-nav-trigger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: var(--sdmn-fg);
+}
+.sd-mobile-nav-trigger svg { width: 22px; height: 22px; }
+
+/* ── Trigger logic ─────────────────────────────────────────── */
+/* Keep the existing Dawn hamburger visible (correct grid position)
+   — JS hijacks its click to open the new mobile nav instead.
+   Our standalone .sd-mobile-nav-trigger stays hidden everywhere. */
+.sd-mobile-nav-trigger { display: none !important; }
+
+@media (max-width: 989px) {
+  /* Make sure the existing hamburger summary is visible & no marker */
+  header-drawer .header__icon--menu,
+  header-drawer summary.header__icon--menu {
+    display: inline-flex !important;
+    list-style: none;
+  }
+  header-drawer summary::-webkit-details-marker { display: none; }
+  /* Hide the existing menu drawer panel on mobile (we use the new one) */
+  header-drawer #menu-drawer { display: none !important; }
+}
+
+/* ── Backdrop ──────────────────────────────────────────────── */
+.sd-mobile-nav-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: var(--sdmn-z);
+  opacity: 0; visibility: hidden;
+  transition: opacity .25s ease, visibility .25s ease;
+}
+.sd-mobile-nav.is-open ~ .sd-mobile-nav-backdrop,
+.sd-mobile-nav-backdrop.is-open { opacity: 1; visibility: visible; }
+
+/* ── Panel — slides in from RIGHT ─────────────────────────── */
+.sd-mobile-nav {
+  position: fixed; top: 0; right: 0; left: auto;
+  width: min(440px, calc(100vw - 56px));
+  height: 100dvh;
+  background: var(--sdmn-bg);
+  z-index: calc(var(--sdmn-z) + 1);
+  transform: translateX(105%);
+  transition: transform .32s cubic-bezier(.16,1,.3,1);
+  display: flex; flex-direction: column;
+  font-family: var(--font-body-family, system-ui, sans-serif);
+  color: var(--sdmn-fg);
+  overflow: hidden;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
+}
+.sd-mobile-nav.is-open { transform: translateX(0); }
+
+/* ── Top bar (search + close) ──────────────────────────────── */
+.sd-mobile-nav__top {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--sdmn-border);
+  background: #fff;
+  position: sticky; top: 0; z-index: 5;
+}
+.sd-mobile-nav__close {
+  width: 38px; height: 38px;
+  background: #2a2a2a; color: #fff;
+  border: none; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  font-size: 20px; line-height: 1;
+}
+.sd-mobile-nav__close svg { width: 16px; height: 16px; }
+.sd-mobile-nav__search {
+  flex: 1;
+  position: relative;
+}
+.sd-mobile-nav__search input {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px 0 40px;
+  border: 1.5px solid #b3d4e8;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  outline: none;
+}
+.sd-mobile-nav__search input:focus { border-color: #4a90e2; }
+.sd-mobile-nav__search::before {
+  content: '';
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%);
+  width: 16px; height: 16px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><line x1='20' y1='20' x2='17' y2='17'/></svg>") center/contain no-repeat;
+  pointer-events: none;
+}
+
+/* ── Scroll body ───────────────────────────────────────────── */
+.sd-mobile-nav__scroll {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Views — horizontal slide between level 1 / level 2 ───── */
+.sd-mobile-nav__viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.sd-mobile-nav__view {
+  position: absolute;
+  inset: 0;
+  padding: 14px 14px 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transform: translateX(100%);
+  transition: transform .32s cubic-bezier(.16,1,.3,1);
+  background: #fff;
+}
+.sd-mobile-nav__view[data-sdmn-view="root"] { transform: translateX(-100%); }
+.sd-mobile-nav__view.is-active { transform: translateX(0) !important; }
+.sd-mobile-nav__view.is-prev { transform: translateX(-100%); }
+
+/* ── Sale CTA banner ───────────────────────────────────────── */
+.sd-mobile-nav__cta {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--sdmn-cta);
+  color: var(--sdmn-cta-fg);
+  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-bottom: 16px;
+  letter-spacing: .01em;
+}
+.sd-mobile-nav__cta:hover { filter: brightness(.95); color: var(--sdmn-cta-fg); }
+
+/* ── Level 1: Card grid ────────────────────────────────────── */
+.sd-mobile-nav__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.sd-mobile-nav__card {
+  display: flex; flex-direction: column;
+  align-items: stretch;
+  background: var(--sdmn-card-bg);
+  border-radius: 6px;
+  padding: 14px 8px 12px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--sdmn-fg);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: border-color .15s, background .15s;
+}
+.sd-mobile-nav__card:hover { border-color: #d0d0d0; }
+.sd-mobile-nav__card-img {
+  height: 110px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.sd-mobile-nav__card-img img,
+.sd-mobile-nav__card-img svg {
+  max-width: 95%; max-height: 100%;
+  object-fit: contain;
+}
+.sd-mobile-nav__card-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--sdmn-fg);
+  line-height: 1.3;
+}
+
+/* Text-only card (no dropdown / no image) */
+.sd-mobile-nav__card--text {
+  align-items: center;
+  justify-content: center;
+  padding: 22px 12px;
+  min-height: 60px;
+}
+.sd-mobile-nav__card--text .sd-mobile-nav__card-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Drill chevron — top-right corner of cards with children */
+.sd-mobile-nav__card { position: relative; }
+.sd-mobile-nav__card-chev {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  color: #555;
+  box-shadow: 0 1px 2px rgba(0,0,0,.08);
+}
+.sd-mobile-nav__card-chev svg { width: 11px; height: 11px; }
+
+/* Active state — current page card */
+.sd-mobile-nav__card.is-active {
+  border-color: var(--sdmn-cta);
+  background: #fff;
+}
+.sd-mobile-nav__card.is-active .sd-mobile-nav__card-name {
+  color: var(--sdmn-cta);
+  font-weight: 700;
+}
+.sd-mobile-nav__card.is-active::before {
+  content: '';
+  position: absolute; top: 8px; left: 8px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--sdmn-cta);
+}
+.sd-mobile-nav__links a.is-active {
+  color: var(--sdmn-cta);
+  font-weight: 600;
+}
+.sd-mobile-nav__group-name.is-active { color: var(--sdmn-cta); }
+
+/* Quick actions footer (Account / Phone / Help) */
+.sd-mobile-nav__quick {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 16px 14px;
+  border-top: 1px solid var(--sdmn-border);
+  margin-top: 24px;
+}
+.sd-mobile-nav__quick-btn {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 6px;
+  padding: 12px 6px;
+  background: var(--sdmn-card-bg);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--sdmn-fg);
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.sd-mobile-nav__quick-btn:hover {
+  background: #ebebeb;
+  color: #000;
+}
+.sd-mobile-nav__quick-btn svg {
+  width: 22px; height: 22px;
+  color: var(--sdmn-cta);
+}
+
+/* Sticky bottom action bar */
+.sd-mobile-nav__bottombar {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #fff;
+  border-top: 1px solid var(--sdmn-border);
+  z-index: 10;
+  box-shadow: 0 -2px 12px rgba(0,0,0,.05);
+}
+.sd-mobile-nav__bottombar a {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  padding: 10px 4px 12px;
+  text-decoration: none;
+  color: var(--sdmn-fg);
+  font-size: 11px;
+  font-weight: 500;
+}
+.sd-mobile-nav__bottombar a:hover { color: #000; }
+.sd-mobile-nav__bottombar svg { width: 22px; height: 22px; }
+.sd-mobile-nav__bottombar a + a { border-left: 1px solid var(--sdmn-border); }
+.sd-mobile-nav__cart-badge {
+  position: absolute;
+  top: 4px;
+  right: calc(50% - 18px);
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
+  background: var(--sdmn-cta);
+  color: #fff;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+/* ── Level 2: header ───────────────────────────────────────── */
+.sd-mobile-nav__l2-head {
+  display: flex; align-items: center; gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--sdmn-border);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.sd-mobile-nav__back {
+  width: 32px; height: 32px;
+  background: transparent;
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--sdmn-fg);
+  padding: 0;
+  flex-shrink: 0;
+}
+.sd-mobile-nav__l2-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex: 0 1 auto;
+  margin-right: auto;
+}
+
+/* "Shop all <Parent>" link — sits next to the back/title row */
+.sd-mobile-nav__shop-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sdmn-cta);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid var(--sdmn-cta);
+  border-radius: 99px;
+  white-space: nowrap;
+  transition: background-color .15s ease, color .15s ease;
+  flex-shrink: 0;
+}
+.sd-mobile-nav__shop-all:hover {
+  background: var(--sdmn-cta);
+  color: #fff;
+}
+.sd-mobile-nav__shop-all span { font-weight: 600; }
+.sd-mobile-nav__shop-all svg { transition: transform .15s ease; }
+.sd-mobile-nav__shop-all:hover svg { transform: translateX(2px); }
+
+/* ── Level 2: groups (with circle icon + View all) ─────────── */
+.sd-mobile-nav__group { margin-bottom: 22px; }
+.sd-mobile-nav__group-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 10px;
+}
+.sd-mobile-nav__group-icon {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--sdmn-icon-bg);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sd-mobile-nav__group-icon img,
+.sd-mobile-nav__group-icon svg {
+  width: 22px; height: 22px; object-fit: contain;
+}
+.sd-mobile-nav__group-name {
+  font-size: 16px;
+  font-weight: 600;
+  flex: 1;
+}
+.sd-mobile-nav__view-all {
+  font-size: 13px;
+  color: #666;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.sd-mobile-nav__view-all:hover { color: #000; }
+
+/* ── Level 2: leaf links ───────────────────────────────────── */
+.sd-mobile-nav__links {
+  list-style: none;
+  margin: 0; padding: 0 0 0 50px;
+  border-left: 1px solid var(--sdmn-border);
+  margin-left: 19px;
+}
+.sd-mobile-nav__links li { margin-bottom: 14px; }
+.sd-mobile-nav__links li:last-child { margin-bottom: 0; }
+.sd-mobile-nav__links a {
+  font-size: 14px;
+  color: var(--sdmn-fg);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sd-mobile-nav__links a:hover { color: #000; text-decoration: underline; }
+
+/* ── Seater / armchair leaf icons ─────────────────────────── */
+.sd-mobile-nav__leaf-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 20px;
+  color: var(--sdmn-fg);
+  opacity: 0.7;
+}
+.sd-mobile-nav__leaf-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Color swatch grid (when group title contains "color/colour") ─ */
+.sd-mobile-nav__group--colors .sd-mobile-nav__links { display: none; }
+.sd-mobile-nav__swatches {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 50px;
+  border-left: 1px solid var(--sdmn-border);
+  margin-left: 19px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+.sd-mobile-nav__swatches li { margin: 0; }
+.sd-mobile-nav__swatch {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+  color: var(--sdmn-fg);
+  font-size: 13px;
+  line-height: 1.2;
+}
+.sd-mobile-nav__swatch:hover { color: #000; }
+.sd-mobile-nav__swatch:hover .sd-mobile-nav__swatch-name { text-decoration: underline; }
+.sd-mobile-nav__swatch-dot {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: block;
+  border: 1px solid rgba(0,0,0,.12);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.5);
+  overflow: hidden;
+  background-position: center;
+  background-size: cover;
+}
+.sd-mobile-nav__swatch-dot--img { background: #f4f4f4; }
+.sd-mobile-nav__swatch-dot--img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+.sd-mobile-nav__swatch-dot--placeholder {
+  background: linear-gradient(135deg, #eee 25%, #f8f8f8 25%, #f8f8f8 50%, #eee 50%, #eee 75%, #f8f8f8 75%);
+  background-size: 8px 8px;
+}
+.sd-mobile-nav__swatch-name {
+  flex: 1;
+  text-transform: capitalize;
+}
+summary.header__icon.header__icon--menu.header__icon--summary.link.focus-inset span {
+    width: 100%;
+}
+@media (max-width: 990px) {
+.header__icons {
+    padding: 0px;
+}
+}
+/* ── Hide on desktop (safety) ──────────────────────────────── */
+@media (min-width: 990px) {
+  .sd-mobile-nav,
+  .sd-mobile-nav-backdrop { display: none; }
+}

@@ -1,0 +1,764 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-info-hero",
+      "blocks": {
+        "c1": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Fast Delivery"
+          }
+        },
+        "c2": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "14-Day Returns"
+          }
+        },
+        "c3": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Nationwide coverage"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "settings": {
+        "badge_text": "Help Centre",
+        "heading": "Frequently Asked Questions",
+        "body_text": "Got questions? We've got you covered — from delivery and sizing to returns and refunds, everything you need to know is right here"
+      }
+    },
+    "faq": {
+      "type": "sd-info-faq",
+      "blocks": {
+        "cat1": {
+          "type": "category",
+          "settings": {
+            "title": "Delivery FAQs"
+          }
+        },
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "question": "When will I receive my order?",
+            "answer": "<p>Your sofa will be with you within 7–10 working days.<br/><br/></p>"
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "question": "Will I be contacted before delivery?",
+            "answer": "<p>Absolutely. We'll give you a call around 2 days before your delivery to sort out a convenient time.</p>"
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "question": "What time do you deliver?",
+            "answer": "<p>Our delivery teams are usually out on the road from 6:00 AM, with most deliveries completed by 2:00–4:00 PM.</p>"
+          }
+        },
+        "q4": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you deliver across the UK?",
+            "answer": "<p>Yes — we deliver nationwide across the UK.</p>"
+          }
+        },
+        "q5": {
+          "type": "qa",
+          "settings": {
+            "question": "Are there any postcodes that cost extra to deliver to?",
+            "answer": "<p>There can be. Some UK postcodes carry an additional delivery charge, usually somewhere between £25 and £75. You'll see this clearly flagged at checkout before you pay.</p>"
+          }
+        },
+        "qa_UBimbh": {
+          "type": "qa",
+          "settings": {
+            "question": "What does standard delivery include?",
+            "answer": "<p>Standard delivery covers ground floor delivery and placement in the room of your choice — as long as access allows.<br/><br/></p>"
+          }
+        },
+        "qa_TfENQ8": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you deliver to upper floors?",
+            "answer": "<p>Upper-floor delivery may be possible, though an additional charge payable to the courier may apply.<br/><br/></p>"
+          }
+        },
+        "qa_4WphyV": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you remove old furniture?",
+            "answer": "<p>Unfortunately, we don't offer old furniture removal as part of our service.<br/><br/></p>"
+          }
+        },
+        "qa_9G4Pmm": {
+          "type": "qa",
+          "settings": {
+            "question": "What happens if I miss my delivery?",
+            "answer": "<p>A re-delivery charge of up to £150 may apply if we're unable to complete the delivery on the agreed day.<br/><br/></p>"
+          }
+        },
+        "category_4NDDx7": {
+          "type": "category",
+          "settings": {
+            "title": "Sofa Sizing & Access FAQs"
+          }
+        },
+        "qa_GKUXDW": {
+          "type": "qa",
+          "settings": {
+            "question": "How do I know if my sofa will fit through the door?",
+            "answer": "<p>Take measurements of your sofa's width, height and depth, then walk your delivery route and check every access point along the way.</p>"
+          }
+        },
+        "qa_bd78Nt": {
+          "type": "qa",
+          "settings": {
+            "question": "What access points should I check before ordering?",
+            "answer": "<p>Work through the full route — front door, hallways, staircases, landings, lifts and any internal doors.<br/><br/></p>"
+          }
+        },
+        "qa_VTYdaF": {
+          "type": "qa",
+          "settings": {
+            "question": "Should I measure the narrowest point?",
+            "answer": "<p>Yes, always. It's the tightest spot on the route that matters most.</p>"
+          }
+        },
+        "qa_t8FqKV": {
+          "type": "qa",
+          "settings": {
+            "question": "Do I need to check the turning space?",
+            "answer": "<p>Definitely, as corners and landings can make or break a delivery.<br/><br/></p>"
+          }
+        },
+        "qa_QmLU3x": {
+          "type": "qa",
+          "settings": {
+            "question": "What if my sofa doesn't fit on delivery day?",
+            "answer": "<p>If access prevents delivery, re-delivery or return charges may apply.</p>"
+          }
+        },
+        "qa_6HjCKE": {
+          "type": "qa",
+          "settings": {
+            "question": "Can the delivery team bring the sofa into my room?",
+            "answer": "<p>Yes, where access allows. Room placement is included as standard.</p>"
+          }
+        },
+        "qa_Wzb6NB": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I check this before ordering?",
+            "answer": "<p>We'd always recommend measuring carefully beforehand.</p>"
+          }
+        },
+        "qa_f7LC84": {
+          "type": "qa",
+          "settings": {
+            "question": "Can sofas be taken apart for delivery?",
+            "answer": "<p>Some sofas come in sections or modular parts, but this varies by design.</p>"
+          }
+        },
+        "qa_ybmJgi": {
+          "type": "qa",
+          "settings": {
+            "question": "Will the packaging affect whether the sofa fits?",
+            "answer": "<p>Yes — always allow extra space for packaging during delivery.<br/><br/></p>"
+          }
+        },
+        "cat2": {
+          "type": "category",
+          "settings": {
+            "title": " Product Material & Fabric FAQs"
+          }
+        },
+        "qa_GpxLLa": {
+          "type": "qa",
+          "settings": {
+            "question": "What materials are your sofas made from?",
+            "answer": "<p>It varies by design — full material details are listed on each individual product page.</p>"
+          }
+        },
+        "qa_iaQzJQ": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you offer leather sofas?",
+            "answer": "<p>Yes. A number of our ranges are available in genuine leather.</p>"
+          }
+        },
+        "qa_m3eLeg": {
+          "type": "qa",
+          "settings": {
+            "question": "Are colours exactly the same as shown online?",
+            "answer": "<p>Shades can look slightly different depending on your screen settings and the lighting in your home.</p>"
+          }
+        },
+        "qa_cnrGiP": {
+          "type": "qa",
+          "settings": {
+            "question": "What is a pre-order sofa?",
+            "answer": "<p>A pre-order lets you reserve an out-of-stock item.</p>"
+          }
+        },
+        "qa_xc44yL": {
+          "type": "qa",
+          "settings": {
+            "question": "Which fabric is best for everyday use?",
+            "answer": "<p>For busy households, you'll want something durable and easy to clean.</p>"
+          }
+        },
+        "qa_BR4EtF": {
+          "type": "qa",
+          "settings": {
+            "question": "Are your sofas pet-friendly?",
+            "answer": "<p>Some materials hold up much better to claws and hair than others.</p>"
+          }
+        },
+        "qa_6dUrBq": {
+          "type": "qa",
+          "settings": {
+            "question": "Where can I find material specifications?",
+            "answer": "<p>Everything you need is on the individual product page.</p>"
+          }
+        },
+        "qa_d4XQPE": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you offer stain-resistant fabrics?",
+            "answer": "<p>Some ranges include easy-care or stain-resistant materials — check product details.</p>"
+          }
+        },
+        "qa_ecBpti": {
+          "type": "qa",
+          "settings": {
+            "question": "Which fabric is easiest to clean?",
+            "answer": "<p>Synthetic and treated fabrics are usually the easiest to maintain.</p>"
+          }
+        },
+        "category_KqaafV": {
+          "type": "category",
+          "settings": {
+            "title": "Comfort & Support FAQs"
+          }
+        },
+        "qa_CUxmrn": {
+          "type": "qa",
+          "settings": {
+            "question": "Are your sofas firm or soft?",
+            "answer": "<p>It really depends on the model. The product description will guide you.</p>"
+          }
+        },
+        "qa_e68d3c": {
+          "type": "qa",
+          "settings": {
+            "question": "Will my sofa feel different when it first arrives?",
+            "answer": "<p>It might. New cushions often feel firmer at first and soften with use.</p>"
+          }
+        },
+        "qa_mNrcyC": {
+          "type": "qa",
+          "settings": {
+            "question": "Do cushions need regular plumping?",
+            "answer": "<p>Yes — this helps maintain shape and comfort.</p>"
+          }
+        },
+        "qa_iPir48": {
+          "type": "qa",
+          "settings": {
+            "question": "Do sofas lose shape over time?",
+            "answer": "<p>With proper care, they hold their shape well for years.</p>"
+          }
+        },
+        "qa_kedYft": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I test comfort before buying?",
+            "answer": "<p>If possible, visiting a showroom is the best option.</p>"
+          }
+        },
+        "qa_dyH3dp": {
+          "type": "qa",
+          "settings": {
+            "question": "What type of cushion filling do you use?",
+            "answer": "<p>This varies by sofa — check the product description for details.</p>"
+          }
+        },
+        "qa_gHH9az": {
+          "type": "qa",
+          "settings": {
+            "question": "Are seat cushions removable?",
+            "answer": "<p>Some are, depending on the design.<br/><br/></p>"
+          }
+        },
+        "category_KddGUh": {
+          "type": "category",
+          "settings": {
+            "title": "Packaging FAQs"
+          }
+        },
+        "qa_nWXBXE": {
+          "type": "qa",
+          "settings": {
+            "question": "Will my sofa arrive packaged?",
+            "answer": "<p>Yes — all sofas are delivered in protective packaging.</p>"
+          }
+        },
+        "qa_HUNH3q": {
+          "type": "qa",
+          "settings": {
+            "question": "Should I allow space for packaging?",
+            "answer": "<p>Yes — packaging adds extra bulk during delivery.</p>"
+          }
+        },
+        "qa_bJEJrD": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you remove packaging?",
+            "answer": "<p>Packaging removal may be available with installation service.</p>"
+          }
+        },
+        "qa_XpXtwL": {
+          "type": "qa",
+          "settings": {
+            "question": "Should I keep the packaging?",
+            "answer": "<p>Yes, until you're certain you're keeping the sofa.</p>"
+          }
+        },
+        "qa_t8Geah": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I return an item without the original packaging?",
+            "answer": "<p>No — original packaging is required.</p>"
+          }
+        },
+        "qa_k9yJje": {
+          "type": "qa",
+          "settings": {
+            "question": "How large is the packaging compared to the sofa?",
+            "answer": "<p>It can add a few extra inches on each side.</p>"
+          }
+        },
+        "qa_kCtXem": {
+          "type": "qa",
+          "settings": {
+            "question": "Will packaging fit through my door?",
+            "answer": "<p>You should measure both the sofa and access points to be sure.</p>"
+          }
+        },
+        "category_fRWn9C": {
+          "type": "category",
+          "settings": {
+            "title": "Sofa Care & Cleaning FAQs"
+          }
+        },
+        "qa_Eda4LL": {
+          "type": "qa",
+          "settings": {
+            "question": "How do I care for my sofa?",
+            "answer": "<p>Vacuum regularly and clean spills quickly.</p>"
+          }
+        },
+        "qa_PxwU8E": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I use household cleaning products?",
+            "answer": "<p>Only if suitable for your sofa’s material.</p>"
+          }
+        },
+        "qa_Ux4bww": {
+          "type": "qa",
+          "settings": {
+            "question": "How do I maintain cushion shape?",
+            "answer": "<p>Plump and rotate cushions regularly.</p>"
+          }
+        },
+        "qa_rqAPiM": {
+          "type": "qa",
+          "settings": {
+            "question": "Can sunlight damage my sofa?",
+            "answer": "<p>Yes — prolonged exposure can cause fading.</p>"
+          }
+        },
+        "qa_6xM3zK": {
+          "type": "qa",
+          "settings": {
+            "question": "Where can I find care instructions?",
+            "answer": "<p>They are included with your sofa.</p>"
+          }
+        },
+        "qa_JKWrNL": {
+          "type": "qa",
+          "settings": {
+            "question": "How often should I clean my sofa?",
+            "answer": "<p>Light cleaning weekly, deeper cleaning as needed.</p>"
+          }
+        },
+        "qa_YGV7Dg": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I use a steam cleaner?",
+            "answer": "<p>Only if recommended for your sofa’s material.</p>"
+          }
+        },
+        "category_k6yN9D": {
+          "type": "category",
+          "settings": {
+            "title": "Orders, Pre-Orders & Bespoke FAQs"
+          }
+        },
+        "q6": {
+          "type": "qa",
+          "settings": {
+            "question": "What is a pre-order sofa?",
+            "answer": "<p>A pre-order lets you reserve an out-of-stock item.</p>"
+          }
+        },
+        "qa_VBqxdi": {
+          "type": "qa",
+          "settings": {
+            "question": "How long do pre-orders take?",
+            "answer": "<p>Estimated dates are shown at checkout but may change.</p>"
+          }
+        },
+        "q7": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you sell items from other brands?",
+            "answer": "<p>Yes, from selected UK partners<br/><br/></p>"
+          }
+        },
+        "qa_4JABhQ": {
+          "type": "qa",
+          "settings": {
+            "question": "Do supplier items have different delivery times?",
+            "answer": "<p>Yes, depending on the supplier.<br/><br/></p>"
+          }
+        },
+        "qa_UaV7BL": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I cancel my order?",
+            "answer": "<p>Yes, if it hasn’t been dispatched.</p>"
+          }
+        },
+        "qa_QMEGnd": {
+          "type": "qa",
+          "settings": {
+            "question": "Do you offer custom or bespoke sofas?",
+            "answer": "<p>Only where specified before ordering.</p>"
+          }
+        },
+        "qa_89DfEd": {
+          "type": "qa",
+          "settings": {
+            "question": "Can bespoke items be cancelled?",
+            "answer": "<p>No — bespoke orders cannot usually be cancelled.</p>"
+          }
+        },
+        "cat3": {
+          "type": "category",
+          "settings": {
+            "title": "Returns & Refunds"
+          }
+        },
+        "q8": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I return my sofa?",
+            "answer": "<p>Yes — within 14 days if unused and in original packaging.</p>"
+          }
+        },
+        "q9": {
+          "type": "qa",
+          "settings": {
+            "question": "What items cannot be returned?",
+            "answer": "<p>Used, damaged or unpackaged items.</p>"
+          }
+        },
+        "q10": {
+          "type": "qa",
+          "settings": {
+            "question": "Should I measure the narrowest point?",
+            "answer": "<p>Yes, always. It's the tightest spot on the route that matters most.<br/><br/></p>"
+          }
+        },
+        "q11": {
+          "type": "qa",
+          "settings": {
+            "question": "How much does a return cost?",
+            "answer": "<p>Typically between £100 and £150.</p>"
+          }
+        },
+        "qa_PzHaym": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I arrange my own courier?",
+            "answer": "<p>Yes, if returned safely.</p>"
+          }
+        },
+        "qa_eXKC3y": {
+          "type": "qa",
+          "settings": {
+            "question": "When will I receive my refund?",
+            "answer": "<p>After inspection and approval.</p>"
+          }
+        },
+        "qa_n4WnmE": {
+          "type": "qa",
+          "settings": {
+            "question": "How long do refunds take?",
+            "answer": "<p>Usually within 7 working days after processing.</p>"
+          }
+        },
+        "qa_m3nQx6": {
+          "type": "qa",
+          "settings": {
+            "question": "Are delivery fees refundable?",
+            "answer": "<p>Usually not.</p>"
+          }
+        },
+        "category_njPNTR": {
+          "type": "category",
+          "settings": {
+            "title": "Warranty FAQs"
+          }
+        },
+        "qa_XwpmeJ": {
+          "type": "qa",
+          "settings": {
+            "question": "Do sofas come with a warranty?",
+            "answer": "<p>Warranty varies by product.</p>"
+          }
+        },
+        "qa_eYcLbR": {
+          "type": "qa",
+          "settings": {
+            "question": "What does the warranty cover?",
+            "answer": "<p>Manufacturing faults only.</p>"
+          }
+        },
+        "qa_aPAAqN": {
+          "type": "qa",
+          "settings": {
+            "question": "What is not covered?",
+            "answer": "<p>Wear and tear, misuse or accidental damage.</p>"
+          }
+        },
+        "qa_GgahCT": {
+          "type": "qa",
+          "settings": {
+            "question": "How do I claim warranty?",
+            "answer": "<p>Contact support with photos and order details.</p>"
+          }
+        },
+        "qa_gN3Y4e": {
+          "type": "qa",
+          "settings": {
+            "question": "Do I need proof of purchase?",
+            "answer": "<p>Yes.</p>"
+          }
+        },
+        "qa_akr6hr": {
+          "type": "qa",
+          "settings": {
+            "question": "How long is the warranty?",
+            "answer": "<p>This depends on the product — check the product page.<br/></p>"
+          }
+        },
+        "category_7ieNry": {
+          "type": "category",
+          "settings": {
+            "title": "Contact & Order Support FAQs"
+          }
+        },
+        "qa_DQakX4": {
+          "type": "qa",
+          "settings": {
+            "question": "How can I contact Sofa Direct?",
+            "answer": "<p>By phone or email.</p>"
+          }
+        },
+        "qa_TaAJ6d": {
+          "type": "qa",
+          "settings": {
+            "question": "What details should I provide?",
+            "answer": "<p>Name, order number, postcode and product.</p>"
+          }
+        },
+        "qa_UCfmHY": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I change my order after placing it?",
+            "answer": "<p>Yes, if not dispatched.</p>"
+          }
+        },
+        "qa_jUa34E": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I update my delivery details?",
+            "answer": "<p>Yes — contact us quickly.</p>"
+          }
+        },
+        "qa_eVJxGK": {
+          "type": "qa",
+          "settings": {
+            "question": "Who do I contact about delivery issues?",
+            "answer": "<p>Our support team.</p>"
+          }
+        },
+        "qa_bEPRyJ": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I get help before ordering?",
+            "answer": "<p>Yes — we’re happy to help you choose.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "cat1",
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "qa_UBimbh",
+        "qa_TfENQ8",
+        "qa_4WphyV",
+        "qa_9G4Pmm",
+        "category_4NDDx7",
+        "qa_GKUXDW",
+        "qa_bd78Nt",
+        "qa_VTYdaF",
+        "qa_t8FqKV",
+        "qa_QmLU3x",
+        "qa_6HjCKE",
+        "qa_Wzb6NB",
+        "qa_f7LC84",
+        "qa_ybmJgi",
+        "cat2",
+        "qa_GpxLLa",
+        "qa_iaQzJQ",
+        "qa_m3eLeg",
+        "qa_cnrGiP",
+        "qa_xc44yL",
+        "qa_BR4EtF",
+        "qa_6dUrBq",
+        "qa_d4XQPE",
+        "qa_ecBpti",
+        "category_KqaafV",
+        "qa_CUxmrn",
+        "qa_e68d3c",
+        "qa_mNrcyC",
+        "qa_iPir48",
+        "qa_kedYft",
+        "qa_dyH3dp",
+        "qa_gHH9az",
+        "category_KddGUh",
+        "qa_nWXBXE",
+        "qa_HUNH3q",
+        "qa_bJEJrD",
+        "qa_XpXtwL",
+        "qa_t8Geah",
+        "qa_k9yJje",
+        "qa_kCtXem",
+        "category_fRWn9C",
+        "qa_Eda4LL",
+        "qa_PxwU8E",
+        "qa_Ux4bww",
+        "qa_rqAPiM",
+        "qa_6xM3zK",
+        "qa_JKWrNL",
+        "qa_YGV7Dg",
+        "category_k6yN9D",
+        "q6",
+        "qa_VBqxdi",
+        "q7",
+        "qa_4JABhQ",
+        "qa_UaV7BL",
+        "qa_QMEGnd",
+        "qa_89DfEd",
+        "cat3",
+        "q8",
+        "q9",
+        "q10",
+        "q11",
+        "qa_PzHaym",
+        "qa_eXKC3y",
+        "qa_n4WnmE",
+        "qa_m3nQx6",
+        "category_njPNTR",
+        "qa_XwpmeJ",
+        "qa_eYcLbR",
+        "qa_aPAAqN",
+        "qa_GgahCT",
+        "qa_gN3Y4e",
+        "qa_akr6hr",
+        "category_7ieNry",
+        "qa_DQakX4",
+        "qa_TaAJ6d",
+        "qa_UCfmHY",
+        "qa_jUa34E",
+        "qa_eVJxGK",
+        "qa_bEPRyJ"
+      ],
+      "settings": {
+        "heading": "Common Queries Answered",
+        "body": "Can't find what you're looking for? We're here to help."
+      }
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "blocks": {
+        "btn1": {
+          "type": "button",
+          "settings": {
+            "label": "Contact Us", 
+            "link": "/pages/contact-us",
+            "outline": false
+          }
+        },
+        "btn2": {
+          "type": "button",
+          "settings": {
+            "label": "View Finance",
+            "link": "/pages/finance",
+            "outline": true
+          }
+        }
+      },
+      "block_order": [
+        "btn1",
+        "btn2"
+      ],
+      "settings": {
+        "heading": "Still got questions?",
+        "body": "Our Sofa Direct team is always on hand to help — just get in touch and we'll do our best to sort you out."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "faq",
+    "cta"
+  ]
+}

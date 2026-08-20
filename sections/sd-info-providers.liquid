@@ -1,0 +1,62 @@
+<link rel="stylesheet" href="{{ 'sd-info.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-info.css' | asset_url | stylesheet_tag }}</noscript>
+
+<section class="sd-info-cards sd-info-cards--cream">
+  <div class="sd-info-cards__inner">
+    <div class="sd-info-cards__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="sd-info-cards__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="sd-info-cards__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+    </div>
+    <div class="sd-info-providers__grid">
+      {%- for block in section.blocks -%}
+        <article class="sd-info-provider" {{ block.shopify_attributes }}>
+          {%- if block.settings.tag != blank -%}
+            <span class="sd-info-provider__tag">{{ block.settings.tag }}</span>
+          {%- endif -%}
+          <h3 class="sd-info-provider__name">{{ block.settings.name }}</h3>
+          {%- if block.settings.tagline != blank -%}
+            <p class="sd-info-provider__tagline">{{ block.settings.tagline }}</p>
+          {%- endif -%}
+          {%- if block.settings.features != blank -%}
+            <ul class="sd-info-provider__list">
+              {%- assign items = block.settings.features | newline_to_br | split: '<br />' -%}
+              {%- for item in items -%}
+                {%- assign clean = item | strip -%}
+                {%- if clean != blank -%}<li>{{ clean }}</li>{%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Info Providers",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" }
+  ],
+  "blocks": [
+    {
+      "type": "provider",
+      "name": "Provider",
+      "settings": [
+        { "type": "text", "id": "tag", "label": "Tag (e.g. Pay in 3)" },
+        { "type": "text", "id": "name", "label": "Provider name" },
+        { "type": "textarea", "id": "tagline", "label": "Tagline" },
+        { "type": "textarea", "id": "features", "label": "Features (one per line)" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "SD Info Providers" } ]
+}
+{% endschema %}

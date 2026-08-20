@@ -1,0 +1,98 @@
+<link rel="stylesheet" href="{{ 'sd-info.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-info.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- assign _faq_has_items = false -%}
+{%- for block in section.blocks -%}
+  {%- if block.type == 'qa' and block.settings.question != blank -%}
+    {%- assign _faq_has_items = true -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- if _faq_has_items -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- assign _faq_first = true -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'qa' and block.settings.question != blank -%}
+            {%- unless _faq_first -%},{%- endunless -%}
+            {
+              "@type": "Question",
+              "name": {{ block.settings.question | json }},
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ block.settings.answer | strip_html | json }}
+              }
+            }
+            {%- assign _faq_first = false -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}
+
+<section class="sd-info-faq">
+  <div class="sd-info-faq__inner">
+    <div class="sd-info-faq__header">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="sd-info-faq__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.body != blank -%}
+        <p class="sd-info-faq__text">{{ section.settings.body }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- assign opened_cat = false -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'category' -%}
+        {%- if opened_cat -%}</div>{%- endif -%}
+        <div class="sd-info-faq__category" {{ block.shopify_attributes }}>
+          <h3 class="sd-info-faq__category-title">{{ block.settings.title }}</h3>
+        {%- assign opened_cat = true -%}
+      {%- elsif block.type == 'qa' -%}
+        {%- unless opened_cat -%}
+          <div class="sd-info-faq__category">
+          {%- assign opened_cat = true -%}
+        {%- endunless -%}
+        <details class="sd-info-faq__item" {{ block.shopify_attributes }}>
+          <summary class="sd-info-faq__summary">{{ block.settings.question }}</summary>
+          <div class="sd-info-faq__answer">{{ block.settings.answer }}</div>
+        </details>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if opened_cat -%}</div>{%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Info FAQ",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently Asked Questions" },
+    { "type": "textarea", "id": "body", "label": "Intro" }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category divider",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Category title" }
+      ]
+    },
+    {
+      "type": "qa",
+      "name": "Q & A",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "richtext", "id": "answer", "label": "Answer" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "SD Info FAQ" } ]
+}
+{% endschema %}

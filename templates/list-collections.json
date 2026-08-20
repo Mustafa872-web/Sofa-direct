@@ -1,0 +1,79 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "sd-all-collections",
+      "blocks": {
+        "filter_all": {
+          "type": "filter",
+          "settings": {
+            "label": "All",
+            "term": "all"
+          }
+        },
+        "filter_sofas": {
+          "type": "filter",
+          "settings": {
+            "label": "Sofas",
+            "term": "sofa"
+          }
+        },
+        "filter_chairs": {
+          "type": "filter",
+          "settings": {
+            "label": "Chairs",
+            "term": "chair"
+          }
+        },
+        "filter_beds": {
+          "type": "filter",
+          "settings": {
+            "label": "Beds",
+            "term": "bed"
+          }
+        }
+      },
+      "block_order": [
+        "filter_all",
+        "filter_sofas",
+        "filter_chairs",
+        "filter_beds"
+      ],
+      "settings": {
+        "eyebrow": "Curated for modern homes",
+        "heading": "Explore Our Collections",
+        "subheading": "Discover handcrafted comfort, statement silhouettes, and timeless textures designed to elevate every living space.",
+        "hero_cta_label": "Shop Sofas",
+        "show_featured": true,
+        "hide_featured_from_grid": false,
+        "featured_heading": "Featured Collections",
+        "featured_text": "Start with our most-loved ranges and find the style that fits your home.",
+        "grid_heading": "All Collections",
+        "grid_text": "Browse every collection with premium visuals, clear structure, and seamless navigation.",
+        "sort": "alphabetical",
+        "collections_per_page": 12,
+        "desktop_columns": 4,
+        "show_product_count": true,
+        "show_collection_description": true,
+        "empty_text": "No collections matched this filter. Try another category.",
+        "show_promo": true,
+        "promo_heading": "Find Your Perfect Sofa",
+        "promo_text": "From compact styles to spacious statement pieces, discover the one that transforms your room.",
+        "promo_button_label": "Shop Now",
+        "padding_top": 40,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

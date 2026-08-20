@@ -1,0 +1,198 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-info-hero",
+      "blocks": {
+        "c1": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Up to 12 Months 0%"
+          }
+        },
+        "c2": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Instant Decision"
+          }
+        },
+        "c3": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Under 2 Minutes"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "settings": {
+        "badge_text": "DivideBuy Finance",
+        "heading": "Easy Finance Made Possible - Divide Buy",
+        "body_text": "Give customers an easier way to complete their order with clear monthly payments, quick approval, and flexible repayment choices. No paperwork, no delay, everything made simple in just a few minutes."
+      }
+    },
+    "intro": {
+      "type": "sd-info-intro",
+      "settings": {
+        "eyebrow": "Finance Overview",
+        "heading": "Credit That Fits Around You",
+        "body": "<p>DivideBuy allow customers to spread the cost of purchase from 3 months to 60 months. Up to 12 months, shoppers can use interest-free credit on products from £50 to £6000 range. If you are availing  the credit that lasts more than 12 months, whether it’s interest-free or has an interest charge, the shopper can make a purchase up to £12,500.<br/><br/></p>"
+      }
+    },
+    "steps": {
+      "type": "sd-info-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Add To Basket",
+            "text": "Buy your favourite sofa and add it to the cart in one click"
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Select DivideBuy",
+            "text": "At the time of checkout, choose DivideBuy as your payment option and spread the cost."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Apply For Credit",
+            "text": "Complete a short form; it hardly takes a few minutes."
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "title": "Initial Payment",
+            "text": "Make the first payment and confirm your order and payment plan."
+          }
+        },
+        "s5": {
+          "type": "step",
+          "settings": {
+            "title": "Order Ships",
+            "text": "Order placed, sit back at home and wait for your order to arrive at your doorstep."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "settings": {
+        "heading": "How DivideBuy Works",
+        "body": "From basket to doorstep in five quick steps."
+      }
+    },
+    "details": {
+      "type": "sd-info-cards",
+      "blocks": {
+        "d1": {
+          "type": "card",
+          "settings": {
+            "number": "01",
+            "title": "Eligibility",
+            "text": "The eligibility criteria for DivideBuy are simple:",
+            "sub1": "You must have",
+            "list1": "Be a permanent resident of the UK\nAge between 18-75\nHave a valid credit or debit card\nHave an active UK Mobile Number\n\nHave a valid email address",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "d2": {
+          "type": "card",
+          "settings": {
+            "number": "02",
+            "title": "Payment Method",
+            "text": "The monthly instalments are collected via (CPA) Continuous Payment Authority using the card on file.",
+            "sub1": "Good to know",
+            "list1": "All payments are card based\nYou can manage account online\nAuto collect monthly instalments",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "d3": {
+          "type": "card",
+          "settings": {
+            "number": "03",
+            "title": "Credit Checks",
+            "text": "A credit check is carried out during your application to assess your eligibility, quick check does not impact your credit file.",
+            "sub1": "Transparent terms",
+            "list1": "DivideBuy offers a quick check service \nNo Hidden Charges\nManage account online",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        }
+      },
+      "block_order": [
+        "d1",
+        "d2",
+        "d3"
+      ],
+      "settings": {
+        "eyebrow": "The Detail",
+        "heading": "Eligibility, Payments & Peace Of Mind",
+        "bg": "cream"
+      }
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "blocks": {
+        "btn1": {
+          "type": "button",
+          "settings": {
+            "label": "Start Shopping",
+            "link": "/collections/all",
+            "outline": false
+          }
+        },
+        "btn2": {
+          "type": "button",
+          "settings": {
+            "label": "All Finance Options",
+            "link": "/pages/finance",
+            "outline": true
+          }
+        }
+      },
+      "block_order": [
+        "btn1",
+        "btn2"
+      ],
+      "settings": {
+        "heading": "Questions about DivideBuy?",
+        "body": "Email hello@dividebuy.co.uk or use the live chat at dividebuy.co.uk for help with your application or account."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "intro",
+    "steps",
+    "details",
+    "cta"
+  ]
+}

@@ -1,0 +1,192 @@
+<link rel="stylesheet" href="{{ 'sd-everyday-banner.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-everyday-banner.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign overlay_alpha = section.settings.overlay_opacity | default: 55 | divided_by: 100.0
+  assign section_width = section.settings.section_width | default: 'full'
+-%}
+
+<section
+  id="sd-everyday-{{ section.id }}"
+  class="sd-everyday sd-everyday--{{ section_width }}"
+  style="--everyday-height: {{ section.settings.min_height | default: 50 }}vh; position:relative; overflow:hidden; min-height:var(--everyday-height,50vh);"
+  aria-label="{{ section.settings.heading | strip_html | escape }}"
+>
+
+  {%- comment -%} ── Background image (desktop + mobile via <picture>) ── {%- endcomment -%}
+  <div class="sd-everyday__bg" aria-hidden="true">
+    {%- if section.settings.image != blank or section.settings.mobile_image != blank -%}
+      {%- assign bg_alt = section.settings.image.alt | default: section.settings.mobile_image.alt | default: '' | escape -%}
+      <picture>
+        {%- if section.settings.mobile_image != blank -%}
+          <source media="(max-width: 749px)"
+            srcset="{{ section.settings.mobile_image | image_url: width: 440 }} 440w,
+                    {{ section.settings.mobile_image | image_url: width: 750 }} 750w,
+                    {{ section.settings.mobile_image | image_url: width: 990 }} 990w"
+            sizes="100vw">
+        {%- endif -%}
+
+        {%- if section.settings.image != blank -%}
+          <img
+            src="{{ section.settings.image | image_url: width: 1920 }}"
+            srcset="{{ section.settings.image | image_url: width: 750 }} 750w,
+                    {{ section.settings.image | image_url: width: 990 }} 990w,
+                    {{ section.settings.image | image_url: width: 1200 }} 1200w,
+                    {{ section.settings.image | image_url: width: 1500 }} 1500w,
+                    {{ section.settings.image | image_url: width: 1920 }} 1920w"
+            sizes="100vw"
+            class="sd-everyday__bg-img"
+            alt="{{ bg_alt }}"
+            loading="lazy"
+            fetchpriority="low"
+            width="1920" height="800">
+        {%- else -%}
+          <img src="{{ section.settings.mobile_image | image_url: width: 1200 }}" class="sd-everyday__bg-img" alt="{{ bg_alt }}" loading="lazy" width="1200" height="800">
+        {%- endif -%}
+      </picture>
+    {%- else -%}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'sd-everyday__bg-img sd-everyday__placeholder' }}
+    {%- endif -%}
+
+    <div
+      class="sd-everyday__overlay"
+      style="--overlay-alpha: {{ overlay_alpha }};"
+      aria-hidden="true"
+    ></div>
+  </div>
+
+  {%- comment -%} ── Content — two-column row at bottom ── {%- endcomment -%}
+  <div class="sd-everyday__content">
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="sd-everyday__heading">
+        {{- section.settings.heading | newline_to_br -}}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.settings.body_text != blank -%}
+      <p class="sd-everyday__body">{{ section.settings.body_text }}</p>
+    {%- endif -%}
+
+  </div>
+
+</section>
+
+<script>
+(function () {
+  var section = document.getElementById('sd-everyday-{{ section.id }}');
+  if (!section) return;
+
+  function activate() {
+    section.classList.add('is-visible');
+  }
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            activate();
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
+    observer.observe(section);
+  } else {
+    activate();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Everyday Banner",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "container",
+          "label": "Container"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "header",
+      "content": "Image & Overlay"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop background image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile background image (shown on ≤749px)"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 55,
+      "unit": "%",
+      "label": "Overlay darkness"
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 30,
+      "max": 100,
+      "step": 1,
+      "default": 50,
+      "unit": "vh",
+      "label": "Section height"
+    },
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading (one word per line for stacked look)",
+      "default": "Designed For\nEveryday\nLiving"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body paragraph",
+      "default": "Every Sofa Is Designed With Comfort And Support In Mind — From Balanced Cushioning To Strong Frames And Quality Upholstery. Whether You're Sitting Upright, Stretching Out, Or Relaxing At The End Of The Day, Our Sofas Are Made To Feel Right."
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Everyday Banner",
+      "settings": {
+        "heading": "Designed For\nEveryday\nLiving",
+        "body_text": "Every Sofa Is Designed With Comfort And Support In Mind — From Balanced Cushioning To Strong Frames And Quality Upholstery. Whether You're Sitting Upright, Stretching Out, Or Relaxing At The End Of The Day, Our Sofas Are Made To Feel Right.",
+        "overlay_opacity": 55,
+        "min_height": 50
+      }
+    }
+  ]
+}
+{% endschema %}

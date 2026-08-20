@@ -1,0 +1,798 @@
+/* ════════════════════════════════════════════════════════════════════
+   SD Why Choose Us — "Our Promise" 4-pillar luxury showcase
+   Cream linen background • gold accents • staggered card layout
+   Hover lifts • numbered indicators • optional bottom trust strip
+   Palette matches the Lounge Lux header system.
+   ════════════════════════════════════════════════════════════════════ */
+
+.sd-wcu {
+  position: relative;
+  padding: var(--sd-section-pad-desktop, 9rem) 0;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(var(--sd-clr-accent-brown-rgb), 0.10) 0%, transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(var(--sd-clr-accent-brown-rgb), 0.07) 0%, transparent 55%),
+    linear-gradient(180deg, rgb(var(--sd-clr-cream-rgb)) 0%, rgb(var(--sd-clr-cream-rgb)) 50%, rgb(var(--sd-clr-cream-rgb)) 100%);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Subtle paper grain texture */
+.sd-wcu::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(var(--sd-clr-accent-brown-rgb), 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 70% 70%, rgba(var(--sd-clr-accent-brown-rgb), 0.025) 1px, transparent 1px);
+  background-size: 24px 24px, 32px 32px;
+  background-position: 0 0, 10px 10px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.7;
+}
+
+/* Floating decorative halos */
+.sd-wcu__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.sd-wcu__halo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.35;
+}
+
+.sd-wcu__halo--1 {
+  width: 36rem;
+  height: 36rem;
+  top: -10rem;
+  right: -10rem;
+  background: radial-gradient(circle, rgba(var(--sd-clr-accent-brown-rgb), 0.6) 0%, transparent 70%);
+}
+
+.sd-wcu__halo--2 {
+  width: 32rem;
+  height: 32rem;
+  bottom: -12rem;
+  left: -10rem;
+  background: radial-gradient(circle, rgba(var(--sd-clr-accent-brown-rgb), 0.4) 0%, transparent 70%);
+}
+
+.sd-wcu__container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── HEADER ───────────────────────────────────────────────── */
+.sd-wcu__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.6rem;
+  max-width: 76rem;
+  margin-bottom: 6rem;
+}
+
+.sd-wcu__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.0rem;
+  padding: 0.8rem 2.0rem;
+  background:
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(var(--sd-clr-accent-brown-rgb), 0.18) 100%);
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.50);
+  border-radius: 999px;
+  font-family: var(--sd-font-body);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+  line-height: 1;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 2px 8px rgba(var(--sd-clr-accent-brown-rgb), 0.10);
+}
+
+.sd-wcu__badge-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  background: linear-gradient(135deg, rgb(var(--sd-clr-taupe-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 50%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  transform: rotate(45deg);
+  border-radius: 1px;
+  box-shadow: 0 1px 3px rgba(var(--sd-clr-accent-brown-rgb), 0.30);
+}
+
+.sd-wcu__heading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  font-family: var(--sd-font-display);
+  font-size: clamp(2.6rem, 2.4vw + 1rem, 4.4rem);
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  color: rgb(var(--sd-clr-teal-rgb));
+  line-height: 1.1;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.sd-wcu__heading-text {
+  background: linear-gradient(180deg, rgb(var(--sd-clr-teal-rgb)) 0%, rgb(var(--sd-clr-teal-rgb)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sd-wcu__heading-flourish {
+  display: inline-flex;
+  width: 5.6rem;
+  height: 1.4rem;
+  color: rgba(var(--sd-clr-accent-brown-rgb), 0.45);
+  flex-shrink: 0;
+}
+
+.sd-wcu__heading-flourish--r { transform: scaleX(-1); }
+.sd-wcu__heading-flourish svg { width: 100%; height: 100%; }
+
+@media screen and (max-width: 749px) {
+  .sd-wcu__heading-flourish { width: 3.2rem; }
+}
+
+.sd-wcu__subheading {
+  font-family: var(--sd-font-display);
+  font-size: 1.65rem;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.6;
+  color: rgba(var(--sd-clr-teal-rgb), 0.62);
+  margin: 0.4rem 0 0;
+  max-width: 56rem;
+  letter-spacing: 0.2px;
+}
+
+/* ── GRID (3-column 2-row default for 6 cards, auto for others) ── */
+.sd-wcu__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.4rem;
+  width: 100%;
+  margin-bottom: 4.8rem;
+}
+
+/* 4-card layout */
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) {
+  grid-template-columns: repeat(4, 1fr);
+}
+/* 5-card layout */
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(5):last-child) {
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2.0rem;
+}
+/* 6-card layout — 3×2 grid */
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(6):last-child) {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.4rem 2.6rem;
+}
+
+/* Stagger wave — even-indexed cards drop slightly (only on single-row layouts) */
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) .sd-wcu__card--2,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) .sd-wcu__card--4,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(5):last-child) .sd-wcu__card--2,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(5):last-child) .sd-wcu__card--4 {
+  transform: translateY(2.4rem);
+}
+
+/* ── CARD — Heritage Hallmark style ───────────────────────── */
+.sd-wcu__card {
+  position: relative;
+  padding: 5.8rem 2.4rem 4.6rem;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(var(--sd-clr-accent-brown-rgb), 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(var(--sd-clr-accent-brown-rgb), 0.06) 0%, transparent 55%),
+    linear-gradient(180deg, #ffffff 0%, rgb(var(--sd-clr-cream-rgb)) 100%);
+  border-radius: 2.2rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 4px 20px rgba(var(--sd-clr-teal-rgb), 0.06),
+    0 1px 3px rgba(var(--sd-clr-teal-rgb), 0.04);
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s ease;
+  overflow: hidden;
+  animation: sdWcuCardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--sd-wcu-delay, 0ms);
+  /* Gradient border via pseudo-element below */
+}
+
+/* Premium gold gradient border via inset box-shadow rings */
+.sd-wcu__card {
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.35);
+}
+
+.sd-wcu__card:hover {
+  border-color: transparent;
+}
+
+@keyframes sdWcuCardIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) .sd-wcu__card--2,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) .sd-wcu__card--4,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(5):last-child) .sd-wcu__card--2,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(5):last-child) .sd-wcu__card--4 {
+  animation-name: sdWcuCardInStaggered;
+}
+
+@keyframes sdWcuCardInStaggered {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(2.4rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-wcu__card { animation: none; }
+}
+
+/* Top gold gradient line — grows on hover */
+.sd-wcu__card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, rgb(var(--sd-clr-accent-brown-rgb)) 30%, rgb(var(--sd-clr-accent-brown-rgb)) 70%, transparent 100%);
+  border-radius: 0 0 2px 2px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Inner soft glow + diagonal light sweep */
+.sd-wcu__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(var(--sd-clr-accent-brown-rgb), 0.12) 0%, transparent 55%),
+    linear-gradient(115deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 70%);
+  background-size: 100% 100%, 200% 200%;
+  background-position: 0 0, -100% 0;
+  background-repeat: no-repeat;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease, background-position 1.4s ease;
+}
+
+.sd-wcu__card:hover::after {
+  opacity: 1;
+  background-position: 0 0, 100% 0;
+}
+
+.sd-wcu__card:hover {
+  transform: translateY(-10px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(var(--sd-clr-accent-brown-rgb), 0.55),
+    0 0 0 4px rgba(var(--sd-clr-accent-brown-rgb), 0.10),
+    0 22px 50px rgba(var(--sd-clr-teal-rgb), 0.16),
+    0 8px 18px rgba(var(--sd-clr-teal-rgb), 0.08);
+}
+
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) .sd-wcu__card--2:hover,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) .sd-wcu__card--4:hover,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(5):last-child) .sd-wcu__card--2:hover,
+.sd-wcu__grid:has(.sd-wcu__card:nth-child(5):last-child) .sd-wcu__card--4:hover {
+  transform: translateY(calc(2.4rem - 10px));
+}
+
+.sd-wcu__card:hover::before { width: 84%; }
+
+/* ── Gold ribbon banner — drops down from top on hover ── */
+.sd-wcu__card-ribbon {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  display: inline-flex;
+  padding: 0.5rem 1.6rem;
+  background: linear-gradient(135deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  color: #fff;
+  font-family: var(--sd-font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  border-radius: 0 0 1.0rem 1.0rem;
+  box-shadow: 0 4px 10px rgba(var(--sd-clr-accent-brown-rgb), 0.30);
+  z-index: 3;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sd-wcu__card-ribbon::before,
+.sd-wcu__card-ribbon::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 6px 6px 0;
+}
+
+.sd-wcu__card-ribbon::before {
+  left: -6px;
+  border-color: transparent rgb(var(--sd-clr-accent-brown-rgb)) transparent transparent;
+}
+
+.sd-wcu__card-ribbon::after {
+  right: -6px;
+  border-width: 0 0 6px 6px;
+  border-color: transparent transparent transparent rgb(var(--sd-clr-accent-brown-rgb));
+}
+
+.sd-wcu__card:hover .sd-wcu__card-ribbon {
+  transform: translate(-50%, 0);
+}
+
+/* ── Decorative corner accents ── */
+.sd-wcu__card-corner {
+  position: absolute;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1.5px solid rgb(var(--sd-clr-accent-brown-rgb));
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-wcu__card-corner--tl {
+  top: 1.0rem;
+  left: 1.0rem;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-left-radius: 0.5rem;
+  transform: translate(4px, 4px);
+}
+
+.sd-wcu__card-corner--br {
+  /* Hidden — replaced by the verified seal in the bottom-right */
+  display: none;
+}
+
+.sd-wcu__card:hover .sd-wcu__card-corner {
+  opacity: 0.8;
+  transform: translate(0, 0);
+}
+
+/* ── Verified hallmark seal — bottom-right ── */
+.sd-wcu__card-seal {
+  position: absolute;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  width: 3.4rem;
+  height: 3.4rem;
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+  opacity: 0.35;
+  z-index: 1;
+  transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-wcu__card-seal svg { width: 100%; height: 100%; }
+
+.sd-wcu__card:hover .sd-wcu__card-seal {
+  opacity: 0.85;
+  transform: rotate(8deg);
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+}
+
+/* Numbered indicator — italic serif gold watermark */
+.sd-wcu__card-num {
+  position: absolute;
+  top: 1.0rem;
+  right: 1.8rem;
+  font-family: var(--sd-font-display);
+  font-size: 6.4rem;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1;
+  background:
+    linear-gradient(135deg, rgb(var(--sd-clr-taupe-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 30%, rgb(var(--sd-clr-accent-brown-rgb)) 70%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.14;
+  letter-spacing: -3px;
+  filter: drop-shadow(0 2px 4px rgba(var(--sd-clr-accent-brown-rgb), 0.15));
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  user-select: none;
+  z-index: 0;
+}
+
+.sd-wcu__card:hover .sd-wcu__card-num {
+  opacity: 0.32;
+  transform: scale(1.12) rotate(-3deg);
+  animation: sdNumShimmer 2.2s ease-in-out infinite;
+}
+
+@keyframes sdNumShimmer {
+  0%, 100% { filter: drop-shadow(0 2px 4px rgba(var(--sd-clr-accent-brown-rgb), 0.15)); }
+  50%      { filter: drop-shadow(0 0 12px rgba(var(--sd-clr-accent-brown-rgb), 0.5)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-wcu__card:hover .sd-wcu__card-num { animation: none; }
+}
+
+/* Icon — gold gradient circle with sparkles */
+.sd-wcu__card-icon {
+  position: relative;
+  display: inline-flex;
+  width: 7.0rem;
+  height: 7.0rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.2rem;
+}
+
+.sd-wcu__card-icon-inner {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(var(--sd-clr-accent-brown-rgb), 0.22) 0%, rgba(var(--sd-clr-accent-brown-rgb), 0.12) 100%);
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.45);
+  border-radius: 50%;
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 4px 12px rgba(var(--sd-clr-accent-brown-rgb), 0.15);
+  transition:
+    background 0.5s ease,
+    color 0.4s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s ease;
+}
+
+/* Inner shine highlight — top-left crescent */
+.sd-wcu__card-icon-inner::before {
+  content: "";
+  position: absolute;
+  inset: 8% 30% 50% 8%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.7) 0%, transparent 70%);
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.sd-wcu__card:hover .sd-wcu__card-icon-inner::before {
+  opacity: 0.85;
+}
+
+/* Outer dashed ring — rotates on hover */
+.sd-wcu__card-icon-inner::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(var(--sd-clr-accent-brown-rgb), 0.55);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.sd-wcu__card:hover .sd-wcu__card-icon-inner::after {
+  opacity: 1;
+  animation: sdIconRingSpin 12s linear infinite;
+}
+
+@keyframes sdIconRingSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-wcu__card:hover .sd-wcu__card-icon-inner::after { animation: none; }
+}
+
+.sd-wcu__card-icon-inner svg {
+  width: 3.2rem;
+  height: 3.2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.sd-wcu__card:hover .sd-wcu__card-icon-inner {
+  background: linear-gradient(135deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  color: #fff;
+  transform: scale(1.06) rotate(-5deg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 10px 26px rgba(var(--sd-clr-accent-brown-rgb), 0.35);
+}
+
+/* (rotate handled via animation above) */
+
+/* ── Sparkles around icon ── */
+.sd-wcu__card-icon-sparkle {
+  position: absolute;
+  background: linear-gradient(135deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, #fff 50%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(var(--sd-clr-accent-brown-rgb), 0.8);
+  transform: scale(0);
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-wcu__card-icon-sparkle--1 {
+  width: 6px;
+  height: 6px;
+  top: -2px;
+  right: 4px;
+  transition-delay: 0s;
+}
+
+.sd-wcu__card-icon-sparkle--2 {
+  width: 4px;
+  height: 4px;
+  bottom: 8px;
+  right: -4px;
+  transition-delay: 0.1s;
+}
+
+.sd-wcu__card-icon-sparkle--3 {
+  width: 5px;
+  height: 5px;
+  bottom: -2px;
+  left: 12px;
+  transition-delay: 0.18s;
+}
+
+.sd-wcu__card:hover .sd-wcu__card-icon-sparkle {
+  opacity: 1;
+  transform: scale(1);
+  animation: sdSparkleTwinkle 1.4s ease-in-out infinite;
+}
+
+.sd-wcu__card:hover .sd-wcu__card-icon-sparkle--2 { animation-delay: 0.3s; }
+.sd-wcu__card:hover .sd-wcu__card-icon-sparkle--3 { animation-delay: 0.6s; }
+
+@keyframes sdSparkleTwinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-wcu__card:hover .sd-wcu__card-icon-sparkle { animation: none; }
+}
+
+/* Title — with gold underline ornament */
+.sd-wcu__card-title {
+  position: relative;
+  display: inline-block;
+  font-family: var(--sd-font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: rgb(var(--sd-clr-teal-rgb));
+  text-transform: uppercase;
+  line-height: 1.25;
+  margin: 0 0 1.2rem;
+  padding-bottom: 1.0rem;
+  z-index: 2;
+  transition: letter-spacing 0.4s ease, color 0.3s ease;
+}
+
+.sd-wcu__card-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 3rem;
+  height: 6px;
+  background-image:
+    radial-gradient(circle at 0.4rem 50%, rgb(var(--sd-clr-accent-brown-rgb)) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 1.5rem 50%, rgb(var(--sd-clr-accent-brown-rgb)) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 2.6rem 50%, rgb(var(--sd-clr-accent-brown-rgb)) 1.5px, transparent 1.5px);
+  background-repeat: no-repeat;
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-wcu__card:hover .sd-wcu__card-title {
+  letter-spacing: 1.0px;
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+}
+
+.sd-wcu__card:hover .sd-wcu__card-title::after {
+  width: 4.5rem;
+  background-image:
+    radial-gradient(circle at 0.4rem 50%, rgb(var(--sd-clr-accent-brown-rgb)) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 1.5rem 50%, rgb(var(--sd-clr-accent-brown-rgb)) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 2.6rem 50%, rgb(var(--sd-clr-accent-brown-rgb)) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 3.7rem 50%, rgb(var(--sd-clr-accent-brown-rgb)) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 4.1rem 50%, rgb(var(--sd-clr-accent-brown-rgb)) 0.8px, transparent 0.8px);
+}
+
+/* Description — refined editorial body */
+.sd-wcu__card-desc {
+  font-family: var(--sd-font-body);
+  font-size: 1.35rem;
+  line-height: 1.65;
+  color: rgba(var(--sd-clr-teal-rgb), 0.62);
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.sd-wcu__card-desc::first-letter {
+  font-family: var(--sd-font-display);
+  font-size: 1.6em;
+  font-weight: 700;
+  font-style: italic;
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+  margin-right: 0.15em;
+  line-height: 1;
+}
+
+/* Decorative bottom flourish — scrollwork dots */
+.sd-wcu__card-line {
+  position: absolute;
+  left: 50%;
+  bottom: 1.4rem;
+  transform: translateX(-50%);
+  width: 4rem;
+  height: 0.5rem;
+  background-image:
+    radial-gradient(circle at 0.2rem 50%, rgba(var(--sd-clr-accent-brown-rgb), 0.5) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 1.0rem 50%, rgba(var(--sd-clr-accent-brown-rgb), 0.75) 2px, transparent 2px),
+    radial-gradient(circle at 2.0rem 50%, rgba(var(--sd-clr-accent-brown-rgb), 0.9) 2.5px, transparent 2.5px),
+    radial-gradient(circle at 3.0rem 50%, rgba(var(--sd-clr-accent-brown-rgb), 0.75) 2px, transparent 2px),
+    radial-gradient(circle at 3.8rem 50%, rgba(var(--sd-clr-accent-brown-rgb), 0.5) 1.5px, transparent 1.5px);
+  background-repeat: no-repeat;
+  opacity: 0.65;
+  transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-wcu__card:hover .sd-wcu__card-line {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* ── TRUST STRIP — luxe glass pill with gold rim ──────────── */
+.sd-wcu__strip {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem 2.8rem;
+  padding: 2.2rem 3.6rem;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(var(--sd-clr-accent-brown-rgb), 0.10) 0%, transparent 70%),
+    rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.30);
+  border-radius: 999px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 8px 24px rgba(var(--sd-clr-teal-rgb), 0.08);
+}
+
+.sd-wcu__strip::before,
+.sd-wcu__strip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0.6rem;
+  height: 0.6rem;
+  background: linear-gradient(135deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  transform: translateY(-50%) rotate(45deg);
+  border-radius: 1px;
+}
+
+.sd-wcu__strip::before { left: -0.3rem; }
+.sd-wcu__strip::after  { right: -0.3rem; }
+
+.sd-wcu__strip-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--sd-font-body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: rgb(var(--sd-clr-teal-rgb));
+}
+
+.sd-wcu__strip-item svg {
+  width: 2.0rem;
+  height: 2.0rem;
+  padding: 0.4rem;
+  background: linear-gradient(135deg, rgb(var(--sd-clr-taupe-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 50%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  color: #fff;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    0 2px 6px rgba(var(--sd-clr-accent-brown-rgb), 0.30);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media screen and (max-width: 1399px) {
+  .sd-wcu__grid { grid-template-columns: repeat(3, 1fr); gap: 1.8rem; }
+  .sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.0rem;
+  }
+  .sd-wcu__card { padding: 4.8rem 2.2rem 2.4rem; }
+}
+
+@media screen and (max-width: 1199px) {
+  .sd-wcu__grid,
+  .sd-wcu__grid:has(.sd-wcu__card:nth-child(4):last-child) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.8rem;
+  }
+  .sd-wcu__card--2,
+  .sd-wcu__card--4,
+  .sd-wcu__card--2:hover,
+  .sd-wcu__card--4:hover {
+    animation-name: sdWcuCardIn;
+    transform: none;
+  }
+  .sd-wcu__card:hover { transform: translateY(-8px); }
+}
+
+@media screen and (max-width: 989px) {
+  .sd-wcu { padding: 6.4rem 0; }
+  .sd-wcu__header { margin-bottom: 4rem; }
+  .sd-wcu__grid { margin-bottom: 3.6rem; }
+}
+
+@media screen and (max-width: 749px) {
+  .sd-wcu { padding: 4.8rem 0; }
+  .sd-wcu__heading { font-size: 2.4rem; }
+  .sd-wcu__subheading { font-size: 1.4rem; }
+  .sd-wcu__badge {
+    font-size: 1.0rem;
+    letter-spacing: 1.4px;
+    padding: 0.6rem 1.4rem;
+  }
+
+  .sd-wcu__grid {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+    margin-bottom: 2.8rem;
+  }
+  .sd-wcu__card { padding: 3.6rem 2.0rem 2.2rem; }
+  .sd-wcu__card-num { font-size: 3.2rem; }
+  .sd-wcu__card-icon { width: 5.4rem; height: 5.4rem; }
+  .sd-wcu__card-icon svg { width: 2.4rem; height: 2.4rem; }
+  .sd-wcu__card-title { font-size: 1.6rem; }
+  .sd-wcu__card-desc { font-size: 1.3rem; }
+
+  .sd-wcu__strip {
+    border-radius: 1.6rem;
+    padding: 1.4rem 1.8rem;
+    gap: 0.8rem 1.6rem;
+  }
+  .sd-wcu__strip-item { font-size: 1.15rem; }
+}

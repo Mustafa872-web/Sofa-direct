@@ -1,0 +1,272 @@
+<link rel="stylesheet" href="{{ 'sd-guide-hub.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-guide-hub.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign eyebrow    = section.settings.eyebrow    | default: 'Sofa Guide Hub'
+  assign heading    = section.settings.heading    | default: 'How to choose your perfect sofa.'
+  assign subheading = section.settings.subheading | default: 'Short, friendly guides written by our team to help you measure, choose and care for your new sofa.'
+  assign hub_label  = section.settings.hub_label  | default: 'Visit the Sofa Guide Hub'
+  assign hub_url    = section.settings.hub_url
+-%}
+
+<section
+  id="sd-gh-{{ section.id }}"
+  class="sd-gh"
+  aria-label="{{ heading | escape }}"
+>
+  <div class="sd-gh__bg" aria-hidden="true">
+    <span class="sd-gh__halo"></span>
+  </div>
+
+  <div class="sd-gh__container page-width">
+
+    <header class="sd-gh__header">
+      <div class="sd-gh__intro">
+        {%- if eyebrow != blank -%}
+          <span class="sd-gh__eyebrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>
+            </svg>
+            {{ eyebrow }}
+          </span>
+        {%- endif -%}
+        {%- if heading != blank -%}
+          <h2 class="sd-gh__heading">{{ heading }}</h2>
+        {%- endif -%}
+        {%- if subheading != blank -%}
+          <p class="sd-gh__subheading">{{ subheading }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if hub_url != blank and hub_label != blank -%}
+        <a href="{{ hub_url }}" class="sd-gh__hub-link sd-gh__hub-link--top">
+          {{ hub_label }}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      {%- endif -%}
+    </header>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="sd-gh__grid">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'guide' -%}
+            {%- liquid
+              assign icon = block.settings.icon | default: 'book'
+              assign url  = block.settings.url
+              assign num  = forloop.index | prepend: '0' | slice: -2, 2
+            -%}
+            <a
+              href="{{ url | default: '#' }}"
+              class="sd-gh__card"
+              {{ block.shopify_attributes }}
+            >
+              <span class="sd-gh__card-num" aria-hidden="true">{{ num }}</span>
+
+              <span class="sd-gh__card-icon" aria-hidden="true">
+                {%- case icon -%}
+                  {%- when 'ruler' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 21l10-10 8 8-10 10z"/><path d="M21 19l8-8"/>
+                      <path d="M7 17l2-2M10 14l2-2M13 11l2-2M16 8l2-2M19 5l2-2"/>
+                    </svg>
+                  {%- when 'fabric' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 14c4-2 8-2 12 0s8 2 12 0M4 22c4-2 8-2 12 0s8 2 12 0M4 6c4-2 8-2 12 0s8 2 12 0"/>
+                    </svg>
+                  {%- when 'spray' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M13 4h6v6h-6z"/><path d="M16 10v3"/>
+                      <rect x="10" y="13" width="12" height="15" rx="2"/>
+                      <path d="M4 6h3M4 9h3M4 12h3"/>
+                    </svg>
+                  {%- when 'truck' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="8" width="18" height="14" rx="1"/>
+                      <path d="M20 12h5l4 4v6h-9"/>
+                      <circle cx="8" cy="25" r="2.5"/><circle cx="23" cy="25" r="2.5"/>
+                    </svg>
+                  {%- when 'palette' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 4C9 4 4 9 4 16s5 12 12 12c2 0 3-2 2-4-1-2 1-4 3-4h3c4 0 6-3 6-6 0-6-6-10-14-10z"/>
+                      <circle cx="10" cy="14" r="1.5" fill="currentColor"/>
+                      <circle cx="16" cy="10" r="1.5" fill="currentColor"/>
+                      <circle cx="22" cy="14" r="1.5" fill="currentColor"/>
+                    </svg>
+                  {%- when 'sparkle' -%}
+                    <svg viewBox="0 0 32 32" fill="currentColor">
+                      <path d="m16 3 2.5 8.5L27 14l-8.5 2.5L16 25l-2.5-8.5L5 14l8.5-2.5L16 3z"/>
+                    </svg>
+                  {%- when 'lightbulb' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M16 3a9 9 0 0 0-5 16.5V23h10v-3.5A9 9 0 0 0 16 3z"/>
+                      <path d="M12 27h8M13 30h6"/>
+                    </svg>
+                  {%- when 'home' -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 14 16 4l12 10v14H4V14z"/>
+                      <path d="M12 28v-8h8v8"/>
+                    </svg>
+                  {%- else -%}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 5a2 2 0 0 1 2-2h14l8 8v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5z"/>
+                      <path d="M20 3v8h8"/>
+                      <path d="M9 17h14M9 22h14M9 12h6"/>
+                    </svg>
+                {%- endcase -%}
+              </span>
+
+              {%- if block.settings.read_time != blank -%}
+                <span class="sd-gh__card-time">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+                  </svg>
+                  {{ block.settings.read_time }}
+                </span>
+              {%- endif -%}
+
+              <h3 class="sd-gh__card-title">{{ block.settings.title | default: 'Guide title' }}</h3>
+              <p class="sd-gh__card-desc">{{ block.settings.description | default: 'Short description of what this guide covers.' }}</p>
+
+              <span class="sd-gh__card-link">
+                Read guide
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if hub_url != blank and hub_label != blank -%}
+      <div class="sd-gh__cta-wrap">
+        <a href="{{ hub_url }}" class="sd-gh__cta">
+          <span class="sd-gh__cta-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>
+            </svg>
+          </span>
+          {{ hub_label }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Sofa Guide Hub",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Sofa Guide Hub"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How to choose your perfect sofa."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Short, friendly guides written by our team to help you measure, choose and care for your new sofa."
+    },
+    {
+      "type": "header",
+      "content": "Sofa Guide Hub link"
+    },
+    {
+      "type": "text",
+      "id": "hub_label",
+      "label": "CTA button label",
+      "default": "Visit the Sofa Guide Hub"
+    },
+    {
+      "type": "url",
+      "id": "hub_url",
+      "label": "Hub page URL",
+      "info": "Link to your main /pages/sofa-guide hub page."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "guide",
+      "name": "Guide card",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "ruler",     "label": "Ruler (measuring)" },
+            { "value": "fabric",    "label": "Fabric / textile" },
+            { "value": "spray",     "label": "Cleaning spray" },
+            { "value": "truck",     "label": "Delivery truck" },
+            { "value": "palette",   "label": "Colour palette" },
+            { "value": "sparkle",   "label": "Sparkle (inspiration)" },
+            { "value": "lightbulb", "label": "Lightbulb (tips)" },
+            { "value": "home",      "label": "Home (styling)" },
+            { "value": "book",      "label": "Book / guide" }
+          ],
+          "default": "book"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "How to measure your space"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "A quick guide to measuring doorways, hallways and your room before you order."
+        },
+        {
+          "type": "text",
+          "id": "read_time",
+          "label": "Read time",
+          "default": "3 min read"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Guide link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Sofa Guide Hub",
+      "blocks": [
+        { "type": "guide", "settings": { "icon": "ruler",   "title": "How to measure your space",     "description": "Doorways, hallways and the room itself - measure with confidence before you order.", "read_time": "3 min read" } },
+        { "type": "guide", "settings": { "icon": "fabric",  "title": "Choosing the right fabric",     "description": "Velvet, leather, linen or chenille - which finish suits your home and lifestyle?",       "read_time": "4 min read" } },
+        { "type": "guide", "settings": { "icon": "spray",   "title": "Caring for your sofa",          "description": "Simple, low-effort tips to keep your sofa looking fresh for years to come.",             "read_time": "3 min read" } },
+        { "type": "guide", "settings": { "icon": "truck",   "title": "What to expect on delivery",    "description": "Our white-glove delivery process, sofa removal service and on-the-day timings.",         "read_time": "2 min read" } }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product", "page"]
+  }
+}
+{% endschema %}

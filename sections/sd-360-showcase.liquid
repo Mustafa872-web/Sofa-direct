@@ -1,0 +1,382 @@
+<link rel="stylesheet" href="{{ 'sd-360-showcase.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-360-showcase.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- assign frame_urls = '' -%}
+{%- assign frame_count = 0 -%}
+{%- for i in (1..36) -%}
+  {%- assign key = 'frame_' | append: i -%}
+  {%- if section.settings[key] != blank -%}
+    {%- if frame_count > 0 -%}{%- assign frame_urls = frame_urls | append: ',' -%}{%- endif -%}
+    {%- assign frame_urls = frame_urls | append: '"' | append: section.settings[key] | image_url: width: 1600 | append: '"' -%}
+    {%- assign frame_count = frame_count | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<section class="sd-360-showcase color-{{ section.settings.color_scheme }}"
+  id="sd-360-sc-{{ section.id }}"
+  style="--sc-overlay:{{ section.settings.overlay_opacity | divided_by: 100.0 }};--sc-min-h:{{ section.settings.min_height }}vh;">
+
+  <div class="sd-360-showcase__stage" id="sd-360-sc-stage-{{ section.id }}">
+
+    {{- 'icon-360.svg' | inline_asset_content -}}
+
+    {%- comment -%} Canvas {%- endcomment -%}
+    <canvas class="sd-360-showcase__canvas" id="sd-360-sc-canvas-{{ section.id }}"
+      aria-label="{{ section.settings.heading | default: '360° View' | escape }}"></canvas>
+
+    {%- comment -%} Loading overlay {%- endcomment -%}
+    <div class="sd-360-showcase__loader" id="sd-360-sc-loader-{{ section.id }}">
+      <div class="sd-360-showcase__loader-ring"></div>
+      <div class="sd-360-showcase__loader-bar-wrap">
+        <div class="sd-360-showcase__loader-bar" id="sd-360-sc-bar-{{ section.id }}"></div>
+      </div>
+      <span class="sd-360-showcase__loader-pct" id="sd-360-sc-pct-{{ section.id }}">0%</span>
+    </div>
+
+    {%- comment -%} Drag hint {%- endcomment -%}
+    <div class="sd-360-showcase__hint" id="sd-360-sc-hint-{{ section.id }}">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="M7 17l-4-4 4-4"/><path d="M17 7l4 4-4 4"/><line x1="3" y1="13" x2="21" y2="13"/>
+      </svg>
+      <span>Drag to spin</span>
+    </div>
+
+    {%- comment -%} 360° badge top-right {%- endcomment -%}
+    <div class="sd-360-showcase__360-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1018 0 9 9 0 00-18 0z"/><path d="M12 8v4l3 3"/></svg>
+      360°
+    </div>
+
+    {%- comment -%} No frames placeholder {%- endcomment -%}
+    {%- if frame_count == 0 -%}
+    <div class="sd-360-showcase__placeholder">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".4"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M12 8v4l3 3"/></svg>
+      <p>Upload frame images in Theme Editor → "360° Frame Images"</p>
+    </div>
+    {%- endif -%}
+
+    {%- comment -%} Text overlay {%- endcomment -%}
+    <div class="sd-360-showcase__overlay">
+      {%- if section.settings.badge != blank -%}
+        <span class="sd-360-showcase__badge">{{ section.settings.badge }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="sd-360-showcase__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="sd-360-showcase__sub">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank and section.settings.cta_url != blank -%}
+        <a href="{{ section.settings.cta_url }}" class="sd-360-showcase__cta">
+          {{ section.settings.cta_label }}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+
+  </div>
+</section>
+
+{%- if frame_count > 0 -%}
+<script>
+(function () {
+  'use strict';
+  var FRAMES  = [{{ frame_urls }}];
+  var FPS     = {{ section.settings.fps | default: 6 }};
+  var RESUME_DELAY = 2200; /* ms after drag to resume auto-play */
+
+  var canvas  = document.getElementById('sd-360-sc-canvas-{{ section.id }}');
+  var stage   = document.getElementById('sd-360-sc-stage-{{ section.id }}');
+  var loaderEl= document.getElementById('sd-360-sc-loader-{{ section.id }}');
+  var barEl   = document.getElementById('sd-360-sc-bar-{{ section.id }}');
+  var pctEl   = document.getElementById('sd-360-sc-pct-{{ section.id }}');
+  var hintEl  = document.getElementById('sd-360-sc-hint-{{ section.id }}');
+  if (!canvas) return;
+
+  var ctx     = canvas.getContext('2d', { alpha: false });
+  var total   = FRAMES.length;
+  var images  = new Array(total);
+  var loaded  = new Array(total).fill(false);
+  var loadCnt = 0;
+  var allLoaded = false;
+
+  /* State */
+  var curIdx    = 0;
+  var accFr     = 0;
+  var lastT     = 0;
+  var autoRAF   = 0;
+  var isVisible = false;
+  var isDragging= false;
+  var dragStartX= 0;
+  var dragStartF= 0;
+  var resumeTimer = 0;
+  var PX_PER_FRAME = 8;
+
+  /* ── Resize ── */
+  function resize() {
+    canvas.width  = stage.offsetWidth  || 1200;
+    canvas.height = stage.offsetHeight || 700;
+  }
+
+  /* ── Draw frame ── */
+  function draw(i) {
+    i = ((i % total) + total) % total;
+    if (!loaded[i]) return;
+    var img = images[i];
+    var cw = canvas.width, ch = canvas.height;
+    var iw = img.width  || cw;
+    var ih = img.height || ch;
+    var scale = Math.max(cw / iw, ch / ih);
+    var dw = iw * scale, dh = ih * scale;
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.drawImage(img, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    curIdx = i;
+    accFr  = i;
+  }
+
+  /* ── Auto-play loop ── */
+  function startLoop() {
+    if (autoRAF || isDragging || !isVisible || !allLoaded) return;
+    lastT = performance.now();
+    accFr = curIdx;
+    function tick(now) {
+      var dt = now - lastT; lastT = now;
+      accFr += (FPS / 1000) * dt;
+      var t = ((Math.floor(accFr) % total) + total) % total;
+      if (t !== curIdx) draw(t);
+      autoRAF = requestAnimationFrame(tick);
+    }
+    autoRAF = requestAnimationFrame(tick);
+  }
+
+  function stopLoop() {
+    if (autoRAF) { cancelAnimationFrame(autoRAF); autoRAF = 0; }
+  }
+
+  /* ── Drag ── */
+  function onDragStart(x) {
+    if (!allLoaded) return;
+    isDragging  = true;
+    dragStartX  = x;
+    dragStartF  = curIdx;
+    stopLoop();
+    clearTimeout(resumeTimer);
+    canvas.classList.add('is-dragging');
+    if (hintEl) hintEl.classList.add('sd-360-showcase__hint--hidden');
+  }
+
+  function onDragMove(x) {
+    if (!isDragging) return;
+    var delta  = dragStartX - x;
+    var target = Math.round(dragStartF + delta / PX_PER_FRAME);
+    draw(((target % total) + total) % total);
+  }
+
+  function onDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    canvas.classList.remove('is-dragging');
+    resumeTimer = setTimeout(startLoop, RESUME_DELAY);
+  }
+
+  /* Mouse */
+  canvas.addEventListener('mousedown', function (e) { e.preventDefault(); onDragStart(e.clientX); });
+  window.addEventListener('mousemove', function (e) { if (isDragging) onDragMove(e.clientX); });
+  window.addEventListener('mouseup',   onDragEnd);
+
+  /* Touch */
+  canvas.addEventListener('touchstart', function (e) { onDragStart(e.touches[0].clientX); }, { passive: true });
+  canvas.addEventListener('touchmove',  function (e) { e.preventDefault(); onDragMove(e.touches[0].clientX); }, { passive: false });
+  canvas.addEventListener('touchend',   onDragEnd);
+
+  /* ── IntersectionObserver — play/pause on visibility ── */
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        isVisible = e.isIntersecting;
+        if (isVisible)  startLoop();
+        else            stopLoop();
+      });
+    }, { threshold: 0.15 }).observe(stage);
+  } else {
+    isVisible = true;
+  }
+
+  /* ── ResizeObserver ── */
+  if (window.ResizeObserver) {
+    new ResizeObserver(function () { resize(); if (loaded[curIdx]) draw(curIdx); }).observe(stage);
+  }
+
+  /* ── Loading progress ── */
+  function onFrameReady(idx) {
+    if (loaded[idx]) return;
+    loaded[idx] = true;
+    loadCnt++;
+    var pct = Math.round((loadCnt / total) * 100);
+    if (barEl) barEl.style.width = pct + '%';
+    if (pctEl) pctEl.textContent = pct + '%';
+
+    /* Show first frame immediately */
+    if (idx === 0 || (loadCnt === 1)) {
+      resize();
+      draw(0);
+      canvas.style.opacity = '1';
+    }
+    if (loadCnt >= total) {
+      allLoaded = true;
+      if (loaderEl) { loaderEl.style.opacity = '0'; setTimeout(function () { loaderEl.style.display = 'none'; }, 400); }
+      if (hintEl)   setTimeout(function () { hintEl.classList.add('sd-360-showcase__hint--visible'); }, 600);
+      startLoop();
+    }
+  }
+
+  /* ── Preload — frame 0 first, rest in parallel ── */
+  var order = [0];
+  for (var ii = 1; ii < total; ii++) order.push(ii);
+
+  order.forEach(function (idx) {
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function () {
+      var done = function (src) { images[idx] = src; onFrameReady(idx); };
+      if (typeof createImageBitmap === 'function') {
+        createImageBitmap(img).then(done).catch(function () { done(img); });
+      } else {
+        done(img);
+      }
+    };
+    img.onerror = function () { images[idx] = img; onFrameReady(idx); };
+    img.src = FRAMES[idx];
+  });
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "360° Showcase",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "Badge text",
+      "default": "360° View"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "See Every Angle"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Explore the full detail of our craftsmanship"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "options": [
+        { "value": "scheme-1", "label": "Scheme 1" },
+        { "value": "scheme-2", "label": "Scheme 2" }
+      ],
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "label": "Section height (vh)",
+      "min": 40,
+      "max": 100,
+      "step": 5,
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Gradient overlay opacity",
+      "info": "Controls how dark the text area gradient is",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 35
+    },
+    {
+      "type": "range",
+      "id": "fps",
+      "label": "Auto-rotation speed (FPS)",
+      "min": 2,
+      "max": 24,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "360° Frame Images",
+      "info": "Upload frames in rotation order (Frame 1 = starting position). Supports up to 36 frames."
+    },
+    { "type": "image_picker", "id": "frame_1",  "label": "Frame 1"  },
+    { "type": "image_picker", "id": "frame_2",  "label": "Frame 2"  },
+    { "type": "image_picker", "id": "frame_3",  "label": "Frame 3"  },
+    { "type": "image_picker", "id": "frame_4",  "label": "Frame 4"  },
+    { "type": "image_picker", "id": "frame_5",  "label": "Frame 5"  },
+    { "type": "image_picker", "id": "frame_6",  "label": "Frame 6"  },
+    { "type": "image_picker", "id": "frame_7",  "label": "Frame 7"  },
+    { "type": "image_picker", "id": "frame_8",  "label": "Frame 8"  },
+    { "type": "image_picker", "id": "frame_9",  "label": "Frame 9"  },
+    { "type": "image_picker", "id": "frame_10", "label": "Frame 10" },
+    { "type": "image_picker", "id": "frame_11", "label": "Frame 11" },
+    { "type": "image_picker", "id": "frame_12", "label": "Frame 12" },
+    { "type": "image_picker", "id": "frame_13", "label": "Frame 13" },
+    { "type": "image_picker", "id": "frame_14", "label": "Frame 14" },
+    { "type": "image_picker", "id": "frame_15", "label": "Frame 15" },
+    { "type": "image_picker", "id": "frame_16", "label": "Frame 16" },
+    { "type": "image_picker", "id": "frame_17", "label": "Frame 17" },
+    { "type": "image_picker", "id": "frame_18", "label": "Frame 18" },
+    { "type": "image_picker", "id": "frame_19", "label": "Frame 19" },
+    { "type": "image_picker", "id": "frame_20", "label": "Frame 20" },
+    { "type": "image_picker", "id": "frame_21", "label": "Frame 21" },
+    { "type": "image_picker", "id": "frame_22", "label": "Frame 22" },
+    { "type": "image_picker", "id": "frame_23", "label": "Frame 23" },
+    { "type": "image_picker", "id": "frame_24", "label": "Frame 24" },
+    { "type": "image_picker", "id": "frame_25", "label": "Frame 25" },
+    { "type": "image_picker", "id": "frame_26", "label": "Frame 26" },
+    { "type": "image_picker", "id": "frame_27", "label": "Frame 27" },
+    { "type": "image_picker", "id": "frame_28", "label": "Frame 28" },
+    { "type": "image_picker", "id": "frame_29", "label": "Frame 29" },
+    { "type": "image_picker", "id": "frame_30", "label": "Frame 30" },
+    { "type": "image_picker", "id": "frame_31", "label": "Frame 31" },
+    { "type": "image_picker", "id": "frame_32", "label": "Frame 32" },
+    { "type": "image_picker", "id": "frame_33", "label": "Frame 33" },
+    { "type": "image_picker", "id": "frame_34", "label": "Frame 34" },
+    { "type": "image_picker", "id": "frame_35", "label": "Frame 35" },
+    { "type": "image_picker", "id": "frame_36", "label": "Frame 36" }
+  ],
+  "presets": [
+    { "name": "360° Showcase" }
+  ]
+}
+{% endschema %}

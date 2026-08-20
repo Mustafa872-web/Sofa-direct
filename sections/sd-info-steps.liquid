@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="{{ 'sd-info.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-info.css' | asset_url | stylesheet_tag }}</noscript>
+
+<section class="sd-info-steps">
+  <div class="sd-info-steps__inner">
+    <div class="sd-info-steps__header">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="sd-info-steps__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.body != blank -%}
+        <p class="sd-info-steps__text">{{ section.settings.body }}</p>
+      {%- endif -%}
+    </div>
+    <div class="sd-info-steps__list">
+      {%- for block in section.blocks -%}
+        <div class="sd-info-step" {{ block.shopify_attributes }}>
+          <div class="sd-info-step__num" aria-hidden="true"></div>
+          <h3 class="sd-info-step__title">{{ block.settings.title }}</h3>
+          <p class="sd-info-step__text">{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Info Steps",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "body", "label": "Body" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Step title" },
+        { "type": "textarea", "id": "text", "label": "Step description" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "SD Info Steps" } ]
+}
+{% endschema %}

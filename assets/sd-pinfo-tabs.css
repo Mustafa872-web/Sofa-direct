@@ -1,0 +1,168 @@
+/* ============================================================
+   SD Product Info — Generic content tabs
+   Used for Material, Dimensions, Delivery & Support.
+   Same tab pattern as the finance / delivery / why / fabric
+   widgets so the right-column reads as one coherent stack.
+   ============================================================ */
+
+.sd-pintab {
+  --pt-cream: var(--color-sd-cream, #FFFAEA);
+  --pt-taupe: var(--color-sd-tan,   #C0B09F);
+  --pt-brown: var(--color-sd-brown, #A58C70);
+  --pt-teal:  var(--color-sd-teal,  #2F4858);
+  --pt-gold:  #E8A53A;
+  --pt-line:  rgba(165, 140, 112, 0.28);
+
+  /* default accent (overridden by modifier classes) */
+  --pt-bar-bg: linear-gradient(135deg, var(--pt-teal) 0%, #1c2e38 100%);
+
+  position: relative;
+  margin: 0 0 1rem;
+  background: linear-gradient(180deg, #fffdf3 0%, var(--pt-cream) 100%);
+  border: 1px solid var(--pt-line);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 10px 22px -16px rgba(47, 72, 88, 0.28);
+  overflow: hidden;
+}
+
+/* Per-tab accent colors */
+.sd-pintab--material { --pt-bar-bg: linear-gradient(135deg, var(--pt-brown) 0%, #87664a 100%); }
+.sd-pintab--dims     { --pt-bar-bg: linear-gradient(135deg, #4a6173 0%, var(--pt-teal) 100%); }
+.sd-pintab--delivery { --pt-bar-bg: linear-gradient(135deg, var(--pt-teal) 0%, #1c2e38 100%); }
+
+/* ── Bar ────────────────────────────────────────────────── */
+.sd-pintab__bar {
+  appearance: none;
+  display: flex; width: 100%;
+  align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1rem 1.4rem;
+  background: var(--pt-bar-bg);
+  color: #fff; border: 0; cursor: pointer;
+  text-align: left; font-family: inherit;
+  transition: filter 0.25s ease;
+}
+.sd-pintab__bar:hover { filter: brightness(1.08); }
+.sd-pintab__bar:focus-visible { outline: 2px solid var(--pt-gold); outline-offset: -2px; }
+
+.sd-pintab__bar-l {
+  display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex: 1;
+}
+
+.sd-pintab__bar-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 8px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff; flex-shrink: 0;
+}
+
+.sd-pintab__bar-txt { display: flex; flex-direction: column; min-width: 0; }
+
+.sd-pintab__bar-title {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem; font-weight: 700;
+  letter-spacing: 0.02em; line-height: 1.15;
+}
+
+.sd-pintab__bar-sub {
+  font-size: 1rem; font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.02em; margin-top: 2px;
+}
+
+.sd-pintab__bar-toggle {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #fff; font-family: var(--sd-font-body, inherit);
+  font-size: 1.1rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 0.45rem 0.85rem; border-radius: 999px; flex-shrink: 0;
+}
+
+.sd-pintab__bar:hover .sd-pintab__bar-toggle { background: rgba(255,255,255,0.26); }
+.sd-pintab__bar-chev { transition: transform 0.3s ease; }
+.sd-pintab.is-collapsed .sd-pintab__bar-chev { transform: rotate(-90deg); }
+
+/* ── Panel collapse ───────────────────────────────────── */
+.sd-pintab__panel {
+  max-height: 1600px; opacity: 1; overflow: hidden;
+  transition: max-height 0.45s ease, opacity 0.3s ease;
+}
+
+.sd-pintab.is-collapsed .sd-pintab__panel {
+  max-height: 0; opacity: 0; pointer-events: none;
+}
+
+/* ── Body content ─────────────────────────────────────── */
+.sd-pintab__body {
+  padding: 1.3rem 1.6rem 1.5rem;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem;
+  line-height: 1.6;
+  color: rgba(47, 72, 88, 0.85);
+}
+
+.sd-pintab__body p { margin: 0 0 0.8rem; }
+.sd-pintab__body p:last-child { margin-bottom: 0; }
+.sd-pintab__body strong { color: var(--pt-teal); font-weight: 700; }
+
+.sd-pintab__body ul,
+.sd-pintab__body ol {
+  margin: 0 0 0.8rem 1.2rem;
+  padding: 0;
+}
+
+.sd-pintab__body li { margin-bottom: 0.4rem; }
+
+.sd-pintab__body a {
+  color: var(--pt-brown);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.sd-pintab__body a:hover { color: var(--pt-teal); }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 749px) {
+  .sd-pintab            { border-radius: 0; margin: 0 0 0.9rem; }
+  .sd-pintab__bar       { padding: 0.85rem 1.1rem; }
+  .sd-pintab__bar-title { font-size: 1.2rem; }
+  .sd-pintab__bar-sub   { font-size: 0.95rem; }
+  .sd-pintab__bar-toggle-label { display: none; }
+  .sd-pintab__bar-toggle { padding: 0.4rem 0.55rem; }
+  .sd-pintab__body      { padding: 1.1rem 1.2rem 1.3rem; font-size: 1.2rem; }
+}
+
+@media (max-width: 767px) {
+  .sd-pindesc__bar,
+  .sd-pidel__bar,
+  .sd-pinwhy__bar,
+  .sd-pinsup__bar {
+    min-height: 64px;
+    height: 64px;
+    border-radius: 16px !important;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+
+  /* sub-text ko clip karo taake height fixed rahe */
+  .sd-pindesc__bar-sub,
+  .sd-pidel__bar-sub,
+  .sd-pinwhy__bar-sub,
+  .sd-pinsup__bar-sub {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .sd-pindesc, .sd-pinsup,
+  .sd-pidel, .sd-pinwhy {
+    border-radius: 16px !important;
+  }
+
+}

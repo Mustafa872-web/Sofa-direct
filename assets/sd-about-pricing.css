@@ -1,0 +1,220 @@
+/* ============================================================
+   SD About Pricing - image left + text right
+   ============================================================ */
+
+.sd-about-pricing {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 43.6rem;
+}
+
+.sd-about-pricing__image-col {
+  flex: 0 0 50%;
+  height: 43.6rem;
+  overflow: hidden;
+}
+
+.sd-about-pricing__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sd-about-pricing__img--mobile {
+  display: none;
+}
+
+.sd-about-pricing__text-col {
+  flex: 1;
+  padding: 4.0rem 6.4rem 4.0rem 11.0rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  align-items: flex-start;
+}
+
+.sd-about-pricing__heading {
+  font-family: var(--sd-font-display);
+  font-size: 4.0rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: 3.6rem;
+  color: #000;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.sd-about-pricing__body {
+  font-family: Montserrat, sans-serif;
+  font-size: 2.0rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 2.7625rem;
+  color: #000;
+  margin: 0;
+  max-width: 72.5rem;
+}
+
+.sd-about-pricing__features {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 1.6rem 6.5rem;
+}
+
+.sd-about-pricing__feature {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.sd-about-pricing__feature-icon {
+  width: 4.0rem;
+  height: 4.0rem;
+  border-radius: 50%;
+  background: rgba(61, 95, 101, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sd-about-pricing__feature-icon svg {
+  width: 2.0rem;
+  height: 2.0rem;
+  color: #3d5f65;
+}
+
+.sd-about-pricing__feature-text {
+  font-family: Montserrat, sans-serif;
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 2.55rem;
+  color: #000;
+  white-space: nowrap;
+}
+
+/* Tablet */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .sd-about-pricing {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .sd-about-pricing__image-col {
+    flex: none;
+    width: 100%;
+    height: 30.0rem;
+  }
+
+  .sd-about-pricing__text-col {
+    width: 100%;
+    padding: 3.2rem 4.0rem;
+  }
+
+  .sd-about-pricing__heading {
+    font-size: 3.2rem;
+  }
+
+  .sd-about-pricing__body {
+    font-size: 1.6rem;
+  }
+
+  .sd-about-pricing__features {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem 2.4rem;
+  }
+
+  .sd-about-pricing__feature {
+    align-items: flex-start;
+  }
+
+  .sd-about-pricing__feature-text {
+    font-size: 1.4rem;
+    line-height: 1.45;
+    white-space: normal;
+  }
+}
+
+/* Mobile */
+@media screen and (max-width: 749px) {
+  .sd-about-pricing {
+    flex-direction: column-reverse;
+    min-height: auto;
+  }
+
+  .sd-about-pricing__image-col {
+    flex: none;
+    width: 100%;
+    height: 26.0rem;
+  }
+
+  .sd-about-pricing__image-col--has-mobile-image .sd-about-pricing__img--desktop {
+    display: none;
+  }
+
+  .sd-about-pricing__image-col--has-mobile-image .sd-about-pricing__img--mobile {
+    display: block;
+  }
+
+  .sd-about-pricing__text-col {
+    width: 100%;
+    padding: 2.4rem 1.6rem 2.0rem;
+    gap: 1.6rem;
+  }
+
+  .sd-about-pricing__heading {
+    font-family: "FONTSPRING DEMO - Recoleta Alt Black", var(--sd-font-display), serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    line-height: 2.0rem;
+    text-transform: uppercase;
+  }
+
+  .sd-about-pricing__body {
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: normal;
+  }
+
+  .sd-about-pricing__features {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+  }
+
+  .sd-about-pricing__feature {
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+
+  .sd-about-pricing__feature-icon {
+    width: 3.4rem;
+    height: 3.4rem;
+  }
+
+  .sd-about-pricing__feature-icon svg {
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+
+  .sd-about-pricing__feature-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 2.55rem;
+    white-space: normal;
+  }
+}
+
+@media screen and (max-width: 420px) {
+  .sd-about-pricing__heading {
+    font-size: 2.4rem;
+  }
+
+  .sd-about-pricing__image-col {
+    height: 24.0rem;
+  }
+}

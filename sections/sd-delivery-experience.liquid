@@ -1,0 +1,490 @@
+<link rel="stylesheet" href="{{ 'sd-delivery-experience.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-delivery-experience.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign process_blocks = section.blocks | where: 'type', 'process_step'
+  assign before_blocks = section.blocks | where: 'type', 'before_tip'
+  assign day_blocks = section.blocks | where: 'type', 'day_point'
+  assign setup_blocks = section.blocks | where: 'type', 'setup_feature'
+  assign trust_blocks = section.blocks | where: 'type', 'trust_point'
+  assign charge_blocks = section.blocks | where: 'type', 'charge'
+  assign faq_blocks = section.blocks | where: 'type', 'faq'
+-%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="sd-delivery section-{{ section.id }}-padding">
+  <div class="sd-delivery__shape sd-delivery__shape--one" aria-hidden="true"></div>
+  <div class="sd-delivery__shape sd-delivery__shape--two" aria-hidden="true"></div>
+
+  <div class="sd-delivery__container page-width">
+    <header class="sd-delivery__hero sd-reveal" data-reveal>
+      <div class="sd-delivery__hero-media{% if section.settings.hero_image_mobile != blank %} sd-delivery__hero-media--has-mobile{% endif %}">
+        {%- if section.settings.hero_image != blank -%}
+          {{
+            section.settings.hero_image
+            | image_url: width: 2200
+            | image_tag:
+              class: 'sd-delivery__hero-image sd-delivery__hero-image--desktop',
+              widths: '700,1100,1600,2200',
+              sizes: '100vw',
+              alt: section.settings.hero_heading,
+              loading: 'eager',
+              fetchpriority: 'high'
+          }}
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'sd-delivery__hero-image sd-delivery__hero-image--desktop' }}
+        {%- endif -%}
+
+        {%- if section.settings.hero_image_mobile != blank -%}
+          {{
+            section.settings.hero_image_mobile
+            | image_url: width: 900
+            | image_tag:
+              class: 'sd-delivery__hero-image sd-delivery__hero-image--mobile',
+              widths: '375,550,750,900',
+              sizes: '100vw',
+              alt: section.settings.hero_heading,
+              loading: 'eager',
+              fetchpriority: 'high'
+          }}
+        {%- endif -%}
+
+        <div class="sd-delivery__hero-overlay" aria-hidden="true"></div>
+      </div>
+
+      <div class="sd-delivery__hero-content">
+        {%- if section.settings.hero_badge != blank -%}
+          <span class="sd-delivery__badge">{{ section.settings.hero_badge }}</span>
+        {%- endif -%}
+        <h1 class="sd-delivery__title">{{ section.settings.hero_heading }}</h1>
+        {%- if section.settings.hero_text != blank -%}
+          <p class="sd-delivery__subtitle">{{ section.settings.hero_text }}</p>
+        {%- endif -%}
+        <div class="sd-delivery__hero-actions">
+          {%- if section.settings.primary_cta_label != blank -%}
+            <a href="{{ section.settings.primary_cta_url | default: routes.search_url }}" class="sd-delivery__btn sd-delivery__btn--solid">{{ section.settings.primary_cta_label }}</a>
+          {%- endif -%}
+          {%- if section.settings.secondary_cta_label != blank -%}
+            <a href="{{ section.settings.secondary_cta_url | default: routes.collections_url }}" class="sd-delivery__btn sd-delivery__btn--ghost">{{ section.settings.secondary_cta_label }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    </header>
+
+    <section class="sd-delivery__tracker sd-reveal" data-reveal>
+      <h2 class="sd-delivery__section-title">{{ section.settings.tracker_heading }}</h2>
+      <ol class="sd-delivery__tracker-list" role="list">
+        {%- assign tracker_labels = section.settings.tracker_labels | newline_to_br | split: '<br />' -%}
+        {%- for i in (1..5) -%}
+          {%- assign tracker_label = tracker_labels[forloop.index0] | strip -%}
+          {%- if tracker_label == blank -%}
+            {%- case i -%}
+              {%- when 1 -%}{% assign tracker_label = 'Order Confirmed' %}
+              {%- when 2 -%}{% assign tracker_label = 'Preparation' %}
+              {%- when 3 -%}{% assign tracker_label = 'Delivery Day' %}
+              {%- when 4 -%}{% assign tracker_label = 'Setup & Installation' %}
+              {%- when 5 -%}{% assign tracker_label = 'Relax & Enjoy' %}
+            {%- endcase -%}
+          {%- endif -%}
+          <li class="sd-delivery__tracker-item{% if i < section.settings.tracker_stage %} is-complete{% elsif i == section.settings.tracker_stage %} is-current{% endif %}">
+            <span class="sd-delivery__tracker-dot" aria-hidden="true"></span>
+            <span class="sd-delivery__tracker-label">{{ tracker_label }}</span>
+          </li>
+        {%- endfor -%}
+      </ol>
+    </section>
+
+    <section class="sd-delivery__process sd-reveal" data-reveal>
+      <div class="sd-delivery__section-head">
+        <h2 class="sd-delivery__section-title">{{ section.settings.process_heading }}</h2>
+        <p class="sd-delivery__section-copy">{{ section.settings.process_text }}</p>
+      </div>
+      <div class="sd-delivery__process-grid">
+        {%- if process_blocks.size > 0 -%}
+          {%- for block in process_blocks -%}
+            <article class="sd-delivery-card" {{ block.shopify_attributes }}>
+              <span class="sd-delivery-card__icon" aria-hidden="true">
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60,120', alt: block.settings.title }}
+                {%- else -%}
+                  {{ block.settings.icon }}
+                {%- endif -%}
+              </span>
+              <h3 class="sd-delivery-card__title">{{ block.settings.title }}</h3>
+              <p class="sd-delivery-card__text">{{ block.settings.text }}</p>
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span><h3 class="sd-delivery-card__title">Order Confirmed</h3><p class="sd-delivery-card__text">Receive instant confirmation of your sofa order with clear delivery timelines and next steps. Our UK sofa delivery service keeps you informed from purchase to dispatch.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg></span><h3 class="sd-delivery-card__title">Preparation</h3><p class="sd-delivery-card__text">Your sofa is carefully inspected, quality-checked, and prepared for safe furniture delivery. Every order is handled with care before leaving our warehouse.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="15" height="11" rx="1"/><path d="M16 10h4l3 3v4h-7V10z"/><circle cx="5.5" cy="19.5" r="2.5"/><circle cx="18.5" cy="19.5" r="2.5"/></svg></span><h3 class="sd-delivery-card__title">Delivery Day</h3><p class="sd-delivery-card__text">Track your delivery with real-time updates via SMS or email. Our delivery team can call ahead to ensure a smooth, reliable delivery experience.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a3 3 0 013-3h12a3 3 0 013 3v6"/><path d="M3 18h18M5 18v2M19 18v2"/><path d="M7 9V7a2 2 0 012-2h6a2 2 0 012 2v2"/></svg></span><h3 class="sd-delivery-card__title">Setup & Installation</h3><p class="sd-delivery-card__text">Enjoy professional installation in your chosen room (access permitting). Assembly and packaging removal services are available for added convenience.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span><h3 class="sd-delivery-card__title">Relax & Enjoy</h3><p class="sd-delivery-card__text">Sit back and enjoy your new sofa, delivered and set up with care. Our seamless delivery service ensures your space is ready to use right away.</p></article>
+        {%- endif -%}
+      </div>
+    </section>
+
+    <section class="sd-delivery__before sd-reveal" data-reveal>
+      <div class="sd-delivery__section-head">
+        <h2 class="sd-delivery__section-title">{{ section.settings.before_heading }}</h2>
+        <p class="sd-delivery__section-copy">{{ section.settings.before_text }}</p>
+      </div>
+      <div class="sd-delivery__tips-grid">
+        {%- if before_blocks.size > 0 -%}
+          {%- for block in before_blocks -%}
+            <article class="sd-delivery-card" {{ block.shopify_attributes }}>
+              <span class="sd-delivery-card__icon" aria-hidden="true">
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60,120', alt: block.settings.title }}
+                {%- else -%}
+                  {{ block.settings.icon }}
+                {%- endif -%}
+              </span>
+              <h3 class="sd-delivery-card__title">{{ block.settings.title }}</h3>
+              <p class="sd-delivery-card__text">{{ block.settings.text }}</p>
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.5-4.5h15L21 21"/><path d="M5 17V8a2 2 0 012-2h10a2 2 0 012 2v9"/><path d="M9 12h6"/></svg></span><h3 class="sd-delivery-card__title">Clear Space</h3><p class="sd-delivery-card__text">Remove any obstacles to ensure easy access for your installation team.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l4-4 16 16-4 4z"/><path d="M7 8l2 2M10 5l2 2M13 8l2 2M16 11l2 2"/></svg></span><h3 class="sd-delivery-card__title">Measurements</h3><p class="sd-delivery-card__text">Check doorways, hallways, lifts, and room dimensions to make sure your sofa fits perfectly.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M10.85 12.15L19 4M17 6l2 2M16 7l3 3"/></svg></span><h3 class="sd-delivery-card__title">Access Details</h3><p class="sd-delivery-card__text">Inform us in advance about parking, access points, or entry restrictions for a hassle-free furniture delivery.</p></article>
+        {%- endif -%}
+      </div>
+    </section>
+
+    <section class="sd-delivery__day sd-reveal" data-reveal>
+      <div class="sd-delivery__day-media{% if section.settings.day_image_mobile != blank %} sd-delivery__day-media--has-mobile{% endif %}">
+        {%- if section.settings.day_image != blank -%}
+          {{
+            section.settings.day_image
+            | image_url: width: 1600
+            | image_tag:
+              class: 'sd-delivery__day-image sd-delivery__day-image--desktop',
+              widths: '650,1000,1300,1600',
+              sizes: '(min-width: 1200px) 48vw, 100vw',
+              alt: section.settings.day_heading,
+              loading: 'lazy'
+          }}
+        {%- else -%}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'sd-delivery__day-image sd-delivery__day-image--desktop' }}
+        {%- endif -%}
+
+        {%- if section.settings.day_image_mobile != blank -%}
+          {{
+            section.settings.day_image_mobile
+            | image_url: width: 900
+            | image_tag:
+              class: 'sd-delivery__day-image sd-delivery__day-image--mobile',
+              widths: '375,550,750,900',
+              sizes: '100vw',
+              alt: section.settings.day_heading,
+              loading: 'lazy'
+          }}
+        {%- endif -%}
+      </div>
+
+      <div class="sd-delivery__day-content">
+        <h2 class="sd-delivery__section-title">{{ section.settings.day_heading }}</h2>
+        <p class="sd-delivery__section-copy">{{ section.settings.day_text }}</p>
+        <ul class="sd-delivery__day-list" role="list">
+          {%- if day_blocks.size > 0 -%}
+            {%- for block in day_blocks -%}
+              <li class="sd-delivery-day-point" {{ block.shopify_attributes }}>
+                <span class="sd-delivery-day-point__icon" aria-hidden="true">
+                  {%- if block.settings.image != blank -%}
+                    {{ block.settings.image | image_url: width: 96 | image_tag: loading: 'lazy', widths: '48,96', alt: block.settings.title }}
+                  {%- else -%}
+                    {{ block.settings.icon }}
+                  {%- endif -%}
+                </span>
+                <div>
+                  <h3 class="sd-delivery-day-point__title">{{ block.settings.title }}</h3>
+                  <p class="sd-delivery-day-point__text">{{ block.settings.text }}</p>
+                </div>
+              </li>
+            {%- endfor -%}
+          {%- else -%}
+            <li class="sd-delivery-day-point"><span class="sd-delivery-day-point__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span><div><h3 class="sd-delivery-day-point__title">Time Notifications</h3><p class="sd-delivery-day-point__text">Get accurate delivery time slots, arrival windows, and helpful reminders.</p></div></li>
+            <li class="sd-delivery-day-point"><span class="sd-delivery-day-point__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div><h3 class="sd-delivery-day-point__title">Live Tracking</h3><p class="sd-delivery-day-point__text">Track your delivery in real-time and stay updated on your order's progress.</p></div></li>
+            <li class="sd-delivery-day-point"><span class="sd-delivery-day-point__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span><div><h3 class="sd-delivery-day-point__title">Professional Team</h3><p class="sd-delivery-day-point__text">Our trained delivery specialists ensure expert furniture handling and a smooth delivery experience.</p></div></li>
+            <li class="sd-delivery-day-point"><span class="sd-delivery-day-point__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></span><div><h3 class="sd-delivery-day-point__title">Safe Handling</h3><p class="sd-delivery-day-point__text">Your sofa is carefully handled and protected from dispatch to placement in your home.</p></div></li>
+          {%- endif -%}
+        </ul>
+      </div>
+    </section>
+
+    <section class="sd-delivery__setup sd-reveal" data-reveal>
+      <div class="sd-delivery__section-head">
+        <h2 class="sd-delivery__section-title">{{ section.settings.setup_heading }}</h2>
+        <p class="sd-delivery__section-copy">{{ section.settings.setup_text }}</p>
+      </div>
+      <div class="sd-delivery__setup-grid">
+        {%- if setup_blocks.size > 0 -%}
+          {%- for block in setup_blocks -%}
+            <article class="sd-delivery-card" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank -%}
+                <span class="sd-delivery-card__icon" aria-hidden="true">
+                  {{ block.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60,120', alt: block.settings.title }}
+                </span>
+              {%- endif -%}
+              <h3 class="sd-delivery-card__title">{{ block.settings.title }}</h3>
+              <p class="sd-delivery-card__text">{{ block.settings.text }}</p>
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><h3 class="sd-delivery-card__title">Room Placement</h3><p class="sd-delivery-card__text">Positioned exactly where you want it as part of your home sofa delivery experience.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></span><h3 class="sd-delivery-card__title">Assembly</h3><p class="sd-delivery-card__text">Carefully assembled and checked by our team to ensure quality after the sofa is shipped.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></span><h3 class="sd-delivery-card__title">Packaging Removal</h3><p class="sd-delivery-card__text">All packaging removed, leaving your space clean and ready following your UK sofa delivery.</p></article>
+        {%- endif -%}
+      </div>
+    </section>
+
+    <section class="sd-delivery__trust sd-reveal" data-reveal>
+      <div class="sd-delivery__section-head">
+        <h2 class="sd-delivery__section-title">{{ section.settings.trust_heading }}</h2>
+        <p class="sd-delivery__section-copy">{{ section.settings.trust_text }}</p>
+      </div>
+      <div class="sd-delivery__trust-grid">
+        {%- if trust_blocks.size > 0 -%}
+          {%- for block in trust_blocks -%}
+            <article class="sd-delivery-card" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank -%}
+                <span class="sd-delivery-card__icon" aria-hidden="true">
+                  {{ block.settings.image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60,120', alt: block.settings.title }}
+                </span>
+              {%- endif -%}
+              <h3 class="sd-delivery-card__title">{{ block.settings.title }}</h3>
+              <p class="sd-delivery-card__text">{{ block.settings.text }}</p>
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span><h3 class="sd-delivery-card__title">Expert Team</h3><p class="sd-delivery-card__text">Trained specialists focused on care, precision, and quality throughout every furniture delivery.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></span><h3 class="sd-delivery-card__title">Safe Delivery</h3><p class="sd-delivery-card__text">Secure handling from dispatch to home delivery, ensuring your furniture arrives in perfect condition.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 019.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></span><h3 class="sd-delivery-card__title">Eco-friendly Packaging</h3><p class="sd-delivery-card__text">Reduced materials and responsible disposal as part of our sustainable sofa shipping approach.</p></article>
+          <article class="sd-delivery-card"><span class="sd-delivery-card__icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></span><h3 class="sd-delivery-card__title">Customer-first Service</h3><p class="sd-delivery-card__text">Dedicated support before and after your furniture delivery service for a seamless experience.</p></article>
+        {%- endif -%}
+      </div>
+    </section>
+
+    <section class="sd-delivery__charges sd-reveal" data-reveal>
+      <div class="sd-delivery__section-head">
+        <h2 class="sd-delivery__section-title">{{ section.settings.charge_heading }}</h2>
+        <p class="sd-delivery__section-copy">{{ section.settings.charge_text }}</p>
+      </div>
+      <div class="sd-delivery__charge-grid">
+        {%- if charge_blocks.size > 0 -%}
+          {%- for block in charge_blocks -%}
+            <article class="sd-delivery-charge-card" {{ block.shopify_attributes }}>
+              <h3 class="sd-delivery-charge-card__zone">{{ block.settings.zone }}</h3>
+              <p class="sd-delivery-charge-card__price">{{ block.settings.price }}</p>
+              <p class="sd-delivery-charge-card__eta">{{ block.settings.eta }}</p>
+              <p class="sd-delivery-charge-card__note">{{ block.settings.note }}</p>
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <article class="sd-delivery-charge-card"><h3 class="sd-delivery-charge-card__zone">Free Standard Delivery</h3><p class="sd-delivery-charge-card__price">7–10 Working Days</p><p class="sd-delivery-charge-card__eta">In England and Wales</p><p class="sd-delivery-charge-card__note">Reliable & fast delivery</p></article>
+          <article class="sd-delivery-charge-card"><h3 class="sd-delivery-charge-card__zone">Premium Delivery</h3><p class="sd-delivery-charge-card__price">From £99</p><p class="sd-delivery-charge-card__eta">2-4 Workings Days </p><p class="sd-delivery-charge-card__note">Quick delivery across UK</p></article>
+         
+        {%- endif -%}
+      </div>
+    </section>
+
+    <section class="sd-delivery__faq sd-reveal" data-reveal>
+      <div class="sd-delivery__section-head">
+        <h2 class="sd-delivery__section-title">{{ section.settings.faq_heading }}</h2>
+        <p class="sd-delivery__section-copy">{{ section.settings.faq_text }}</p>
+      </div>
+
+      <div class="sd-delivery-faq" data-faq-root>
+        {%- if faq_blocks.size > 0 -%}
+          {%- for block in faq_blocks -%}
+            <article class="sd-delivery-faq__item" {{ block.shopify_attributes }}>
+              <button class="sd-delivery-faq__button" type="button" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="SDFaqPanel-{{ section.id }}-{{ forloop.index }}">
+                <span>{{ block.settings.question }}</span>
+                <span class="sd-delivery-faq__plus" aria-hidden="true"></span>
+              </button>
+              <div id="SDFaqPanel-{{ section.id }}-{{ forloop.index }}" class="sd-delivery-faq__panel{% if forloop.first %} is-open{% endif %}">
+                <div class="sd-delivery-faq__answer rte">{{ block.settings.answer }}</div>
+              </div>
+            </article>
+          {%- endfor -%}
+        {%- else -%}
+          <article class="sd-delivery-faq__item">
+            <button class="sd-delivery-faq__button" type="button" aria-expanded="true" aria-controls="SDFaqPanel-{{ section.id }}-1"><span>Can I choose my delivery date?</span><span class="sd-delivery-faq__plus" aria-hidden="true"></span></button>
+            <div id="SDFaqPanel-{{ section.id }}-1" class="sd-delivery-faq__panel is-open"><div class="sd-delivery-faq__answer rte"><p>Yes. Once your order is ready, we provide available dates so you can select a suitable time.</p></div></div>
+          </article>
+          <article class="sd-delivery-faq__item">
+            <button class="sd-delivery-faq__button" type="button" aria-expanded="false" aria-controls="SDFaqPanel-{{ section.id }}-2"><span>Do you deliver upstairs?</span><span class="sd-delivery-faq__plus" aria-hidden="true"></span></button>
+            <div id="SDFaqPanel-{{ section.id }}-2" class="sd-delivery-faq__panel"><div class="sd-delivery-faq__answer rte"><p>Yes, where access is safe. Please share staircase or lift details in advance.</p></div></div>
+          </article>
+          <article class="sd-delivery-faq__item">
+            <button class="sd-delivery-faq__button" type="button" aria-expanded="false" aria-controls="SDFaqPanel-{{ section.id }}-3"><span>Can I reschedule delivery?</span><span class="sd-delivery-faq__plus" aria-hidden="true"></span></button>
+            <div id="SDFaqPanel-{{ section.id }}-3" class="sd-delivery-faq__panel"><div class="sd-delivery-faq__answer rte"><p>Yes, contact us early and we'll help arrange the next available slot.</p></div></div>
+          </article>
+          <article class="sd-delivery-faq__item">
+            <button class="sd-delivery-faq__button" type="button" aria-expanded="false" aria-controls="SDFaqPanel-{{ section.id }}-4"><span>Can you take away my old furniture?</span><span class="sd-delivery-faq__plus" aria-hidden="true"></span></button>
+            <div id="SDFaqPanel-{{ section.id }}-4" class="sd-delivery-faq__panel"><div class="sd-delivery-faq__answer rte"><p>Yes, in most areas we can arrange removal or recycling for an additional fee.</p></div></div>
+          </article>
+          <article class="sd-delivery-faq__item">
+            <button class="sd-delivery-faq__button" type="button" aria-expanded="false" aria-controls="SDFaqPanel-{{ section.id }}-5"><span>What if I'm not home?</span><span class="sd-delivery-faq__plus" aria-hidden="true"></span></button>
+            <div id="SDFaqPanel-{{ section.id }}-5" class="sd-delivery-faq__panel"><div class="sd-delivery-faq__answer rte"><p>Missed deliveries may incur a fee. You can reschedule up to 24 hours in advance.</p></div></div>
+          </article>
+        {%- endif -%}
+      </div>
+    </section>
+  </div>
+
+  {%- if section.settings.show_sticky_cta and section.settings.sticky_cta_label != blank -%}
+    <a class="sd-delivery__sticky-cta" href="{{ section.settings.sticky_cta_url | default: routes.collections_url }}">
+      <span>{{ section.settings.sticky_cta_label }}</span>
+      <span aria-hidden="true">-></span>
+    </a>
+  {%- endif -%}
+</section>
+
+<script>
+  (function () {
+    var root = document.querySelector('.sd-delivery.section-{{ section.id }}-padding');
+    if (!root) return;
+
+    var revealEls = root.querySelectorAll('[data-reveal]');
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.16 });
+      revealEls.forEach(function (el) { observer.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+    }
+
+    var faqRoot = root.querySelector('[data-faq-root]');
+    if (!faqRoot) return;
+    faqRoot.querySelectorAll('.sd-delivery-faq__button[aria-expanded="true"]').forEach(function (btn) {
+      var panel = document.getElementById(btn.getAttribute('aria-controls'));
+      if (!panel) return;
+      panel.classList.add('is-open');
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+    });
+
+    faqRoot.querySelectorAll('.sd-delivery-faq__button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var panel = document.getElementById(btn.getAttribute('aria-controls'));
+        if (!panel) return;
+        var isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+        faqRoot.querySelectorAll('.sd-delivery-faq__button').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+        faqRoot.querySelectorAll('.sd-delivery-faq__panel').forEach(function (p) { p.style.maxHeight = null; p.classList.remove('is-open'); });
+
+        if (!isOpen) {
+          btn.setAttribute('aria-expanded', 'true');
+          panel.classList.add('is-open');
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "SD Delivery Experience",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "hero_badge", "label": "Hero badge", "default": "Sofa Delivery Experience" },
+    { "type": "text", "id": "hero_heading", "label": "Hero heading", "default": "Delivery Made Simple" },
+    { "type": "textarea", "id": "hero_text", "label": "Hero subtext", "default": "From order confirmation to setup in your home, we deliver with care, precision, and clear communication every step of the way." },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image" },
+    { "type": "image_picker", "id": "hero_image_mobile", "label": "Hero image (mobile)" },
+    { "type": "text", "id": "primary_cta_label", "label": "Primary CTA label", "default": "Track Order" },
+    { "type": "url", "id": "primary_cta_url", "label": "Primary CTA link" },
+    { "type": "text", "id": "secondary_cta_label", "label": "Secondary CTA label", "default": "Shop Sofas" },
+    { "type": "url", "id": "secondary_cta_url", "label": "Secondary CTA link" },
+    { "type": "text", "id": "tracker_heading", "label": "Tracker heading", "default": "Track Your Delivery Journey" },
+    { "type": "textarea", "id": "tracker_labels", "label": "Tracker labels (one per line)", "default": "Order Confirmed\nPreparation\nDelivery Day\nSetup & Installation\nRelax & Enjoy" },
+    { "type": "range", "id": "tracker_stage", "label": "Current tracker stage", "min": 1, "max": 5, "step": 1, "default": 3 },
+    { "type": "text", "id": "process_heading", "label": "Process heading", "default": "Delivery Process" },
+    { "type": "textarea", "id": "process_text", "label": "Process subtext", "default": "A smooth, transparent timeline from checkout to comfort." },
+    { "type": "text", "id": "before_heading", "label": "Before delivery heading", "default": "Before Delivery" },
+    { "type": "textarea", "id": "before_text", "label": "Before delivery subtext", "default": "A few simple checks help ensure a smooth delivery and setup the first time." },
+    { "type": "text", "id": "day_heading", "label": "Delivery day heading", "default": "Delivery Day Experience" },
+    { "type": "textarea", "id": "day_text", "label": "Delivery day subtext", "default": "Receive timely delivery updates and be welcomed by a professional team handling your furniture with care." },
+    { "type": "image_picker", "id": "day_image", "label": "Delivery day image" },
+    { "type": "image_picker", "id": "day_image_mobile", "label": "Delivery day image (mobile)" },
+    { "type": "text", "id": "setup_heading", "label": "Installation heading", "default": "Installation & Setup" },
+    { "type": "textarea", "id": "setup_text", "label": "Installation subtext", "default": "Room placement, assembly, and packaging removal are part of our trusted furniture delivery service for a ready-to-enjoy space." },
+    { "type": "text", "id": "trust_heading", "label": "Trust heading", "default": "Why Choose Us" },
+    { "type": "textarea", "id": "trust_text", "label": "Trust subtext", "default": "Trusted experts, reliable furniture delivery, eco-conscious packaging, and customer-first service across the UK." },
+    { "type": "text", "id": "charge_heading", "label": "Charges heading", "default": "Delivery Charges Info" },
+    { "type": "textarea", "id": "charge_text", "label": "Charges subtext", "default": "Transparent furniture delivery pricing across the UK with no hidden costs." },
+    { "type": "text", "id": "faq_heading", "label": "FAQ heading", "default": "Frequently Asked Questions" },
+    { "type": "textarea", "id": "faq_text", "label": "FAQ subtext", "default": "Quick answers for a smooth furniture delivery experience." },
+    { "type": "checkbox", "id": "show_sticky_cta", "label": "Show sticky CTA", "default": true },
+    { "type": "text", "id": "sticky_cta_label", "label": "Sticky CTA label", "default": "Need delivery help?" },
+    { "type": "url", "id": "sticky_cta_url", "label": "Sticky CTA link" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 140, "step": 4, "unit": "px", "label": "Top padding", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 140, "step": 4, "unit": "px", "label": "Bottom padding", "default": 84 }
+  ],
+  "blocks": [
+    { "type": "process_step", "name": "Process step", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image (optional — overrides icon)" },
+      { "type": "text", "id": "icon", "label": "Icon/Number", "default": "1" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Order Confirmed" },
+      { "type": "textarea", "id": "text", "label": "Description", "default": "Instant confirmation with timeline and next steps." }
+    ]},
+    { "type": "before_tip", "name": "Before-delivery tip", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image (optional — overrides icon)" },
+      { "type": "text", "id": "icon", "label": "Icon", "default": "A" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Clear Space" },
+      { "type": "textarea", "id": "text", "label": "Description", "default": "Prepare pathways and room access before delivery." }
+    ]},
+    { "type": "day_point", "name": "Delivery day point", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image (optional — overrides icon)" },
+      { "type": "text", "id": "icon", "label": "Icon", "default": "1" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Time Notifications" },
+      { "type": "textarea", "id": "text", "label": "Description", "default": "Accurate ETA updates before arrival." }
+    ]},
+    { "type": "setup_feature", "name": "Setup feature", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image (optional)" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Room Placement" },
+      { "type": "textarea", "id": "text", "label": "Description", "default": "Placed exactly where you want it." }
+    ]},
+    { "type": "trust_point", "name": "Trust point", "settings": [
+      { "type": "image_picker", "id": "image", "label": "Image (optional)" },
+      { "type": "text", "id": "title", "label": "Title", "default": "Expert Team" },
+      { "type": "textarea", "id": "text", "label": "Description", "default": "Trained specialists focused on care and precision." }
+    ]},
+    { "type": "charge", "name": "Delivery charge", "settings": [
+      { "type": "text", "id": "zone", "label": "Zone/service", "default": "Standard UK Mainland" },
+      { "type": "text", "id": "price", "label": "Price", "default": "From £49" },
+      { "type": "text", "id": "eta", "label": "Timeframe", "default": "7-14 working days" },
+      { "type": "textarea", "id": "note", "label": "Note", "default": "Includes room-of-choice placement." }
+    ]},
+    { "type": "faq", "name": "FAQ item", "settings": [
+      { "type": "text", "id": "question", "label": "Question", "default": "Can I choose my delivery date?" },
+      { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Yes. Once your order is ready, we provide available dates so you can choose a suitable slot.</p>" }
+    ]}
+  ],
+  "max_blocks": 40,
+  "presets": [
+    { "name": "SD Delivery Experience" }
+  ]
+}
+{% endschema %}

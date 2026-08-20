@@ -1,0 +1,103 @@
+{%- comment -%}
+  Blocks and delays heavy third-party scripts on the homepage.
+  Include near the TOP of <head> in layout/theme.liquid, BEFORE
+  {{ content_for_header }}:
+
+    {% render 'sd-defer-third-party' %}
+    {{ content_for_header }}
+
+  On non-homepage templates this snippet does nothing — it's safe.
+{%- endcomment -%}
+
+{%- if template == 'index' -%}
+<script>
+(function () {
+  // ---- CONFIG ----
+  // URLs containing any of these substrings are BLOCKED on the homepage.
+  // They still load on product/cart/checkout pages (where they're actually needed).
+  var BLOCK = [
+    'paypal.com/sdk',           // PayPal SDK — only needed at checkout
+    'js.klarna.com',            // Klarna widget
+    'widget.trustpilot.com',    // Trustpilot widget
+    'cdn.rebuyengine.com',      // Rebuy recommendations
+    'connect.facebook.net',     // Facebook Pixel
+    'static.hotjar.com',        // Hotjar
+    'script.hotjar.com',
+    'static.klaviyo.com',       // Klaviyo onsite
+    'clarity.ms',               // MS Clarity
+  ];
+
+  // URLs containing any of these substrings are DELAYED until
+  // the user scrolls, clicks, or 3.5 s elapses — whichever first.
+  var DELAY = [
+    'googletagmanager.com/gtag',
+    'googletagmanager.com/gtm',
+    'google-analytics.com',
+    'cdn-cookieyes.com',
+  ];
+
+  function matches(list, url) {
+    for (var i = 0; i < list.length; i++) { if (url.indexOf(list[i]) !== -1) return true; }
+    return false;
+  }
+
+  // ---- 1. Intercept dynamic <script> creation ----
+  var pendingDelayed = [];
+  var origCreate = document.createElement;
+  document.createElement = function (tag) {
+    var el = origCreate.call(document, tag);
+    if (tag && tag.toLowerCase() === 'script') {
+      var _src = '';
+      Object.defineProperty(el, 'src', {
+        configurable: true,
+        get: function () { return _src; },
+        set: function (val) {
+          _src = val;
+          if (matches(BLOCK, val)) return;         // swallowed
+          if (matches(DELAY, val)) {
+            pendingDelayed.push({ el: el, src: val });
+            return;
+          }
+          el.setAttribute('src', val);
+        },
+      });
+    }
+    return el;
+  };
+
+  // ---- 2. Neutralise any <script> tags already in the HTML ----
+  // (Runs ASAP — catches scripts injected by content_for_header before they execute.)
+  function sweep() {
+    var tags = document.querySelectorAll('script[src]');
+    for (var i = 0; i < tags.length; i++) {
+      var s = tags[i], src = s.getAttribute('src') || '';
+      if (matches(BLOCK, src)) { s.parentNode && s.parentNode.removeChild(s); continue; }
+      if (matches(DELAY, src)) {
+        pendingDelayed.push({ src: src });
+        s.parentNode && s.parentNode.removeChild(s);
+      }
+    }
+  }
+  new MutationObserver(sweep).observe(document.documentElement, { childList: true, subtree: true });
+  sweep();
+
+  // ---- 3. Load DELAYED scripts on first interaction or 3.5 s ----
+  var fired = false;
+  function flush() {
+    if (fired) return; fired = true;
+    pendingDelayed.forEach(function (item) {
+      var s = document.createElement('script');
+      // bypass our interceptor — write via setAttribute
+      s.setAttribute('src', item.src);
+      s.async = true;
+      document.head.appendChild(s);
+    });
+    pendingDelayed = [];
+  }
+  ['scroll', 'click', 'touchstart', 'keydown', 'mousemove'].forEach(function (ev) {
+    window.addEventListener(ev, flush, { once: true, passive: true });
+  });
+  setTimeout(flush, 3500);
+})();
+</script>
+{%- endif -%}

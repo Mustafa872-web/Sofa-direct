@@ -1,0 +1,298 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-info-hero",
+      "blocks": {
+        "c1": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Premium-Grade Leather"
+          }
+        },
+        "c2": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Ethically Sourced"
+          }
+        },
+        "c3": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Ages Beautifully"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "settings": {
+        "badge_text": "Genuine Leather Sofas",
+        "heading": "The Leather Difference",
+        "body_text": "The ultimate combination of comfort, luxury and quality. Our genuine leather sofas are made from high-quality, ethically sourced leather - designed with everyday living in mind, and to last for years to come."
+      }
+    },
+    "intro": {
+      "type": "sd-info-intro",
+      "settings": {
+        "eyebrow": "Why Choose Genuine Leather",
+        "heading": "Built To Last. Made To Love.",
+        "body": "<p>Long-lasting, durable and great for everyday use, leather sofas are made for homes. Leather is naturally breathable and flexible, adapting to your body shape while retaining its shape, comfort and support for many years.</p>"
+      }
+    },
+    "benefits": {
+      "type": "sd-info-cards",
+      "blocks": {
+        "b1": {
+          "type": "card",
+          "settings": {
+            "number": "01",
+            "title": "Built To Last",
+            "text": "Durable genuine leather sofas that are scratch, stain and wear resistant.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "b2": {
+          "type": "card",
+          "settings": {
+            "number": "02",
+            "title": "Supreme Comfort",
+            "text": "Softer leather upholstery that keeps you cool and hugs your body for comfort.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "b3": {
+          "type": "card",
+          "settings": {
+            "number": "03",
+            "title": "Timeless Elegance",
+            "text": "Gives the living room a touch of luxury, adds elegance to traditional and contemporary décor.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "b4": {
+          "type": "card",
+          "settings": {
+            "number": "04",
+            "title": "Versatile Styling",
+            "text": "Comes in various colours, textures and finishes to match your décor.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {
+        "eyebrow": "Four Reasons To Love It",
+        "heading": "The Perks of Genuine Leather Sofas",
+        "bg": "cream"
+      }
+    },
+    "collections": {
+      "type": "sd-info-cards",
+      "blocks": {
+        "c1": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Classic Leather Sofas",
+            "text": "Traditional Chesterfield leather sofas and other traditional styles, ideal for elegant living spaces.",
+            "sub1": "Typical features",
+            "list1": "Deep button-tufting\n Rolled arms\n Premium aniline leather finishes",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "c2": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Modern & Contemporary Leather Sofas",
+            "text": "Clean lines, minimalistic and contemporary finishes, perfect for modern and open living designs.",
+            "sub1": "Typical features",
+            "list1": "Clean silhouettes\n Low-profile designs\n Matt, brushed or smooth leather finishes",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "c3": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Recliner & Power Leather Sofas",
+            "text": "Power and manual recliner leather sofas make it easy to relax in comfort.",
+            "sub1": "Typical features",
+            "list1": "Adjustable seating positions\nPower headrests and lumbar support \nUSB charging on selected models",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "c4": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Corner & Modular Leather Sofas",
+            "text": "Versatile leather corner and modular sofas for your room, whatever the shape and size.",
+            "sub1": "Typical features",
+            "list1": "L-shape and U-shape configurations\nInterchangeable chaise options\nBuilt-in storage in selected designs",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "settings": {
+        "eyebrow": "Curated For Every Home",
+        "heading": "Our Leather Sofa Collections",
+        "bg": "white"
+      }
+    },
+    "custom": {
+      "type": "sd-info-cards",
+      "blocks": {
+        "x1": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Colour Choices",
+            "text": "Select from a plethora of leather sofa colours, including traditional brown and black or the latest trends.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "x2": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Finish Options",
+            "text": "Top-quality leather finishes include smooth aniline, pebble-grain and textured.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "x3": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Size & Layout",
+            "text": "Available in 2-seater, 3-seater, corner sofas, chaise lounges and modular sofas.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "x4": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Extra Features",
+            "text": "Some leather sofas feature optional recliners, storage and removable cushions.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        }
+      },
+      "block_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "settings": {
+        "eyebrow": "Made For You",
+        "heading": "Create Your Perfect Leather Sofa",
+        "bg": "cream"
+      }
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "blocks": {
+        "btn1": {
+          "type": "button",
+          "settings": {
+            "label": "Shop Leather Sofas",
+            "link": "/collections/leather-sofas",
+            "outline": false
+          }
+        },
+        "btn2": {
+          "type": "button",
+          "settings": {
+            "label": "Visit Our Showroom",
+            "link": "/pages/our-showroom",
+            "outline": true
+          }
+        }
+      },
+      "block_order": [
+        "btn1",
+        "btn2"
+      ],
+      "settings": {
+        "heading": "Visit our leather sofa showroom or shop online",
+        "body": "Experience our genuine leather sofas in person at our Coventry showroom, or browse our full leather sofa collection online from the comfort of your home."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "intro",
+    "benefits",
+    "collections",
+    "custom",
+    "cta"
+  ]
+}

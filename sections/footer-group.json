@@ -1,0 +1,43 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "sd-footer": {
+      "type": "sd-footer",
+      "settings": {
+        "logo": "shopify://shop_images/SD_Logo_Pure_White.png",
+        "logo_width": 180,
+        "brand_name": "",
+        "tagline": "Quality sofas for everyday living. Designed for UK homes, delivered direct to your door.",
+        "col1_heading": "Shop",
+        "col2_heading": "Support",
+        "col3_heading": "Company",
+        "col4_heading": "",
+        "col5_heading": "",
+        "col1_menu": "shop",
+        "col2_menu": "information",
+        "col3_menu": "company",
+        "col4_menu": "",
+        "col5_menu": "",
+        "show_newsletter": true,
+        "newsletter_heading": "Join our newsletter",
+        "newsletter_text": "Get the latest sofa drops, offers and interior tips — straight to your inbox.",
+        "newsletter_placeholder": "Email address",
+        "show_payments": true,
+        "registration_text": "Registered in England & Wales"
+      }
+    }
+  },
+  "order": [
+    "sd-footer"
+  ]
+}

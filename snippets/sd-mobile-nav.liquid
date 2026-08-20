@@ -1,0 +1,570 @@
+{%- comment -%}
+  SD Mobile Navigation — Furniture Village–style slide-in panel.
+  Uses section.settings.menu (same linklist as desktop) to build:
+    Level 1 → 2-column grid of category cards (top-level links)
+    Level 2 → groups (sub-links) + leaf links (sub-sub-links) + "View all"
+
+  Optional image per top-level link can come from:
+    1. Block override: section block of type "mobile_card" with link_title + image
+    2. Linked collection's featured_image (when link is a collection)
+    3. Section-level fallback image
+
+  Required: render with {% render 'sd-mobile-nav' %} from header.liquid
+{%- endcomment -%}
+
+{%- comment -%}
+  Critical inline CSS — applied instantly so the trigger button, backdrop and
+  panel never flash before the deferred stylesheet below loads (prevents the
+  huge unstyled hamburger box on initial page load).
+{%- endcomment -%}
+<style>
+  .sd-mobile-nav-trigger { display: none !important; }
+  .sd-mobile-nav[hidden] { display: none !important; }
+  .sd-mobile-nav-backdrop { opacity: 0; visibility: hidden; }
+</style>
+
+<link rel="stylesheet" href="{{ 'sd-mobile-nav.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-mobile-nav.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign menu = section.settings.menu
+  assign sale_url = section.settings.mobile_nav_sale_url
+  assign sale_label = section.settings.mobile_nav_sale_label | default: 'Sale + Final Reductions'
+  assign fallback_card_image = section.settings.mobile_nav_fallback_image
+
+  comment
+    Build a quick lookup: title (lowercase) -> image
+    from section blocks of type "mobile_card"
+  endcomment
+  assign card_image_titles = ''
+  assign card_image_blocks = ''
+-%}
+
+{%- capture mobile_nav_card_lookup -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'mobile_card' and block.settings.link_title != blank -%}
+      |{{ block.settings.link_title | downcase | strip }}::{{ block.id }}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<button
+  type="button"
+  class="sd-mobile-nav-trigger"
+  aria-label="Open menu"
+  aria-expanded="false"
+  aria-controls="sd-mobile-nav"
+  data-sdmn-open
+>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <line x1="4" y1="6" x2="20" y2="6"/>
+    <line x1="4" y1="12" x2="20" y2="12"/>
+    <line x1="4" y1="18" x2="20" y2="18"/>
+  </svg>
+</button>
+
+<div class="sd-mobile-nav-backdrop" data-sdmn-backdrop aria-hidden="true"></div>
+
+<aside id="sd-mobile-nav" class="sd-mobile-nav" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+
+  <div class="sd-mobile-nav__top">
+    <button type="button" class="sd-mobile-nav__close" aria-label="Close menu" data-sdmn-close>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <line x1="6" y1="6" x2="18" y2="18"/>
+        <line x1="18" y1="6" x2="6" y2="18"/>
+      </svg>
+    </button>
+    <form action="{{ routes.search_url }}" method="get" class="sd-mobile-nav__search" role="search">
+      <input
+        type="search"
+        name="q"
+        placeholder="Search for a product..."
+        autocomplete="off"
+        aria-label="Search"
+      >
+    </form>
+  </div>
+
+  <div class="sd-mobile-nav__scroll">
+    <div class="sd-mobile-nav__viewport">
+
+    {%- comment -%}── LEVEL 1 — top-level grid ────────────────────────{%- endcomment -%}
+    <div class="sd-mobile-nav__view is-active" data-sdmn-view="root">
+      {%- if sale_url != blank -%}
+        <a href="{{ sale_url }}" class="sd-mobile-nav__cta">{{ sale_label }}</a>
+      {%- endif -%}
+
+      <div class="sd-mobile-nav__grid">
+        {%- for link in menu.links -%}
+          {%- liquid
+            assign img = blank
+            assign block_match = nil
+            for block in section.blocks
+              if block.type == 'mobile_card' and block.settings.link_title != blank
+                assign btitle = block.settings.link_title | downcase | strip
+                assign linktitle = link.title | downcase | strip
+                if btitle == linktitle
+                  assign block_match = block
+                  break
+                endif
+              endif
+            endfor
+            if block_match != nil
+              assign img = block_match.settings.image
+            endif
+            if img == blank and link.type == 'collection_link' and link.object.featured_image != blank
+              assign img = link.object.featured_image
+            endif
+            if img == blank
+              assign img = fallback_card_image
+            endif
+
+            assign has_children = false
+            if link.links.size > 0
+              assign has_children = true
+            endif
+          -%}
+          {%- assign card_active = '' -%}
+          {%- if link.current or link.child_active -%}{%- assign card_active = ' is-active' -%}{%- endif -%}
+          {%- if has_children -%}
+            <button type="button" class="sd-mobile-nav__card{{ card_active }}" data-sdmn-drill="{{ forloop.index }}">
+              <span class="sd-mobile-nav__card-img">
+                {%- if img != blank -%}
+                  {{ img | image_url: width: 400 | image_tag: loading: 'lazy', alt: link.title }}
+                {%- else -%}
+                  <svg viewBox="0 0 80 80" fill="none" stroke="#aaa" stroke-width="1.5"><rect x="6" y="20" width="68" height="44" rx="4"/><line x1="6" y1="36" x2="74" y2="36"/></svg>
+                {%- endif -%}
+              </span>
+              <span class="sd-mobile-nav__card-name">{{ link.title | escape }}</span>
+              <span class="sd-mobile-nav__card-chev" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6,3 11,8 6,13"/>
+                </svg>
+              </span>
+            </button>
+          {%- else -%}
+            <a href="{{ link.url }}" class="sd-mobile-nav__card sd-mobile-nav__card--text{{ card_active }}">
+              <span class="sd-mobile-nav__card-name">{{ link.title | escape }}</span>
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%}── Quick actions: Account / Phone / Help ───────────────{%- endcomment -%}
+      <div class="sd-mobile-nav__quick">
+        <a href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" class="sd-mobile-nav__quick-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+          </svg>
+          {%- if customer -%}{{ customer.first_name | default: 'Account' }}{%- else -%}Sign in{%- endif -%}
+        </a>
+        {%- if section.settings.mobile_nav_phone != blank -%}
+          <a href="tel:{{ section.settings.mobile_nav_phone | replace: ' ', '' }}" class="sd-mobile-nav__quick-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            Call us
+          </a>
+        {%- endif -%}
+        {%- if section.settings.mobile_nav_help_url != blank -%}
+          <a href="{{ section.settings.mobile_nav_help_url }}" class="sd-mobile-nav__quick-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 4"/><circle cx="12" cy="17" r=".6" fill="currentColor"/>
+            </svg>
+            Help
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- comment -%}── LEVEL 2 — drill-in (one per top-level link with children) ────{%- endcomment -%}
+    {%- for link in menu.links -%}
+      {%- if link.links.size > 0 -%}
+        <div class="sd-mobile-nav__view" data-sdmn-view="{{ forloop.index }}">
+
+          <div class="sd-mobile-nav__l2-head">
+            <button type="button" class="sd-mobile-nav__back" aria-label="Back" data-sdmn-back>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="20" height="20">
+                <polyline points="15,6 9,12 15,18"/>
+              </svg>
+            </button>
+            <h2 class="sd-mobile-nav__l2-title">{{ link.title | escape }}</h2>
+            {%- if link.url != blank and link.url != '#' -%}
+              <a href="{{ link.url }}" class="sd-mobile-nav__shop-all">
+                View all
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                  <polyline points="12,5 19,12 12,19"/>
+                </svg>
+              </a>
+            {%- endif -%}
+          </div>
+
+          {%- for sub in link.links -%}
+            {%- liquid
+              assign sub_img = blank
+              if sub.type == 'collection_link' and sub.object.featured_image != blank
+                assign sub_img = sub.object.featured_image
+              endif
+              assign has_grand = false
+              if sub.links.size > 0
+                assign has_grand = true
+              endif
+              assign sub_title_down = sub.title | downcase
+              assign is_color_col = false
+              if sub_title_down contains 'colour' or sub_title_down contains 'color'
+                assign is_color_col = true
+              endif
+
+              comment
+                Pick a contextual icon key based on the group title.
+                Multi-word terms must match before single words.
+              endcomment
+              assign icon_key = 'default'
+              if sub_title_down contains 'colour' or sub_title_down contains 'color'
+                assign icon_key = 'color'
+              elsif sub_title_down contains 'armchair' or sub_title_down contains 'chair'
+                assign icon_key = 'chair'
+              elsif sub_title_down contains 'sofa'
+                assign icon_key = 'sofa'
+              elsif sub_title_down contains 'bed'
+                assign icon_key = 'bed'
+              elsif sub_title_down contains 'table' or sub_title_down contains 'dining'
+                assign icon_key = 'table'
+              elsif sub_title_down contains 'lamp' or sub_title_down contains 'light'
+                assign icon_key = 'lamp'
+              elsif sub_title_down contains 'storage' or sub_title_down contains 'cabinet' or sub_title_down contains 'shelf'
+                assign icon_key = 'storage'
+              elsif sub_title_down contains 'rug' or sub_title_down contains 'carpet'
+                assign icon_key = 'rug'
+              elsif sub_title_down contains 'mirror'
+                assign icon_key = 'mirror'
+              elsif sub_title_down contains 'cushion' or sub_title_down contains 'pillow'
+                assign icon_key = 'cushion'
+              elsif sub_title_down contains 'size' or sub_title_down contains 'dimension'
+                assign icon_key = 'size'
+              elsif sub_title_down contains 'type' or sub_title_down contains 'style' or sub_title_down contains 'category'
+                assign icon_key = 'type'
+              elsif sub_title_down contains 'material' or sub_title_down contains 'fabric' or sub_title_down contains 'leather'
+                assign icon_key = 'material'
+              elsif sub_title_down contains 'price' or sub_title_down contains 'budget' or sub_title_down contains 'sale'
+                assign icon_key = 'price'
+              elsif sub_title_down contains 'brand'
+                assign icon_key = 'brand'
+              endif
+            -%}
+            <div class="sd-mobile-nav__group{% if is_color_col %} sd-mobile-nav__group--colors{% endif %}">
+              <div class="sd-mobile-nav__group-head">
+                <span class="sd-mobile-nav__group-icon">
+                  {%- if sub_img != blank -%}
+                    {{ sub_img | image_url: width: 80 | image_tag: loading: 'lazy', alt: sub.title }}
+                  {%- else -%}
+                    {%- case icon_key -%}
+                      {%- when 'sofa' -%}
+                        <svg viewBox="0 0 32 32" fill="none" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M4 19.5c0-1.4 1.1-2.5 2.5-2.5h19c1.4 0 2.5 1.1 2.5 2.5V23c0 .55-.45 1-1 1H5c-.55 0-1-.45-1-1z" fill="#fff"/>
+                          <path d="M7 17V11.5c0-1.66 1.34-3 3-3h12c1.66 0 3 1.34 3 3V17"/>
+                          <path d="M9 17v-2c0-1 .8-1.85 1.8-1.95l4.4-.45c.5-.05 1.1-.05 1.6 0l4.4.45c1 .1 1.8.95 1.8 1.95v2"/>
+                          <path d="M5.5 24v2"/>
+                          <path d="M26.5 24v2"/>
+                        </svg>
+                      {%- when 'chair' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14V6c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v8"/><path d="M5 14h14v3a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M7 19v2"/><path d="M17 19v2"/></svg>
+                      {%- when 'bed' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V8"/><path d="M21 18V12c0-1.1-.9-2-2-2H3"/><path d="M3 14h18"/><circle cx="7.5" cy="11.5" r="1.5"/></svg>
+                      {%- when 'table' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18"/><path d="M5 9v11"/><path d="M19 9v11"/><path d="M2 9h20l-1-3H3z"/></svg>
+                      {%- when 'lamp' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6l3 7H6z"/><path d="M12 9v10"/><path d="M9 19h6"/></svg>
+                      {%- when 'storage' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16"/><path d="M4 15h16"/><circle cx="9" cy="6" r=".6" fill="#444"/><circle cx="9" cy="12" r=".6" fill="#444"/><circle cx="9" cy="18" r=".6" fill="#444"/></svg>
+                      {%- when 'rug' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="1"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
+                      {%- when 'mirror' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M9 6c-1 1-1 4 0 6"/></svg>
+                      {%- when 'cushion' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7c0-2 2-4 4-4 2 0 3 2 6 2 3 0 4 1 4 4s-1 4-2 6c-1 2-2 4-4 4-2 0-3-2-6-2-3 0-4-2-4-4 0-2 1-4 2-6z"/></svg>
+                      {%- when 'color' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10c0-2-2-2-3-3s0-3-2-3h-2a3 3 0 0 1-3-3z"/><circle cx="7" cy="11" r="1.2" fill="#444" stroke="none"/><circle cx="11" cy="6.5" r="1.2" fill="#444" stroke="none"/><circle cx="16.5" cy="9" r="1.2" fill="#444" stroke="none"/></svg>
+                      {%- when 'size' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M3 9v6"/><path d="M21 9v6"/><path d="M7 10v4"/><path d="M11 10v4"/><path d="M15 10v4"/><path d="M19 10v4"/></svg>
+                      {%- when 'type' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 12.6 12 21l-9-9 8.4-8.4a2 2 0 0 1 1.4-.6H20a1 1 0 0 1 1 1v6.2a2 2 0 0 1-.4 1.4z"/><circle cx="16" cy="8" r="1.2" fill="#444" stroke="none"/></svg>
+                      {%- when 'material' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 8h18"/><path d="M3 13h18"/><path d="M3 18h18"/><path d="M8 3v18"/><path d="M13 3v18"/></svg>
+                      {%- when 'price' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4H8a2 2 0 0 0-2 2v14l6-3 6 3V6a2 2 0 0 0-2-2z"/><path d="M9 9h6"/><path d="M9 13h4"/></svg>
+                      {%- when 'brand' -%}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,3 15,9 22,10 17,15 18,22 12,18.5 6,22 7,15 2,10 9,9"/></svg>
+                      {%- else -%}
+                        <svg viewBox="0 0 32 32" fill="none" stroke="#444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M4 19.5c0-1.4 1.1-2.5 2.5-2.5h19c1.4 0 2.5 1.1 2.5 2.5V23c0 .55-.45 1-1 1H5c-.55 0-1-.45-1-1z" fill="#fff"/>
+                          <path d="M7 17V11.5c0-1.66 1.34-3 3-3h12c1.66 0 3 1.34 3 3V17"/>
+                          <path d="M9 17v-2c0-1 .8-1.85 1.8-1.95l4.4-.45c.5-.05 1.1-.05 1.6 0l4.4.45c1 .1 1.8.95 1.8 1.95v2"/>
+                          <path d="M5.5 24v2"/>
+                          <path d="M26.5 24v2"/>
+                        </svg>
+                    {%- endcase -%}
+                  {%- endif -%}
+                </span>
+                <span class="sd-mobile-nav__group-name">{{ sub.title | escape }}</span>
+              </div>
+
+              {%- if has_grand -%}
+                {%- if is_color_col -%}
+                  {%- comment -%}── Color swatches grid ──{%- endcomment -%}
+                  <ul class="sd-mobile-nav__swatches">
+                    {%- for leaf in sub.links -%}
+                      {%- liquid
+                        assign gc_col = leaf.object
+                        assign gc_color = nil
+                        assign gc_image = nil
+                        if gc_col != nil
+                          assign gc_meta = gc_col.metafields.custom.menu_color.value
+                          if gc_meta != nil
+                            assign gc_color = gc_meta.color_code
+                            assign gc_image = gc_meta.image
+                          endif
+                        endif
+                      -%}
+                      <li>
+                        <a href="{{ leaf.url }}" class="sd-mobile-nav__swatch" aria-label="{{ leaf.title | escape }}" title="{{ leaf.title | escape }}">
+                          {%- if gc_color != blank -%}
+                            <span class="sd-mobile-nav__swatch-dot" style="background:{{ gc_color }}"></span>
+                          {%- elsif gc_image != blank -%}
+                            <span class="sd-mobile-nav__swatch-dot sd-mobile-nav__swatch-dot--img">
+                              {{- gc_image | image_url: width: 80 | image_tag: loading: 'lazy', alt: leaf.title -}}
+                            </span>
+                          {%- else -%}
+                            <span class="sd-mobile-nav__swatch-dot sd-mobile-nav__swatch-dot--placeholder"></span>
+                          {%- endif -%}
+                          <span class="sd-mobile-nav__swatch-name">{{ leaf.title | escape }}</span>
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- else -%}
+                  <ul class="sd-mobile-nav__links">
+                    {%- for leaf in sub.links -%}
+                      {%- liquid
+                        assign leaf_title_down = leaf.title | downcase
+                        assign leaf_icon = ''
+                        if leaf_title_down contains '4 seater' or leaf_title_down contains '4-seater' or leaf_title_down contains 'four seater'
+                          assign leaf_icon = '4seater'
+                        elsif leaf_title_down contains '3 seater' or leaf_title_down contains '3-seater' or leaf_title_down contains 'three seater'
+                          assign leaf_icon = '3seater'
+                        elsif leaf_title_down contains '2 seater' or leaf_title_down contains '2-seater' or leaf_title_down contains 'two seater'
+                          assign leaf_icon = '2seater'
+                        elsif leaf_title_down contains '1 seater' or leaf_title_down contains 'one seater' or leaf_title_down contains 'armchair' or leaf_title_down contains 'arm chair'
+                          assign leaf_icon = '1seater'
+                        endif
+                      -%}
+                      <li>
+                        <a href="{{ leaf.url }}"{% if leaf.current %} class="is-active"{% endif %}>
+                          {%- if leaf_icon != '' -%}
+                            <span class="sd-mobile-nav__leaf-icon" aria-hidden="true">
+                              {%- case leaf_icon -%}
+                                {%- when '1seater' -%}
+                                  <svg viewBox="0 0 28 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="7" width="10" height="5" rx="1"/>
+                                    <path d="M8 7V4a1.5 1.5 0 0 1 1.5-1.5h9A1.5 1.5 0 0 1 20 4v3"/>
+                                    <line x1="9" y1="12" x2="9" y2="15"/>
+                                    <line x1="19" y1="12" x2="19" y2="15"/>
+                                  </svg>
+                                {%- when '2seater' -%}
+                                  <svg viewBox="0 0 28 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="4" y="7" width="20" height="5" rx="1"/>
+                                    <line x1="14" y1="7" x2="14" y2="12"/>
+                                    <path d="M3 7V4a1.5 1.5 0 0 1 1.5-1.5h19A1.5 1.5 0 0 1 25 4v3"/>
+                                    <line x1="4" y1="12" x2="4" y2="15"/>
+                                    <line x1="24" y1="12" x2="24" y2="15"/>
+                                  </svg>
+                                {%- when '3seater' -%}
+                                  <svg viewBox="0 0 28 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="7" width="24" height="5" rx="1"/>
+                                    <line x1="10" y1="7" x2="10" y2="12"/>
+                                    <line x1="18" y1="7" x2="18" y2="12"/>
+                                    <path d="M1 7V4a1.5 1.5 0 0 1 1.5-1.5h23A1.5 1.5 0 0 1 27 4v3"/>
+                                    <line x1="2" y1="12" x2="2" y2="15"/>
+                                    <line x1="26" y1="12" x2="26" y2="15"/>
+                                  </svg>
+                                {%- when '4seater' -%}
+                                  <svg viewBox="0 0 28 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="2" y="7" width="24" height="5" rx="1"/>
+                                    <line x1="8" y1="7" x2="8" y2="12"/>
+                                    <line x1="14" y1="7" x2="14" y2="12"/>
+                                    <line x1="20" y1="7" x2="20" y2="12"/>
+                                    <path d="M1 7V4a1.5 1.5 0 0 1 1.5-1.5h23A1.5 1.5 0 0 1 27 4v3"/>
+                                    <line x1="2" y1="12" x2="2" y2="15"/>
+                                    <line x1="26" y1="12" x2="26" y2="15"/>
+                                  </svg>
+                              {%- endcase -%}
+                            </span>
+                          {%- endif -%}
+                          <span>{{ leaf.title | escape }}</span>
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- comment -%}── Quick actions footer (rendered inside root view) ──{%- endcomment -%}
+    </div>{%- comment -%} viewport end {%- endcomment -%}
+  </div>
+
+  {%- comment -%}── Bottom sticky action bar ─────────────────────{%- endcomment -%}
+  <nav class="sd-mobile-nav__bottombar" aria-label="Quick links">
+    <a href="{{ routes.root_url }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>
+      </svg>
+      Home
+    </a>
+    <a href="{% if shop.customer_accounts_enabled %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+      </svg>
+      Account
+    </a>
+    {%- if section.settings.mobile_nav_wishlist_url != blank -%}
+      <a href="{{ section.settings.mobile_nav_wishlist_url }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 7 4c2 0 3.5 1.2 5 3 1.5-1.8 3-3 5-3 4 0 6.5 4 4.5 8-2.5 4.5-9.5 9-9.5 9z"/>
+        </svg>
+        Wishlist
+      </a>
+    {%- else -%}
+      <a href="{{ routes.search_url }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="17" y2="17"/>
+        </svg>
+        Search
+      </a>
+    {%- endif -%}
+    <a href="{{ routes.cart_url }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 5h2l2 11h10l2-8H7"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+      </svg>
+      Cart
+      {%- if cart.item_count > 0 -%}
+        <span class="sd-mobile-nav__cart-badge">{{ cart.item_count }}</span>
+      {%- endif -%}
+    </a>
+  </nav>
+</aside>
+
+<script>
+(function () {
+  const nav = document.getElementById('sd-mobile-nav');
+  if (!nav) return;
+  const backdrop = document.querySelector('[data-sdmn-backdrop]');
+  const trigger = document.querySelector('[data-sdmn-open]');
+  const closeBtn = nav.querySelector('[data-sdmn-close]');
+  const drillBtns = nav.querySelectorAll('[data-sdmn-drill]');
+  const backBtns = nav.querySelectorAll('[data-sdmn-back]');
+  const views = nav.querySelectorAll('[data-sdmn-view]');
+  const scroller = nav.querySelector('.sd-mobile-nav__scroll');
+
+  function openNav() {
+    nav.removeAttribute('hidden');
+    requestAnimationFrame(() => {
+      nav.classList.add('is-open');
+      backdrop.classList.add('is-open');
+    });
+    document.documentElement.style.overflow = 'hidden';
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    showView('root');
+  }
+  function closeNav() {
+    nav.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    document.documentElement.style.overflow = '';
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    setTimeout(() => { if (!nav.classList.contains('is-open')) nav.setAttribute('hidden', ''); }, 350);
+  }
+  function showView(id) {
+    const target = String(id);
+    views.forEach(v => {
+      const vid = v.dataset.sdmnView;
+      v.classList.remove('is-active', 'is-prev');
+      if (vid === target) {
+        v.classList.add('is-active');
+      } else if (target !== 'root' && vid === 'root') {
+        v.classList.add('is-prev');
+      }
+    });
+    // Scroll the now-active view to top
+    requestAnimationFrame(() => {
+      const active = nav.querySelector('.sd-mobile-nav__view.is-active');
+      if (active) active.scrollTop = 0;
+    });
+  }
+
+  if (trigger) trigger.addEventListener('click', openNav);
+  if (closeBtn) closeBtn.addEventListener('click', closeNav);
+  if (backdrop) backdrop.addEventListener('click', closeNav);
+
+  // Hijack existing Dawn hamburger on mobile — open new nav instead of <details>
+  function isMobile() { return window.matchMedia('(max-width: 989px)').matches; }
+  document.querySelectorAll('header-drawer summary.header__icon--menu, header-drawer .header__icon--menu').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!isMobile()) return;
+      e.preventDefault();
+      e.stopPropagation();
+      // Force-close the <details> if it tried to open
+      var det = el.closest('details');
+      if (det && det.open) det.open = false;
+      openNav();
+    }, true);
+  });
+
+  // On mobile only, relocate <header-drawer> inside .header__icons so it shares
+  // their flex layout (search → account → cart → hamburger with consistent gap).
+  // On desktop, it goes back to its original position.
+  function relocateHamburger() {
+    var drawer = document.querySelector('header-drawer');
+    if (!drawer) return;
+    var header = drawer.closest('.header');
+    if (!header) return;
+    var icons = header.querySelector(':scope > .header__icons');
+    if (!icons) return;
+    if (!drawer.dataset.sdmnOrigSet) {
+      drawer.dataset.sdmnOrigSet = '1';
+      drawer.dataset.sdmnOrigParent = drawer.parentNode === header ? 'header' : 'other';
+    }
+
+    function apply() {
+      if (isMobile()) {
+        if (drawer.parentNode !== icons) icons.appendChild(drawer);
+      } else {
+        if (drawer.parentNode !== header) header.insertBefore(drawer, header.firstChild);
+      }
+    }
+    apply();
+    var mq = window.matchMedia('(max-width: 989px)');
+    if (mq.addEventListener) mq.addEventListener('change', apply);
+    else if (mq.addListener) mq.addListener(apply);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', relocateHamburger);
+  } else {
+    relocateHamburger();
+  }
+  drillBtns.forEach(b => b.addEventListener('click', e => {
+    e.preventDefault();
+    showView(b.dataset.sdmnDrill);
+  }));
+  backBtns.forEach(b => b.addEventListener('click', () => showView('root')));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && nav.classList.contains('is-open')) closeNav();
+  });
+})();
+</script>

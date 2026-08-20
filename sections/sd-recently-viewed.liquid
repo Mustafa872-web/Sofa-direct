@@ -1,0 +1,414 @@
+{%- comment -%}
+  Recently Viewed Products — tracks viewed products in localStorage and
+  renders a horizontal scrollable slider of recent items. If the user has no
+  history, falls back to 4 customizable promo cards from theme editor.
+{%- endcomment -%}
+
+<link rel="stylesheet" href="{{ 'sd-recently-viewed.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-recently-viewed.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- assign has_fb_1 = false -%}
+{%- assign has_fb_2 = false -%}
+{%- assign has_fb_3 = false -%}
+{%- assign has_fb_4 = false -%}
+{%- if section.settings.fallback_image_1 or section.settings.fallback_title_1 != blank -%}{%- assign has_fb_1 = true -%}{%- endif -%}
+{%- if section.settings.fallback_image_2 or section.settings.fallback_title_2 != blank -%}{%- assign has_fb_2 = true -%}{%- endif -%}
+{%- if section.settings.fallback_image_3 or section.settings.fallback_title_3 != blank -%}{%- assign has_fb_3 = true -%}{%- endif -%}
+{%- if section.settings.fallback_image_4 or section.settings.fallback_title_4 != blank -%}{%- assign has_fb_4 = true -%}{%- endif -%}
+
+<section class="sd-recent" data-section-id="{{ section.id }}"
+  data-current-handle="{{ product.handle }}"
+  data-limit="{{ section.settings.max_items | default: 8 }}"
+  data-heading="{{ section.settings.heading | default: 'Recently Viewed' | escape }}"
+  style="padding-top: {{ section.settings.padding_top }}px; padding-bottom: {{ section.settings.padding_bottom }}px;">
+  <div class="sd-recent__inner" id="sd-recent-inner-{{ section.id }}">
+    <div class="sd-recent__head">
+      <span class="sd-recent__eyebrow">{{ section.settings.eyebrow | default: 'Pick up where you left off' }}</span>
+      <h2 class="sd-recent__title" id="sd-recent-title-{{ section.id }}">{{ section.settings.heading | default: 'Recently Viewed' }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="sd-recent__sub">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+    <div class="sd-recent__viewport">
+      <button type="button" class="sd-recent__nav sd-recent__nav--prev" aria-label="Previous">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="sd-recent__track" id="sd-recent-track-{{ section.id }}">
+        {%- comment -%} Fallback promo cards — rendered server-side, replaced by JS if history exists {%- endcomment -%}
+        {%- if has_fb_1 or has_fb_2 or has_fb_3 or has_fb_4 -%}
+          <div class="sd-recent__fallback" id="sd-recent-fallback-{{ section.id }}">
+            {%- assign fb_heading_alt = section.settings.fallback_heading | default: 'Explore our collections' -%}
+            <input type="hidden" id="sd-recent-fb-heading-{{ section.id }}" value="{{ fb_heading_alt | escape }}">
+            {%- for i in (1..4) -%}
+              {%- assign key_img   = 'fallback_image_' | append: i -%}
+              {%- assign key_title = 'fallback_title_' | append: i -%}
+              {%- assign key_sub   = 'fallback_sub_'   | append: i -%}
+              {%- assign key_url   = 'fallback_link_'  | append: i -%}
+              {%- assign fb_img   = section.settings[key_img] -%}
+              {%- assign fb_title = section.settings[key_title] -%}
+              {%- assign fb_sub   = section.settings[key_sub] -%}
+              {%- assign fb_url   = section.settings[key_url] -%}
+              {%- if fb_img or fb_title != blank -%}
+                <a href="{{ fb_url | default: '#' }}" class="sd-recent__card sd-recent__card--fallback">
+                  <div class="sd-recent__media">
+                    {%- if fb_img -%}
+                      <img src="{{ fb_img | image_url: width: 600 }}" alt="{{ fb_title | default: 'Promo' | escape }}" loading="lazy" width="600" height="600" class="sd-recent__img">
+                    {%- endif -%}
+                    <span class="sd-recent__badge">{{ section.settings.fallback_badge | default: 'Editor\u2019s pick' }}</span>
+                  </div>
+                  <div class="sd-recent__info">
+                    <h3 class="sd-recent__name">{{ fb_title | default: 'Shop the collection' }}</h3>
+                    {%- if fb_sub != blank -%}
+                      <p class="sd-recent__fb-sub">{{ fb_sub }}</p>
+                    {%- endif -%}
+                    <span class="sd-recent__cta">
+                      Explore
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </span>
+                  </div>
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+      <button type="button" class="sd-recent__nav sd-recent__nav--next" aria-label="Next">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var KEY = 'sd_recently_viewed';
+  var MAX = 12;
+  var root = document.querySelector('.sd-recent[data-section-id="{{ section.id }}"]');
+  if (!root) return;
+  var current = root.dataset.currentHandle;
+  var limit = parseInt(root.dataset.limit, 10) || 8;
+  var track = document.getElementById('sd-recent-track-{{ section.id }}');
+  var titleEl = document.getElementById('sd-recent-title-{{ section.id }}');
+  var fbHeadingInput = document.getElementById('sd-recent-fb-heading-{{ section.id }}');
+  var hasFallback = !!document.getElementById('sd-recent-fallback-{{ section.id }}');
+
+  // Store current product handle in localStorage (dedupe + prepend)
+  try {
+    var list = JSON.parse(localStorage.getItem(KEY) || '[]');
+    if (!Array.isArray(list)) list = [];
+    list = list.filter(function(h){ return h && h !== current; });
+    if (current) list.unshift(current);
+    list = list.slice(0, MAX);
+    localStorage.setItem(KEY, JSON.stringify(list));
+  } catch (e) { /* show fallback */ }
+
+  var display = [];
+  try {
+    var cur = JSON.parse(localStorage.getItem(KEY) || '[]');
+    display = cur.filter(function(h){ return h !== current; }).slice(0, limit);
+  } catch (e) { display = []; }
+
+  // Helper: attach slider nav after cards render
+  function wireSlider(){
+    var prev = root.querySelector('.sd-recent__nav--prev');
+    var next = root.querySelector('.sd-recent__nav--next');
+    function scrollByDir(dir){
+      var cardW = track.querySelector('.sd-recent__card');
+      var step = cardW ? (cardW.offsetWidth + 16) * 2 : 400;
+      track.scrollBy({ left: dir * step, behavior: 'smooth' });
+    }
+    function updateNav(){
+      if (!prev || !next) return;
+      var maxScroll = track.scrollWidth - track.clientWidth - 2;
+      var overflows = track.scrollWidth > track.clientWidth + 4;
+      prev.style.display = overflows ? '' : 'none';
+      next.style.display = overflows ? '' : 'none';
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= maxScroll;
+    }
+    prev && prev.addEventListener('click', function(){ scrollByDir(-1); });
+    next && next.addEventListener('click', function(){ scrollByDir(1); });
+    track.addEventListener('scroll', updateNav, { passive: true });
+    window.addEventListener('resize', updateNav);
+    updateNav();
+  }
+
+  if (!display.length) {
+    // No history — keep fallback visible if present, else hide section
+    if (hasFallback) {
+      if (titleEl && fbHeadingInput && fbHeadingInput.value) titleEl.textContent = fbHeadingInput.value;
+      wireSlider();
+    } else {
+      root.style.display = 'none';
+    }
+    return;
+  }
+
+  // Fetch each product's JSON and render card
+  var fetches = display.map(function(handle){
+    return fetch('/products/' + handle + '.js')
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .catch(function(){ return null; });
+  });
+
+  Promise.all(fetches).then(function(products){
+    products = products.filter(Boolean).filter(function(p){
+      // Hide addon-only products (tag: "none sale item")
+      var tags = (p.tags || []).map(function(t){ return String(t).toLowerCase(); });
+      return tags.indexOf('none sale item') === -1;
+    });
+    if (!products.length) {
+      if (!hasFallback) root.style.display = 'none';
+      else wireSlider();
+      return;
+    }
+
+    var html = products.map(function(p){
+      var img = p.featured_image || (p.images && p.images[0]) || '';
+      var url = p.url || ('/products/' + p.handle);
+      var price = p.price_min || p.price || 0;
+      var comp  = p.compare_at_price_min || p.compare_at_price || 0;
+      var sale  = comp > price;
+      var priceFmt = '£' + (price/100).toFixed(2).replace(/\.00$/, '');
+      var compFmt  = '£' + (comp /100).toFixed(2).replace(/\.00$/, '');
+      var imgSrc = img ? (img.indexOf('//') === 0 ? 'https:' + img : img) : '';
+      if (imgSrc && imgSrc.indexOf('?') === -1) imgSrc = imgSrc.replace(/\.(jpe?g|png|webp)(\?.*)?$/, '.$1?width=600');
+      var saveAmt = sale ? '£' + ((comp - price)/100).toFixed(2).replace(/\.00$/, '') : '';
+
+      // Determine first available variant for quick-add
+      var firstVariant = null;
+      if (p.variants && p.variants.length) {
+        for (var i = 0; i < p.variants.length; i++) {
+          if (p.variants[i] && p.variants[i].available) { firstVariant = p.variants[i]; break; }
+        }
+        if (!firstVariant) firstVariant = p.variants[0];
+      }
+      var hasOptions = p.variants && p.variants.length > 1;
+      var canQuickAdd = firstVariant && firstVariant.available && !hasOptions;
+      var qaLabel = canQuickAdd ? 'Add to cart'
+                  : (hasOptions ? 'Choose options'
+                  : (firstVariant ? 'Sold out' : 'View product'));
+      var titleSafe = (p.title || '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+      return '<div class="sd-recent__card">' +
+             '<a href="' + url + '" class="sd-recent__card-link" aria-label="' + titleSafe + '">' +
+               '<div class="sd-recent__media">' +
+                 (imgSrc ? '<img src="' + imgSrc + '" alt="' + titleSafe + '" loading="lazy" width="600" height="600" class="sd-recent__img">' : '') +
+                 (sale ? '<span class="sd-recent__tag">Save ' + saveAmt + '</span>' : '') +
+               '</div>' +
+               '<div class="sd-recent__info">' +
+                 '<h3 class="sd-recent__name">' + titleSafe + '</h3>' +
+                 '<div class="sd-recent__price-row">' +
+                   '<span class="sd-recent__price' + (sale ? ' sd-recent__price--sale' : '') + '">' + priceFmt + '</span>' +
+                   (sale ? '<span class="sd-recent__compare"><s>' + compFmt + '</s></span>' : '') +
+                 '</div>' +
+               '</div>' +
+             '</a>' +
+             '<button type="button" class="sd-recent__qa" ' +
+               'data-quick-add="' + (canQuickAdd ? '1' : '0') + '" ' +
+               'data-variant-id="' + (firstVariant ? firstVariant.id : '') + '" ' +
+               'data-product-url="' + url + '" ' +
+               (canQuickAdd ? '' : 'data-disabled="1" ') +
+               (firstVariant && !firstVariant.available ? 'disabled ' : '') + '>' +
+               qaLabel +
+             '</button>' +
+           '</div>';
+    }).join('');
+
+    track.innerHTML = html;
+    wireSlider();
+    wireQuickAdd();
+  });
+
+  function wireQuickAdd(){
+    var buttons = track.querySelectorAll('.sd-recent__qa');
+    buttons.forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var canAdd = btn.getAttribute('data-quick-add') === '1';
+        var varId  = btn.getAttribute('data-variant-id');
+        var purl   = btn.getAttribute('data-product-url');
+        if (!canAdd || !varId) {
+          if (purl) window.location.href = purl;
+          return;
+        }
+        if (btn.dataset.loading === '1') return;
+        btn.dataset.loading = '1';
+        var origLabel = btn.textContent;
+        btn.textContent = 'Adding…';
+        btn.disabled = true;
+
+        var shopRoot = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) ? window.Shopify.routes.root : '/';
+        var fd = new FormData();
+        fd.append('id', varId);
+        fd.append('quantity', '1');
+
+        var cartContainer = document.querySelector('cart-drawer') || document.querySelector('cart-notification');
+        if (cartContainer && typeof cartContainer.getSectionsToRender === 'function') {
+          var ids = cartContainer.getSectionsToRender().map(function(s){ return s.id; }).join(',');
+          fd.append('sections', ids);
+          fd.append('sections_url', window.location.pathname);
+        }
+
+        fetch(shopRoot + 'cart/add.js', {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+          body: fd
+        })
+        .then(function(r){ return r.text().then(function(t){
+          var d = {}; try { d = JSON.parse(t); } catch(e){}
+          return { ok: r.ok, status: r.status, data: d };
+        });})
+        .then(function(res){
+          btn.dataset.loading = '0';
+          btn.disabled = false;
+          if (!res.ok) {
+            btn.textContent = 'Try again';
+            showToast((res.data && res.data.description) || 'Could not add to cart.');
+            setTimeout(function(){ btn.textContent = origLabel; }, 2200);
+            return;
+          }
+          btn.textContent = 'Added ✓';
+          // Refresh cart count bubble(s)
+          try {
+            fetch(shopRoot + 'cart.js', { headers: { 'Accept': 'application/json' } })
+              .then(function(r){ return r.json(); })
+              .then(function(cart){
+                document.querySelectorAll('[data-cart-count], .cart-count-bubble span[aria-hidden="true"]').forEach(function(el){
+                  el.textContent = cart.item_count;
+                });
+              }).catch(function(){});
+          } catch(e){}
+          // Render drawer contents if possible
+          if (cartContainer) {
+            try {
+              if (res.data && res.data.sections && typeof cartContainer.renderContents === 'function') {
+                cartContainer.renderContents(res.data);
+              }
+              if (typeof cartContainer.open === 'function') cartContainer.open();
+            } catch(e){}
+          }
+          setTimeout(function(){ btn.textContent = origLabel; }, 2200);
+        })
+        .catch(function(){
+          btn.dataset.loading = '0';
+          btn.disabled = false;
+          btn.textContent = 'Try again';
+          showToast('Network error. Please try again.');
+          setTimeout(function(){ btn.textContent = origLabel; }, 2200);
+        });
+      });
+    });
+  }
+
+  function showToast(msg){
+    try {
+      var existing = document.getElementById('sd-recent-toast');
+      if (existing) existing.remove();
+      var t = document.createElement('div');
+      t.id = 'sd-recent-toast';
+      t.setAttribute('role','alert');
+      t.textContent = msg;
+      t.style.cssText = 'position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#2F4858;color:#fff;padding:12px 20px;border-radius:9999px;font-family:Montserrat,system-ui,sans-serif;font-size:14px;z-index:99999;box-shadow:0 8px 24px rgba(0,0,0,.18);max-width:90vw;text-align:center;';
+      document.body.appendChild(t);
+      setTimeout(function(){ if (t.parentNode) t.parentNode.removeChild(t); }, 3400);
+    } catch(e){ alert(msg); }
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Recently Viewed",
+  "tag": "section",
+  "class": "sd-recent-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "default": "Pick up where you left off"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Recently Viewed"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading (optional)"
+    },
+    {
+      "type": "range",
+      "id": "max_items",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "label": "Maximum items"
+    },
+    {
+      "type": "header",
+      "content": "Fallback cards (when no history)"
+    },
+    {
+      "type": "text",
+      "id": "fallback_heading",
+      "label": "Fallback heading",
+      "default": "Explore our collections"
+    },
+    {
+      "type": "text",
+      "id": "fallback_badge",
+      "label": "Fallback badge label",
+      "default": "Editor's pick"
+    },
+    { "type": "header", "content": "Card 1" },
+    { "type": "image_picker", "id": "fallback_image_1", "label": "Image 1" },
+    { "type": "text",         "id": "fallback_title_1", "label": "Title 1" },
+    { "type": "text",         "id": "fallback_sub_1",   "label": "Subtitle 1" },
+    { "type": "url",          "id": "fallback_link_1",  "label": "Link 1" },
+    { "type": "header", "content": "Card 2" },
+    { "type": "image_picker", "id": "fallback_image_2", "label": "Image 2" },
+    { "type": "text",         "id": "fallback_title_2", "label": "Title 2" },
+    { "type": "text",         "id": "fallback_sub_2",   "label": "Subtitle 2" },
+    { "type": "url",          "id": "fallback_link_2",  "label": "Link 2" },
+    { "type": "header", "content": "Card 3" },
+    { "type": "image_picker", "id": "fallback_image_3", "label": "Image 3" },
+    { "type": "text",         "id": "fallback_title_3", "label": "Title 3" },
+    { "type": "text",         "id": "fallback_sub_3",   "label": "Subtitle 3" },
+    { "type": "url",          "id": "fallback_link_3",  "label": "Link 3" },
+    { "type": "header", "content": "Card 4" },
+    { "type": "image_picker", "id": "fallback_image_4", "label": "Image 4" },
+    { "type": "text",         "id": "fallback_title_4", "label": "Title 4" },
+    { "type": "text",         "id": "fallback_sub_4",   "label": "Subtitle 4" },
+    { "type": "url",          "id": "fallback_link_4",  "label": "Link 4" },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 60,
+      "label": "Padding top",
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 60,
+      "label": "Padding bottom",
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    { "name": "Recently Viewed" }
+  ]
+}
+{% endschema %}

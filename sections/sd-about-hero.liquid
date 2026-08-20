@@ -1,0 +1,99 @@
+<link rel="stylesheet" href="{{ 'sd-about-hero.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-about-hero.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign heading   = section.settings.heading | default: page.title
+  assign body_text = section.settings.body_text
+  assign badge     = section.settings.badge_text
+-%}
+
+<section class="sd-about-hero{% if section.settings.mobile_image != blank %} sd-about-hero--has-mobile-image{% endif %}" aria-label="{{ heading | escape }}">
+
+  {%- if section.settings.image != blank -%}
+    {{
+      section.settings.image
+      | image_url: width: 1920
+      | image_tag:
+        class: 'sd-about-hero__image sd-about-hero__image--desktop',
+        widths: '600,900,1200,1920',
+        sizes: '100vw',
+        alt: heading,
+        loading: 'eager',
+        fetchpriority: 'high'
+    }}
+  {%- else -%}
+    {{ 'lifestyle-1' | placeholder_svg_tag: 'sd-about-hero__image sd-about-hero__image--desktop' }}
+  {%- endif -%}
+
+  {%- if section.settings.mobile_image != blank -%}
+    {{
+      section.settings.mobile_image
+      | image_url: width: 900
+      | image_tag:
+        class: 'sd-about-hero__image sd-about-hero__image--mobile',
+        widths: '375,550,750,900',
+        sizes: '100vw',
+        alt: heading,
+        loading: 'eager',
+        fetchpriority: 'high'
+    }}
+  {%- endif -%}
+
+  <div class="sd-about-hero__overlay" aria-hidden="true"></div>
+
+  <div class="sd-about-hero__content">
+    {%- if badge != blank -%}
+      <span class="sd-about-hero__badge">{{ badge }}</span>
+    {%- endif -%}
+
+    <h1 class="sd-about-hero__heading">{{ heading | newline_to_br }}</h1>
+
+    {%- if body_text != blank -%}
+      <p class="sd-about-hero__text">{{ body_text }}</p>
+    {%- endif -%}
+  </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "SD About Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Hero image (mobile)"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "About Us"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading (use Enter for line break)",
+      "default": "Comfort\nMade Simple"
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "At Sofa Direct, we believe buying a sofa shouldn't be complicated — or expensive. That's why we focus on what really matters: stylish designs, everyday comfort, and prices that make sense."
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD About Hero"
+    }
+  ]
+}
+{% endschema %}

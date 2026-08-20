@@ -1,0 +1,147 @@
+{%- comment -%}
+  Renders a single filter dropdown button + panel.
+  Accepts:
+  - filter: {Object} Shopify filter object
+  - filter_index: {Number} loop index
+{%- endcomment -%}
+
+{%- liquid
+  assign has_active = false
+  if filter.active_values.size > 0
+    assign has_active = true
+  endif
+  if filter.type == 'price_range'
+    if filter.min_value.value or filter.max_value.value
+      assign has_active = true
+    endif
+  endif
+  assign dropdown_id = 'TfDropdown-' | append: filter.param_name | handleize | append: '-' | append: filter_index
+-%}
+
+<div class="tf-dropdown" data-filter-id="{{ filter.param_name | handleize }}">
+  <button
+    type="button"
+    class="tf-dropdown__trigger{% if has_active %} tf-dropdown__trigger--active{% endif %}"
+    aria-expanded="false"
+    aria-controls="{{ dropdown_id }}"
+  >
+    <span class="tf-dropdown__label">{{ filter.label }}</span>
+    {%- if filter.active_values.size > 0 -%}
+      <span class="tf-dropdown__active-count">{{ filter.active_values.size }}</span>
+    {%- endif -%}
+    <svg class="tf-dropdown__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <div
+    class="tf-dropdown__panel"
+    id="{{ dropdown_id }}"
+    aria-hidden="true"
+  >
+    {%- comment -%} Panel header {%- endcomment -%}
+    <div class="tf-dropdown__panel-header">
+      <span class="tf-dropdown__panel-title">{{ filter.label }}</span>
+      {%- if filter.type == 'list' or filter.type == 'boolean' -%}
+        <span class="tf-dropdown__panel-count">{{ filter.values.size }} options</span>
+      {%- endif -%}
+    </div>
+
+    {%- if filter.type == 'list' or filter.type == 'boolean' -%}
+      <ul class="tf-dropdown__list" role="list">
+        {%- for value in filter.values -%}
+          {%- assign is_disabled = false -%}
+          {%- if value.count == 0 and value.active == false -%}{%- assign is_disabled = true -%}{%- endif -%}
+          <li class="tf-dropdown__item{% if is_disabled %} tf-dropdown__item--disabled{% endif %}{% if value.active %} tf-checked{% endif %}">
+            <label class="tf-dropdown__label-check">
+              <input
+                type="checkbox"
+                class="tf-dropdown__checkbox"
+                name="{{ value.param_name }}"
+                value="{{ value.value }}"
+                {% if value.active %}checked{% endif %}
+                {% if is_disabled %}disabled{% endif %}
+              >
+
+              {%- if value.presentation.swatch.color != blank -%}
+                {%- comment -%} Color swatch dot {%- endcomment -%}
+                <span
+                  class="tf-swatch-dot"
+                  style="background-color: {{ value.presentation.swatch.color }};"
+                  aria-hidden="true"
+                ></span>
+              {%- elsif value.presentation.swatch.image != blank -%}
+                {%- comment -%} Image swatch dot {%- endcomment -%}
+                <span
+                  class="tf-swatch-dot"
+                  style="background-image: url('{{ value.presentation.swatch.image | image_url: width: 40 }}'); background-size: cover;"
+                  aria-hidden="true"
+                ></span>
+              {%- else -%}
+                <span class="tf-dropdown__check-box" aria-hidden="true"></span>
+              {%- endif -%}
+
+              <span class="tf-dropdown__value">{{ value.label | escape }}</span>
+              <span class="tf-dropdown__count-badge">{{ value.count }}</span>
+            </label>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+    {%- elsif filter.type == 'price_range' -%}
+      {%- assign max_price_amount = filter.range_max | money_without_currency | replace: ',', '' -%}
+      <div class="tf-dropdown__price">
+        <p class="tf-dropdown__price-hint">Enter a price range</p>
+        <div class="tf-dropdown__price-inputs">
+          <div class="tf-price-input">
+            <label for="{{ dropdown_id }}-GTE" class="tf-price-input__label">From</label>
+            <div class="tf-price-input__wrap">
+              <span class="tf-price-input__symbol">£</span>
+              <input
+                id="{{ dropdown_id }}-GTE"
+                class="tf-price-input__field"
+                type="number"
+                name="{{ filter.min_value.param_name }}"
+                {%- if filter.min_value.value -%}
+                  value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                {%- endif -%}
+                placeholder="0"
+                min="0"
+                max="{{ max_price_amount }}"
+              >
+            </div>
+          </div>
+          <span class="tf-price-input__sep">—</span>
+          <div class="tf-price-input">
+            <label for="{{ dropdown_id }}-LTE" class="tf-price-input__label">To</label>
+            <div class="tf-price-input__wrap">
+              <span class="tf-price-input__symbol">£</span>
+              <input
+                id="{{ dropdown_id }}-LTE"
+                class="tf-price-input__field"
+                type="number"
+                name="{{ filter.max_value.param_name }}"
+                {%- if filter.max_value.value -%}
+                  value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                {%- endif -%}
+                placeholder="{{ max_price_amount }}"
+                min="0"
+                max="{{ max_price_amount }}"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    <div class="tf-dropdown__footer">
+      {%- if has_active -%}
+        <a href="{{ filter.url_to_remove }}" class="tf-dropdown__clear tf-facet-remove-link">
+          ✕ Clear selection
+        </a>
+      {%- else -%}
+        <span class="tf-dropdown__footer-hint">Select to filter</span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

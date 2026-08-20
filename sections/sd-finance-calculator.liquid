@@ -1,0 +1,396 @@
+<link rel="stylesheet" href="{{ 'sd-finance-calculator.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-finance-calculator.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign eyebrow      = section.settings.eyebrow      | default: '0% Interest-Free Finance'
+  assign heading      = section.settings.heading      | default: 'Spread the cost. Pay your way.'
+  assign subheading   = section.settings.subheading   | default: 'Move it on the sofa today, pay in easy monthly instalments. Subject to status.'
+  assign apr          = section.settings.apr          | default: 0
+  assign term_options = section.settings.term_options | default: '6,9,12,24,36'
+  assign default_term = section.settings.default_term | default: 12
+  assign show_deposit = section.settings.show_deposit
+  assign min_deposit  = section.settings.min_deposit  | default: 0
+  assign max_deposit  = section.settings.max_deposit  | default: 50
+  assign cta_label    = section.settings.cta_label    | default: 'Apply for Finance'
+  assign cta_url      = section.settings.cta_url
+  assign disclaimer   = section.settings.disclaimer   | default: 'Finance provided by a 3rd-party lender. Representative example shown. Subject to status and acceptance. Credit subject to age and affordability checks. UK residents only.'
+  assign provider_logo = section.settings.provider_logo
+  assign currency_symbol = section.settings.currency_symbol | default: '£'
+
+  assign auto_price = false
+  if section.settings.use_product_price and product.price
+    assign auto_price = true
+    assign price_pence = product.price
+    assign price_value = price_pence | divided_by: 100
+  else
+    assign price_value = section.settings.example_price | default: 999
+  endif
+
+  assign term_arr = term_options | split: ','
+-%}
+
+<section
+  id="sd-fc-{{ section.id }}"
+  class="sd-fc"
+  aria-label="{{ heading | escape }}"
+  data-sd-fc
+  data-apr="{{ apr }}"
+  data-currency="{{ currency_symbol }}"
+>
+  <div class="sd-fc__bg" aria-hidden="true">
+    <span class="sd-fc__halo sd-fc__halo--1"></span>
+    <span class="sd-fc__halo sd-fc__halo--2"></span>
+  </div>
+
+  <div class="sd-fc__container page-width">
+
+    <header class="sd-fc__header">
+      {%- if eyebrow != blank -%}
+        <span class="sd-fc__eyebrow">
+          <span class="sd-fc__eyebrow-line"></span>
+          {{ eyebrow }}
+          <span class="sd-fc__eyebrow-line"></span>
+        </span>
+      {%- endif -%}
+      {%- if heading != blank -%}
+        <h2 class="sd-fc__heading">{{ heading }}</h2>
+      {%- endif -%}
+      {%- if subheading != blank -%}
+        <p class="sd-fc__subheading">{{ subheading }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="sd-fc__card">
+
+      {%- comment -%} ── LEFT — inputs ── {%- endcomment -%}
+      <div class="sd-fc__inputs">
+
+        {%- comment -%} Price input row {%- endcomment -%}
+        <div class="sd-fc__field">
+          <label class="sd-fc__label" for="sd-fc-price-{{ section.id }}">Sofa price</label>
+          <div class="sd-fc__price-input">
+            <span class="sd-fc__price-symbol">{{ currency_symbol }}</span>
+            <input
+              type="number"
+              id="sd-fc-price-{{ section.id }}"
+              class="sd-fc__price-field"
+              data-sd-fc-price
+              min="100"
+              step="1"
+              value="{{ price_value | money_without_currency | remove: ',' | times: 1 | round }}"
+              {% if auto_price %}data-auto-price="true"{% endif %}
+            >
+          </div>
+        </div>
+
+        {%- comment -%} Term selector {%- endcomment -%}
+        <div class="sd-fc__field">
+          <label class="sd-fc__label">Choose your term</label>
+          <div class="sd-fc__terms" role="radiogroup" aria-label="Repayment term">
+            {%- for term in term_arr -%}
+              {%- assign t = term | strip | times: 1 -%}
+              {%- if t > 0 -%}
+                <button
+                  type="button"
+                  class="sd-fc__term{% if t == default_term %} is-active{% endif %}"
+                  data-sd-fc-term="{{ t }}"
+                  role="radio"
+                  aria-checked="{% if t == default_term %}true{% else %}false{% endif %}"
+                >
+                  <strong>{{ t }}</strong>
+                  <span>months</span>
+                </button>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+
+        {%- if show_deposit -%}
+          <div class="sd-fc__field">
+            <label class="sd-fc__label" for="sd-fc-deposit-{{ section.id }}">
+              Deposit
+              <span class="sd-fc__deposit-val" data-sd-fc-deposit-val>0%</span>
+            </label>
+            <input
+              type="range"
+              id="sd-fc-deposit-{{ section.id }}"
+              class="sd-fc__deposit-slider"
+              data-sd-fc-deposit
+              min="{{ min_deposit }}"
+              max="{{ max_deposit }}"
+              step="5"
+              value="{{ min_deposit }}"
+            >
+            <div class="sd-fc__deposit-ends">
+              <span>{{ min_deposit }}%</span>
+              <span>{{ max_deposit }}%</span>
+            </div>
+          </div>
+        {%- endif -%}
+
+      </div>
+
+      {%- comment -%} ── RIGHT — output summary ── {%- endcomment -%}
+      <div class="sd-fc__output">
+        <span class="sd-fc__output-label">Pay only</span>
+        <div class="sd-fc__output-amount">
+          <span class="sd-fc__output-currency">{{ currency_symbol }}</span>
+          <span class="sd-fc__output-figure" data-sd-fc-monthly>0.00</span>
+          <span class="sd-fc__output-period">/ month</span>
+        </div>
+        <div class="sd-fc__output-meta">
+          <div class="sd-fc__output-row">
+            <span>Total payable</span>
+            <strong><span data-sd-fc-total>{{ currency_symbol }}0</span></strong>
+          </div>
+          <div class="sd-fc__output-row">
+            <span>Representative APR</span>
+            <strong><span data-sd-fc-apr>{{ apr }}</span>%</strong>
+          </div>
+          {%- if show_deposit -%}
+            <div class="sd-fc__output-row">
+              <span>Deposit</span>
+              <strong><span data-sd-fc-deposit-amt>{{ currency_symbol }}0</span></strong>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- if cta_url != blank -%}
+          <a href="{{ cta_url }}" class="sd-fc__cta" target="_blank" rel="noopener">
+            {{ cta_label }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+
+        {%- if provider_logo != blank -%}
+          <div class="sd-fc__provider">
+            <span class="sd-fc__provider-text">Finance by</span>
+            {{
+              provider_logo
+              | image_url: width: 240
+              | image_tag:
+                class: 'sd-fc__provider-logo',
+                widths: '120,160,240',
+                sizes: '120px',
+                alt: 'Finance provider'
+            }}
+          </div>
+        {%- endif -%}
+      </div>
+
+    </div>
+
+    {%- if disclaimer != blank -%}
+      <p class="sd-fc__disclaimer">{{ disclaimer }}</p>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+(function(){
+  var root = document.getElementById('sd-fc-{{ section.id }}');
+  if(!root) return;
+
+  var apr = parseFloat(root.dataset.apr) || 0;
+  var currency = root.dataset.currency || '£';
+  var priceInput = root.querySelector('[data-sd-fc-price]');
+  var termBtns = root.querySelectorAll('[data-sd-fc-term]');
+  var depositSlider = root.querySelector('[data-sd-fc-deposit]');
+  var depositValEl = root.querySelector('[data-sd-fc-deposit-val]');
+  var depositAmtEl = root.querySelector('[data-sd-fc-deposit-amt]');
+  var monthlyEl = root.querySelector('[data-sd-fc-monthly]');
+  var totalEl = root.querySelector('[data-sd-fc-total]');
+
+  var fmt = function(n){
+    return n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  var fmtInt = function(n){
+    return Math.round(n).toLocaleString('en-GB');
+  };
+
+  function getActiveTerm(){
+    var active = root.querySelector('[data-sd-fc-term].is-active');
+    return active ? parseInt(active.dataset.sdFcTerm, 10) : 12;
+  }
+
+  function compute(){
+    var price = Math.max(0, parseFloat(priceInput.value) || 0);
+    var term = getActiveTerm();
+    var depositPct = depositSlider ? parseFloat(depositSlider.value) || 0 : 0;
+    var depositAmt = price * depositPct / 100;
+    var principal = price - depositAmt;
+    var monthly, total;
+
+    if (apr <= 0) {
+      monthly = principal / term;
+      total = principal;
+    } else {
+      var r = apr / 100 / 12;
+      monthly = principal * r / (1 - Math.pow(1 + r, -term));
+      total = monthly * term;
+    }
+
+    if (!isFinite(monthly) || monthly < 0) { monthly = 0; total = 0; }
+
+    monthlyEl.textContent = fmt(monthly);
+    totalEl.textContent = currency + fmtInt(total + depositAmt);
+    if (depositValEl) depositValEl.textContent = depositPct + '%';
+    if (depositAmtEl) depositAmtEl.textContent = currency + fmtInt(depositAmt);
+  }
+
+  termBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      termBtns.forEach(function(b){
+        b.classList.remove('is-active');
+        b.setAttribute('aria-checked', 'false');
+      });
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-checked', 'true');
+      compute();
+    });
+  });
+
+  priceInput.addEventListener('input', compute);
+  if (depositSlider) depositSlider.addEventListener('input', compute);
+
+  compute();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Finance Calculator",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Copy"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "0% Interest-Free Finance"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Spread the cost. Pay your way."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Move it on the sofa today, pay in easy monthly instalments. Subject to status."
+    },
+    {
+      "type": "header",
+      "content": "Calculator"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_product_price",
+      "label": "Auto-use current product price",
+      "info": "When enabled on a product page, the calculator starts with that product's price.",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "example_price",
+      "label": "Default price (used when no product price available)",
+      "default": 999
+    },
+    {
+      "type": "text",
+      "id": "currency_symbol",
+      "label": "Currency symbol",
+      "default": "£"
+    },
+    {
+      "type": "number",
+      "id": "apr",
+      "label": "Representative APR (%)",
+      "default": 0,
+      "info": "Use 0 for 0% interest-free."
+    },
+    {
+      "type": "text",
+      "id": "term_options",
+      "label": "Term options (months, comma separated)",
+      "default": "6,9,12,24,36"
+    },
+    {
+      "type": "number",
+      "id": "default_term",
+      "label": "Default selected term",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Deposit slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_deposit",
+      "label": "Show deposit slider",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "min_deposit",
+      "label": "Minimum deposit (%)",
+      "default": 0
+    },
+    {
+      "type": "number",
+      "id": "max_deposit",
+      "label": "Maximum deposit (%)",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Apply for Finance"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Apply URL",
+      "info": "External finance provider URL (e.g. DivideBuy, Klarna, Clearpay)."
+    },
+    {
+      "type": "image_picker",
+      "id": "provider_logo",
+      "label": "Finance provider logo"
+    },
+    {
+      "type": "header",
+      "content": "Legal"
+    },
+    {
+      "type": "textarea",
+      "id": "disclaimer",
+      "label": "Disclaimer",
+      "default": "Finance provided by a 3rd-party lender. Representative example shown. Subject to status and acceptance. Credit subject to age and affordability checks. UK residents only."
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Finance Calculator"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product", "page"]
+  }
+}
+{% endschema %}

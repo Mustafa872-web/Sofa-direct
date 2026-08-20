@@ -1,0 +1,488 @@
+/* ============================================================
+   SD Shop the Look — Hotspot Image Section
+   ============================================================
+   Figma node 149:199  ·  1700 × 756px container
+   Border-radius: 32px
+   Hotspots: pulsing + markers, product card on click
+   Card: rgba(0,0,0,0.8), rounded 32px, padding 32px
+   ============================================================ */
+
+/* ── Product-page outer container wrapper ─────────────────── */
+.sd-stl-outer--container {
+  max-width: 170rem;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* Inside the outer wrapper the section fills available width */
+.sd-stl-outer .sd-stl {
+  max-width: none;
+  margin: 0;
+}
+
+/* ── Heading (product page) ───────────────────────────────── */
+.sd-stl__heading-wrap {
+  text-align: center;
+  margin-bottom: 2.4rem;
+}
+
+.sd-stl__heading {
+  font-size: 3.2rem;
+  font-weight: 700;
+  margin: 0 0 0.8rem;
+}
+
+.sd-stl__subheading {
+  font-size: 1.6rem;
+  color: #666;
+  margin: 0;
+}
+
+/* ── Section shell ────────────────────────────────────────── */
+.sd-stl {
+  position: relative;
+  max-width: 170rem;
+  margin: 0 auto;
+}
+
+.sd-stl--full {
+  max-width: 100vw;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+/* ── Image wrapper — only the image gets clipped by radius ── */
+.sd-stl__img-wrap {
+  position: relative;
+  width: 100%;
+  display: block;
+  border-radius: 3.2rem;
+  overflow: hidden;
+}
+
+.sd-stl--full .sd-stl__img-wrap {
+  border-radius: 0;
+}
+
+.sd-stl__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.sd-stl__placeholder svg {
+  width: 100%;
+  height: auto;
+}
+
+/* ── Hotspot layer — sits on top of img-wrap, NOT inside it ── */
+.sd-stl__hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ── Single hotspot ───────────────────────────────────────── */
+.sd-stl__hotspot {
+  position: absolute;
+  z-index: 6;
+  pointer-events: auto;
+}
+
+/* ── Marker button ────────────────────────────────────────── */
+.sd-stl__marker {
+  width: 3.0rem;
+  height: 3.0rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  transform: translate(-50%, -50%);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sd-stl__marker:hover {
+  transform: translate(-50%, -50%) scale(1.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.sd-stl__marker:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* Plus icon inside marker */
+.sd-stl__marker-icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  position: relative;
+}
+
+.sd-stl__marker-icon::before,
+.sd-stl__marker-icon::after {
+  content: '';
+  position: absolute;
+  background: #333;
+  border-radius: 1px;
+}
+
+.sd-stl__marker-icon::before {
+  width: 2px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.sd-stl__marker-icon::after {
+  width: 100%;
+  height: 2px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+/* Active marker */
+.sd-stl__hotspot.is-active .sd-stl__marker {
+  background: #fff;
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+/* ── Pulse ring animation ─────────────────────────────────── */
+.sd-stl__pulse {
+  position: absolute;
+  width: 2.9rem;
+  height: 2.9rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  animation: sd-stl-pulse 2.4s ease-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes sd-stl-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+
+.sd-stl__hotspot.is-active .sd-stl__pulse {
+  animation: none;
+  opacity: 0;
+}
+
+/* ── Product card — opens ABOVE hotspot on desktop ────────── */
+.sd-stl__card {
+  position: absolute;
+  bottom: calc(100% + 1.2rem);
+  left: 0;
+  width: 28rem;
+  background: rgba(0, 0, 0, 0.80);
+  border-radius: 3.2rem;
+  padding: 3.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.0rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.96);
+  transition:
+    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.3s,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.sd-stl__hotspot.is-active .sd-stl__card {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Card flips to right-align when hotspot is past 55% */
+.sd-stl__hotspot--flip .sd-stl__card {
+  left: auto;
+  right: 0;
+}
+
+/* ── Card pills ───────────────────────────────────────────── */
+.sd-stl__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 99.9rem;
+  padding: 0.4rem 1.6rem;
+  font-family: var(--sd-font-body);
+  font-weight: 700;
+  font-size: 1.6rem;
+  line-height: normal;
+  color: #000;
+  text-transform: capitalize;
+  white-space: nowrap;
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+/* Title pill — allows wrapping for long product titles */
+.sd-stl__pill--title {
+  display: inline-block;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  border-radius: 1.6rem;
+  padding: 0.6rem 1.4rem;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  text-align: left;
+  max-width: 100%;
+}
+
+/* ── Card body text ───────────────────────────────────────── */
+.sd-stl__card-body {
+  font-family: var(--sd-font-body);
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: normal;
+  color: #fff;
+  text-transform: capitalize;
+  margin: 0;
+}
+
+/* ── Card CTA row ─────────────────────────────────────────── */
+.sd-stl__card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.sd-stl__card-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #fff;
+  border-radius: 99.9rem;
+  padding: 0.4rem 1.2rem;
+  font-family: var(--sd-font-body);
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: normal;
+  color: #fff;
+  text-decoration: none;
+  text-transform: capitalize;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sd-stl__card-link:hover {
+  background: #fff;
+  color: #000;
+}
+
+.sd-stl__card-arrow {
+  width: 2.0rem;
+  height: 2.0rem;
+  flex-shrink: 0;
+}
+
+.sd-stl__card-arrow circle {
+  fill: #fff;
+}
+
+.sd-stl__card-arrow path {
+  stroke: #000;
+}
+
+/* ── Backdrop — closes card on tap outside ────────────────── */
+.sd-stl__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  display: none;
+}
+
+.sd-stl.has-active-hotspot .sd-stl__backdrop {
+  display: block;
+}
+
+/* ============================================================
+   SCROLL-TRIGGERED ANIMATIONS
+   ============================================================ */
+
+.sd-stl__img {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.sd-stl__hotspot {
+  opacity: 0;
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-stl.is-visible .sd-stl__img {
+  opacity: 1;
+}
+
+.sd-stl.is-visible .sd-stl__hotspot {
+  opacity: 1;
+}
+
+.sd-stl.is-visible .sd-stl__hotspot:nth-child(1) { transition-delay: 0.3s; }
+.sd-stl.is-visible .sd-stl__hotspot:nth-child(2) { transition-delay: 0.5s; }
+.sd-stl.is-visible .sd-stl__hotspot:nth-child(3) { transition-delay: 0.7s; }
+.sd-stl.is-visible .sd-stl__hotspot:nth-child(4) { transition-delay: 0.9s; }
+.sd-stl.is-visible .sd-stl__hotspot:nth-child(5) { transition-delay: 1.1s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-stl__img,
+  .sd-stl__hotspot {
+    transition-duration: 0.4s !important;
+  }
+  .sd-stl__pulse { animation: none !important; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* ── Outer container responsive padding ── */
+@media screen and (min-width: 750px) {
+  .sd-stl-outer--container {
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+}
+
+/* ── Tablet 750–989px ── */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .sd-stl__img-wrap { border-radius: 2.4rem; }
+
+  .sd-stl__marker {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .sd-stl__marker-icon {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .sd-stl__pulse {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .sd-stl__card {
+    width: 22rem;
+    padding: 2.0rem;
+    border-radius: 2.0rem;
+  }
+
+  .sd-stl__pill { font-size: 1.3rem; padding: 0.3rem 1.2rem; }
+  .sd-stl__card-body { font-size: 1.2rem; }
+  .sd-stl__card-link { font-size: 1.1rem; }
+}
+
+/* ── Mobile ≤ 749px ── */
+@media screen and (max-width: 749px) {
+  .sd-stl__img-wrap { border-radius: 1.6rem; }
+
+  .sd-stl__marker {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  .sd-stl__marker-icon {
+    width: 1.0rem;
+    height: 1.0rem;
+  }
+
+  .sd-stl__pulse {
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+
+  /* Card → fixed bottom sheet, NOT absolute */
+  .sd-stl__card {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 2.4rem 2.4rem 0 0;
+    padding: 2.4rem;
+    transform: translateY(100%);
+    z-index: 200;
+  }
+
+  /* Override the --flip right positioning on mobile */
+  .sd-stl__hotspot--flip .sd-stl__card {
+    left: 0;
+    right: 0;
+  }
+
+  .sd-stl__hotspot.is-active .sd-stl__card {
+    transform: translateY(0);
+  }
+
+  .sd-stl__pill { font-size: 1.4rem; }
+  .sd-stl__card-body { font-size: 1.4rem; }
+  .sd-stl__card-link { font-size: 1.3rem; }
+
+  /* Darken backdrop on mobile */
+  .sd-stl.has-active-hotspot .sd-stl__backdrop {
+    display: block;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 199;
+  }
+}
+
+/* ── Very small ≤ 400px ── */
+@media screen and (max-width: 400px) {
+  .sd-stl__marker {
+    width: 2.0rem;
+    height: 2.0rem;
+  }
+
+  .sd-stl__marker-icon {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+
+  .sd-stl__pulse {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .sd-stl__card {
+    padding: 2.0rem;
+  }
+
+  .sd-stl__pill { font-size: 1.3rem; }
+  .sd-stl__card-body { font-size: 1.3rem; }
+}

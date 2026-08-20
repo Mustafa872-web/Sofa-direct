@@ -1,0 +1,275 @@
+{%- if section.settings.enabled -%}
+  {%- liquid
+    assign quick_prompts = section.settings.quick_prompts | newline_to_br | split: '<br />'
+
+    capture suggestions_json
+      echo '['
+      assign rendered_suggestion = false
+      for prompt in quick_prompts
+        assign cleaned_prompt = prompt | strip
+        if cleaned_prompt != blank
+          if rendered_suggestion
+            echo ','
+          endif
+          echo cleaned_prompt | json
+          assign rendered_suggestion = true
+        endif
+      endfor
+      echo ']'
+    endcapture
+
+    capture policy_links_json
+      echo '['
+      assign rendered_policy = false
+      if section.settings.shipping_policy_page != blank
+        if rendered_policy
+          echo ','
+        endif
+        echo '{"title":"Shipping policy","url":'
+        echo section.settings.shipping_policy_page.url | json
+        echo '}'
+        assign rendered_policy = true
+      endif
+      if section.settings.returns_policy_page != blank
+        if rendered_policy
+          echo ','
+        endif
+        echo '{"title":"Returns policy","url":'
+        echo section.settings.returns_policy_page.url | json
+        echo '}'
+        assign rendered_policy = true
+      endif
+      if section.settings.faq_page != blank
+        if rendered_policy
+          echo ','
+        endif
+        echo '{"title":"FAQs","url":'
+        echo section.settings.faq_page.url | json
+        echo '}'
+      endif
+      echo ']'
+    endcapture
+  -%}
+
+  <link rel="stylesheet" href="{{ 'sd-ai-chat-agent.css' | asset_url }}" media="print" onload="this.media='all'">
+  <noscript>{{ 'sd-ai-chat-agent.css' | asset_url | stylesheet_tag }}</noscript>
+  <script>
+    (function () {
+      var loaded = false;
+      var src = {{ 'sd-ai-chat-agent.js' | asset_url | json }};
+      function load() {
+        if (loaded) return; loaded = true;
+        var s = document.createElement('script');
+        s.src = src; s.defer = true;
+        document.head.appendChild(s);
+      }
+      var events = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
+      events.forEach(function (e) { addEventListener(e, load, { once: true, passive: true }); });
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(load, { timeout: 4000 });
+      } else {
+        setTimeout(load, 4000);
+      }
+    })();
+  </script>
+
+  <sd-ai-chat-agent id="sd-ai-chat-agent-{{ section.id }}" class="sd-ai-chat-agent-host" data-section-id="{{ section.id }}">
+    <script type="application/json" data-chat-config>
+      {
+        "endpoint": {{ section.settings.mcp_endpoint | json }},
+        "logoUrl": {{ section.settings.logo_image | image_url: width: 160 | default: "" | json }},
+        "assistantName": {{ section.settings.assistant_name | json }},
+        "launcherLabel": {{ section.settings.launcher_label | json }},
+        "greetingMessage": {{ section.settings.greeting_message | json }},
+        "inputPlaceholder": {{ section.settings.input_placeholder | json }},
+        "emptyStateMessage": {{ section.settings.empty_state_message | json }},
+        "policySummary": {{ section.settings.policy_summary | json }},
+        "defaultSearchQuery": {{ section.settings.default_search_query | json }},
+        "openByDefault": {{ section.settings.open_by_default | json }},
+        "allowCheckout": {{ section.settings.allow_checkout | json }},
+        "showCheckoutBar": {{ section.settings.show_checkout_bar | json }},
+        "allowCartMutations": {{ section.settings.allow_cart_mutations | json }},
+        "enableVoice": {{ section.settings.enable_voice | json }},
+        "enableTts": {{ section.settings.enable_tts | json }},
+        "enableWhatsapp": {{ section.settings.enable_whatsapp | json }},
+        "whatsappNumber": {{ section.settings.whatsapp_number | json }},
+        "whatsappMessage": {{ section.settings.whatsapp_message | json }},
+        "fallbackEnabled": {{ section.settings.enable_local_fallback | json }},
+        "currencyCode": {{ cart.currency.iso_code | default: localization.country.currency.iso_code | default: 'GBP' | json }},
+        "moneyFormat": {{ shop.money_with_currency_format | json }},
+        "routes": {
+          "cart": {{ routes.cart_url | json }},
+          "predictive": {{ routes.predictive_search_url | json }}
+        },
+        "suggestions": {{ suggestions_json | strip }},
+        "policyLinks": {{ policy_links_json | strip }}
+      }
+    </script>
+  </sd-ai-chat-agent>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "SD AI Shopping Agent",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable chat assistant",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Header logo",
+      "info": "Shown in the chat panel header. Recommended height: 32–40px."
+    },
+    {
+      "type": "text",
+      "id": "assistant_name",
+      "label": "Assistant name",
+      "default": "SofaDirect Concierge"
+    },
+    {
+      "type": "text",
+      "id": "launcher_label",
+      "label": "Launcher label",
+      "default": "Ask AI"
+    },
+    {
+      "type": "text",
+      "id": "mcp_endpoint",
+      "label": "MCP chat endpoint",
+      "default": "/apps/sd-ai-agent/chat",
+      "info": "Set this to your Shopify app proxy endpoint that connects to your MCP backend."
+    },
+    {
+      "type": "text",
+      "id": "greeting_message",
+      "label": "Greeting message",
+      "default": "Hi, I can help you find the right sofa, answer delivery questions, and build your cart."
+    },
+    {
+      "type": "text",
+      "id": "input_placeholder",
+      "label": "Input placeholder",
+      "default": "Ask for products, delivery info, or checkout help"
+    },
+    {
+      "type": "text",
+      "id": "empty_state_message",
+      "label": "Empty state",
+      "default": "Try: \"Find a corner sofa under 1200 GBP\""
+    },
+    {
+      "type": "textarea",
+      "id": "quick_prompts",
+      "label": "Quick prompts (one per line)",
+      "default": "Find a 3 seater sofa under 900 GBP\nWhat are your delivery timelines?\nAdd your best-selling sofa to my cart"
+    },
+    {
+      "type": "textarea",
+      "id": "policy_summary",
+      "label": "Policy summary fallback",
+      "default": "Delivery and return details are available on our policy pages. Ask me about shipping windows, delivery charges, or returns."
+    },
+    {
+      "type": "text",
+      "id": "default_search_query",
+      "label": "Default product search query",
+      "default": "sofa"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_local_fallback",
+      "label": "Use local fallback when endpoint is unavailable",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_cart_mutations",
+      "label": "Allow chat to add or update cart",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_checkout",
+      "label": "Allow chat checkout handoff",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_checkout_bar",
+      "label": "Show Checkout Now button in panel",
+      "default": true,
+      "info": "Displays a persistent checkout button above the input bar."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_voice",
+      "label": "Enable voice input (microphone)",
+      "default": true,
+      "info": "Uses the browser's Web Speech API. Hides the mic button if not supported."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_tts",
+      "label": "Enable AI voice replies (text-to-speech)",
+      "default": true,
+      "info": "AI will speak its responses aloud during voice conversation mode."
+    },
+    {
+      "type": "checkbox",
+      "id": "open_by_default",
+      "label": "Open chat by default",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "WhatsApp"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_whatsapp",
+      "label": "Show WhatsApp button",
+      "default": false,
+      "info": "Adds a WhatsApp button in the chat header that opens a conversation with your team."
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp number",
+      "info": "Include the country code, digits only (e.g. 447911123456 for the UK). No +, spaces, or dashes needed."
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_message",
+      "label": "Pre-filled message",
+      "default": "Hi SofaDirect, I have a question about my order."
+    },
+    {
+      "type": "page",
+      "id": "shipping_policy_page",
+      "label": "Shipping policy page"
+    },
+    {
+      "type": "page",
+      "id": "returns_policy_page",
+      "label": "Returns policy page"
+    },
+    {
+      "type": "page",
+      "id": "faq_page",
+      "label": "FAQ page"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD AI Shopping Agent"
+    }
+  ]
+}
+{% endschema %}

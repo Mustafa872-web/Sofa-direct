@@ -1,0 +1,141 @@
+{%- comment -%}
+  Renders a product card for the top-filter collection layout.
+  Accepts:
+  - product:    {Object}  Product Liquid object
+  - lazy_load:  {Boolean} Lazy-load images (default true)
+  - section_id: {String}  Parent section ID
+{%- endcomment -%}
+
+{%- liquid
+  assign lazy = lazy_load | default: true
+
+  assign has_compare = false
+  if product.compare_at_price > product.price
+    assign has_compare = true
+    assign save_amount = product.compare_at_price | minus: product.price
+  endif
+
+  assign badge_label = ''
+  if product.tags contains 'New In' or product.tags contains 'new-in' or product.tags contains 'New'
+    assign badge_label = 'New In'
+  elsif has_compare
+    assign badge_label = 'Sale'
+  elsif product.tags contains 'Best Seller' or product.tags contains 'best-seller'
+    assign badge_label = 'Best Seller'
+  endif
+
+  assign color_count = 0
+  for option in product.options_with_values
+    if option.name == 'Color' or option.name == 'Colour' or option.name == 'colour' or option.name == 'color'
+      assign color_count = option.values.size
+    endif
+  endfor
+
+  assign image_count = product.images.size
+-%}
+
+<div class="tf-card" data-product-id="{{ product.id }}">
+
+  {%- comment -%} ── Media ── {%- endcomment -%}
+  <div class="tf-card__media">
+
+    {%- if badge_label != blank -%}
+      <span class="tf-card__badge tf-card__badge--{{ badge_label | downcase | replace: ' ', '-' }}">
+        {{ badge_label }}
+      </span>
+    {%- endif -%}
+
+    <button
+      type="button"
+      class="tf-card__wishlist"
+      aria-label="Add {{ product.title | escape }} to wishlist"
+      data-product-id="{{ product.id }}"
+    >
+      <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 14.875C9 14.875 1.125 9.875 1.125 4.875C1.125 2.665 2.915 0.875 5.125 0.875C6.449 0.875 7.625 1.54 8.35 2.565C8.617 2.94 9.383 2.94 9.65 2.565C10.375 1.54 11.551 0.875 12.875 0.875C15.085 0.875 16.875 2.665 16.875 4.875C16.875 9.875 9 14.875 9 14.875Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <a href="{{ product.url }}" class="tf-card__image-link" tabindex="-1" aria-hidden="true">
+      <div class="tf-card__slider" data-slider>
+        {%- if product.images.size > 0 -%}
+          {%- for image in product.images limit: 5 -%}
+            {%- assign image_loading = 'eager' -%}
+            {%- if lazy -%}{%- assign image_loading = 'lazy' -%}{%- endif -%}
+            <div class="tf-card__slide{% if forloop.first %} tf-card__slide--active{% endif %}">
+              {{
+                image
+                | image_url: width: 600
+                | image_tag:
+                  class: 'tf-card__img',
+                  loading: image_loading,
+                  widths: '300,400,500,600',
+                  sizes: '(max-width: 749px) calc(100vw - 24px), (max-width: 989px) calc(50vw - 24px), calc(33.33vw - 24px)',
+                  alt: image.alt | default: product.title | escape
+              }}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="tf-card__slide tf-card__slide--active">
+            {{ 'product-1' | placeholder_svg_tag: 'tf-card__img tf-card__img--placeholder' }}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- if image_count > 1 -%}
+        <button
+          type="button"
+          class="tf-card__slider-btn tf-card__slider-btn--prev"
+          aria-label="Previous image"
+          tabindex="-1"
+        >
+          <svg width="7" height="12" viewBox="0 0 7 12" fill="none">
+            <path d="M6 1L1 6L6 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="tf-card__slider-btn tf-card__slider-btn--next"
+          aria-label="Next image"
+          tabindex="-1"
+        >
+          <svg width="7" height="12" viewBox="0 0 7 12" fill="none">
+            <path d="M1 1L6 6L1 11" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="tf-card__dots" aria-hidden="true">
+          {%- for image in product.images limit: 5 -%}
+            <span class="tf-card__dot{% if forloop.first %} tf-card__dot--active{% endif %}"></span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </a>
+  </div>
+
+  {%- comment -%} ── Info ── {%- endcomment -%}
+  <div class="tf-card__info">
+
+    <a href="{{ product.url }}" class="tf-card__title-link">
+      <h3 class="tf-card__title">{{ product.title }}</h3>
+    </a>
+
+    <div class="tf-card__price">
+      {%- if has_compare -%}
+        <span class="tf-card__price-compare">{{ product.compare_at_price | money }}</span>
+        <span class="tf-card__price-current tf-card__price-sale">{{ product.price | money }}</span>
+        <span class="tf-card__save-badge">Save {{ save_amount | money }}</span>
+      {%- else -%}
+        <span class="tf-card__price-current">{{ product.price | money }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_finance_text and section.settings.finance_text != blank -%}
+      <p class="tf-card__finance">{{ section.settings.finance_text }}</p>
+    {%- endif -%}
+
+    <a href="{{ product.url }}" class="tf-card__cta">
+      {{ section.settings.card_cta_label | default: 'More details' }}
+    </a>
+
+  </div>
+</div>

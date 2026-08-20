@@ -1,0 +1,240 @@
+/* ============================================================
+   SD Sticky Add-to-Cart bar
+   Hidden by default · slides up from bottom when buy box leaves view
+   Brand palette: teal bg · cream text · gold accents
+   ============================================================ */
+
+.sd-sticky-atc {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90; /* below modal, above page content */
+  background: linear-gradient(180deg, #2f4858 0%, #243843 100%);
+  color: #fff;
+  box-shadow:
+    0 -2px 0 rgba(201, 168, 92, 0.45),     /* thin gold top edge */
+    0 -10px 30px rgba(0, 0, 0, 0.18);
+  transform: translateY(110%);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity   0.30s ease,
+    visibility 0.42s;
+}
+
+.sd-sticky-atc.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.sd-sticky-atc__inner {
+  width: 100%;
+  max-width: 1700px;
+  margin: 0 auto;
+  padding: 1.0rem clamp(1.6rem, 3vw, 4.0rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  box-sizing: border-box;
+}
+
+/* ── Left: thumb + title + price ── */
+.sd-sticky-atc__product {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.sd-sticky-atc__img {
+  width: 5.2rem;
+  height: 5.2rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 168, 92, 0.30);
+  flex-shrink: 0;
+  display: block;
+  line-height: 0;
+}
+
+.sd-sticky-atc__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sd-sticky-atc__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.sd-sticky-atc__title {
+  font-family: var(--sd-font-display, 'Recoleta Alt', Georgia, serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--sd-clr-cream, #fffaea);
+  line-height: 1.2;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 50ch;
+}
+
+.sd-sticky-atc__price-row {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+
+.sd-sticky-atc__rrp {
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: line-through;
+}
+
+.sd-sticky-atc__price {
+  font-family: var(--sd-font-display, 'Recoleta Alt', Georgia, serif);
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--sd-clr-cream, #fffaea);
+  letter-spacing: -0.005em;
+  line-height: 1;
+}
+
+/* ── Right: ATC button ── */
+.sd-sticky-atc__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.2rem 2.4rem;
+  background: linear-gradient(135deg, #d4b876 0%, #c9a85c 60%, #a98841 100%);
+  color: #2f4858;
+  border: none;
+  border-radius: 99rem;
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 6px 18px rgba(201, 168, 92, 0.30);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.sd-sticky-atc__btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 10px 24px rgba(201, 168, 92, 0.45);
+}
+
+.sd-sticky-atc__btn:focus-visible {
+  outline: 2px solid var(--sd-clr-cream, #fffaea);
+  outline-offset: 3px;
+}
+
+.sd-sticky-atc__btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sd-sticky-atc__btn-icon svg { display: block; }
+
+/* Loading state — when the user has clicked and the main btn is being submitted */
+.sd-sticky-atc__btn.is-loading .sd-sticky-atc__btn-label::after {
+  content: ' ✓';
+}
+.sd-sticky-atc__btn.is-loading {
+  pointer-events: none;
+  background: linear-gradient(135deg, #b8a14a 0%, #a98841 100%);
+}
+
+/* Shimmer sweep on hover for premium feel */
+.sd-sticky-atc__btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.32) 50%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.sd-sticky-atc__btn:hover::before {
+  transform: translateX(110%);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media screen and (max-width: 749px) {
+  .sd-sticky-atc__inner {
+    padding: 0.8rem 1.2rem;
+    gap: 1.0rem;
+  }
+  .sd-sticky-atc__img { width: 4.4rem; height: 4.4rem; }
+  .sd-sticky-atc__title { font-size: 1.3rem; }
+  .sd-sticky-atc__price { font-size: 1.5rem; }
+  .sd-sticky-atc__rrp { font-size: 1.0rem; }
+
+  .sd-sticky-atc__btn {
+    padding: 1.0rem 1.6rem;
+    font-size: 1.2rem;
+    gap: 0.5rem;
+  }
+  /* Hide button label on very narrow screens — icon only */
+  @media (max-width: 380px) {
+    .sd-sticky-atc__btn-label { display: none; }
+    .sd-sticky-atc__btn {
+      width: 4.4rem;
+      height: 4.4rem;
+      padding: 0;
+      border-radius: 50%;
+    }
+  }
+}
+
+/* Add bottom padding to body when bar is visible, so footer/content
+   isn't covered. Only applies once the bar slides in. */
+body:has(.sd-sticky-atc.is-visible) {
+  padding-bottom: 7.0rem;
+}
+@media screen and (max-width: 749px) {
+  body:has(.sd-sticky-atc.is-visible) {
+    padding-bottom: 6.0rem;
+  }
+}
+
+/* Reduced motion — instant show/hide */
+@media (prefers-reduced-motion: reduce) {
+  .sd-sticky-atc { transition: opacity 0.2s ease, visibility 0.2s; }
+  .sd-sticky-atc__btn:hover { transform: none; }
+}

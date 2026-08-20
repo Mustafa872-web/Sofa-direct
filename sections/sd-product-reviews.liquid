@@ -1,0 +1,370 @@
+<link rel="stylesheet" href="{{ 'sd-product-reviews.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-product-reviews.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign eyebrow      = section.settings.eyebrow      | default: 'Customer Reviews'
+  assign heading      = section.settings.heading      | default: 'Loved by thousands of UK homes.'
+  assign subheading   = section.settings.subheading   | default: 'Real reviews from verified customers. Independently collected.'
+  assign rv_rating    = product.metafields.reviews.rating.value.rating | default: section.settings.fallback_rating | default: 4.8
+  assign rv_count     = product.metafields.reviews.rating_count        | default: section.settings.fallback_count  | default: 247
+  assign rv_rating_str = rv_rating | times: 10 | round | divided_by: 10.0
+  assign show_form    = section.settings.show_form
+  assign cta_label    = section.settings.cta_label    | default: 'Write a review'
+
+  comment
+    Star math
+  endcomment
+  assign r_full = rv_rating | floor
+  assign r_half_f = rv_rating | minus: r_full
+  assign r_half = 0
+  if r_half_f >= 0.25 and r_half_f < 0.75
+    assign r_half = 1
+  endif
+  if r_half_f >= 0.75
+    assign r_full = r_full | plus: 1
+  endif
+  assign r_half_pos = r_full | plus: 1
+
+  comment
+    Star breakdown — settings or sensible defaults
+  endcomment
+  assign br5 = section.settings.breakdown_5 | default: 78
+  assign br4 = section.settings.breakdown_4 | default: 16
+  assign br3 = section.settings.breakdown_3 | default: 4
+  assign br2 = section.settings.breakdown_2 | default: 1
+  assign br1 = section.settings.breakdown_1 | default: 1
+-%}
+
+<section id="sd-reviews" class="sd-rev{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}" aria-label="Customer reviews">
+  <div class="sd-rev__container page-width">
+
+    {%- comment -%} ── Header ── {%- endcomment -%}
+    <header class="sd-rev__header">
+      {%- if eyebrow != blank -%}
+        <span class="sd-rev__eyebrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+          {{ eyebrow }}
+        </span>
+      {%- endif -%}
+      {%- if heading != blank -%}<h2 class="sd-rev__heading">{{ heading }}</h2>{%- endif -%}
+      {%- if subheading != blank -%}<p class="sd-rev__subheading">{{ subheading }}</p>{%- endif -%}
+    </header>
+
+    {%- comment -%} ── Summary card ── {%- endcomment -%}
+    <div class="sd-rev__summary">
+
+      <div class="sd-rev__sum-overall">
+        <div class="sd-rev__sum-num">{{ rv_rating_str }}<span>/5</span></div>
+        <div class="sd-rev__sum-stars" aria-label="{{ rv_rating_str }} out of 5 stars">
+          {%- for i in (1..5) -%}
+            {%- if i <= r_full -%}
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            {%- elsif i == r_half_pos and r_half == 1 -%}
+              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="sd-rev-half-{{ section.id }}-{{ i }}"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="rgba(0,0,0,0.12)"/></linearGradient></defs><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26" fill="url(#sd-rev-half-{{ section.id }}-{{ i }})"/></svg>
+            {%- else -%}
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(0,0,0,0.12)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="sd-rev__sum-count">Based on <strong>{{ rv_count }}</strong> verified reviews</div>
+        {%- if cta_label != blank -%}
+          <button type="button" class="sd-rev__sum-cta" data-sd-rev-write>
+            {{ cta_label }}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          </button>
+        {%- endif -%}
+      </div>
+
+      <div class="sd-rev__sum-bars">
+        {%- for row in (1..5) reversed -%}
+          {%- assign idx = row -%}
+          {%- case idx -%}
+            {%- when 5 -%}{%- assign pct = br5 -%}
+            {%- when 4 -%}{%- assign pct = br4 -%}
+            {%- when 3 -%}{%- assign pct = br3 -%}
+            {%- when 2 -%}{%- assign pct = br2 -%}
+            {%- when 1 -%}{%- assign pct = br1 -%}
+          {%- endcase -%}
+          <div class="sd-rev__bar">
+            <span class="sd-rev__bar-l">{{ idx }}<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg></span>
+            <span class="sd-rev__bar-track"><span class="sd-rev__bar-fill" style="width: {{ pct }}%"></span></span>
+            <span class="sd-rev__bar-pct">{{ pct }}%</span>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <ul class="sd-rev__sum-trust">
+        <li><span class="sd-rev__trust-ico">✓</span> Verified buyers only</li>
+        <li><span class="sd-rev__trust-ico">✓</span> No edits, no filters</li>
+        <li><span class="sd-rev__trust-ico">✓</span> Photos from real homes</li>
+      </ul>
+    </div>
+
+    {%- comment -%} ── Filter chips ── {%- endcomment -%}
+    <div class="sd-rev__filters" role="tablist" aria-label="Filter reviews">
+      <button class="sd-rev__chip is-active" data-sd-rev-filter="all"     role="tab" aria-selected="true">All reviews</button>
+      <button class="sd-rev__chip" data-sd-rev-filter="5" role="tab">5 stars</button>
+      <button class="sd-rev__chip" data-sd-rev-filter="photos" role="tab">With photos</button>
+      <button class="sd-rev__chip" data-sd-rev-filter="comfort" role="tab">Comfort</button>
+      <button class="sd-rev__chip" data-sd-rev-filter="quality" role="tab">Quality</button>
+      <button class="sd-rev__chip" data-sd-rev-filter="delivery" role="tab">Delivery</button>
+      <span class="sd-rev__sort">
+        <label for="sd-rev-sort-{{ section.id }}" class="visually-hidden">Sort reviews</label>
+        <select id="sd-rev-sort-{{ section.id }}" class="sd-rev__sort-sel" data-sd-rev-sort>
+          <option value="recent">Most recent</option>
+          <option value="highest">Highest rated</option>
+          <option value="lowest">Lowest rated</option>
+          <option value="helpful">Most helpful</option>
+        </select>
+      </span>
+    </div>
+
+    {%- comment -%} ── Reviews list ── {%- endcomment -%}
+    <ul class="sd-rev__list" data-sd-rev-list>
+      {%- assign rev_list = section.blocks | where: 'type', 'review' -%}
+      {%- if rev_list.size > 0 -%}
+        {%- for block in rev_list -%}
+          {%- liquid
+            assign r_star = block.settings.rating | default: 5
+            assign tags_csv = block.settings.tags | default: ''
+            assign verified = block.settings.verified
+            assign has_photos = block.settings.photo_1 | default: false
+          -%}
+          <li
+            class="sd-rev__card"
+            {{ block.shopify_attributes }}
+            data-rating="{{ r_star }}"
+            data-has-photo="{% if has_photos %}true{% else %}false{% endif %}"
+            data-tags="{{ tags_csv | downcase }}"
+          >
+            <div class="sd-rev__card-head">
+              <div class="sd-rev__avatar" aria-hidden="true" style="background:{{ block.settings.avatar_color | default: '#A58C70' }}">
+                {{ block.settings.author | default: 'A' | truncate: 2, '' | upcase }}
+              </div>
+              <div class="sd-rev__who">
+                <div class="sd-rev__who-name">
+                  {{ block.settings.author | default: 'Anonymous' }}
+                  {%- if verified -%}
+                    <span class="sd-rev__verified" title="Verified buyer">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1l3 4.5 5 .8-3.5 3.5.9 5L12 12.7 6.6 14.8l.9-5L4 6.3l5-.8L12 1z"/></svg>
+                      Verified buyer
+                    </span>
+                  {%- endif -%}
+                </div>
+                <div class="sd-rev__who-meta">
+                  {%- if block.settings.location != blank -%}{{ block.settings.location }} &middot; {%- endif -%}
+                  {{ block.settings.date | default: '2 weeks ago' }}
+                </div>
+              </div>
+              <div class="sd-rev__card-stars" aria-label="{{ r_star }} out of 5 stars">
+                {%- for i in (1..5) -%}
+                  {%- if i <= r_star -%}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                  {%- else -%}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(0,0,0,0.15)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+            {%- if block.settings.title != blank -%}
+              <h3 class="sd-rev__title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.body != blank -%}
+              <p class="sd-rev__body">{{ block.settings.body }}</p>
+            {%- endif -%}
+            {%- if block.settings.photo_1 != blank or block.settings.photo_2 != blank or block.settings.photo_3 != blank -%}
+              <div class="sd-rev__photos">
+                {%- for n in (1..3) -%}
+                  {%- assign pkey = 'photo_' | append: n -%}
+                  {%- assign pimg = block.settings[pkey] -%}
+                  {%- if pimg != blank -%}
+                    {{ pimg | image_url: width: 240 | image_tag:
+                      loading: 'lazy', widths: '120,180,240', sizes: '120px',
+                      alt: block.settings.author, class: 'sd-rev__photo' }}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+            <div class="sd-rev__card-foot">
+              {%- if tags_csv != blank -%}
+                <div class="sd-rev__tags">
+                  {%- assign tag_list = tags_csv | split: ',' -%}
+                  {%- for t in tag_list -%}
+                    <span class="sd-rev__tag">{{ t | strip }}</span>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+              <button type="button" class="sd-rev__helpful" data-sd-rev-helpful>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+                Helpful <span data-sd-rev-helpful-n>{{ block.settings.helpful_count | default: 0 }}</span>
+              </button>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+
+    {%- if section.blocks.size > 6 -%}
+      <div class="sd-rev__more-row">
+        <button type="button" class="sd-rev__more" data-sd-rev-more>Load more reviews</button>
+      </div>
+    {%- endif -%}
+
+    {%- if show_form -%}
+      <div class="sd-rev__form-wrap" id="sd-rev-form-{{ section.id }}" hidden>
+        <h3 class="sd-rev__form-heading">Write your review</h3>
+        <form class="sd-rev__form" onsubmit="event.preventDefault(); alert('Thanks — your review has been submitted for moderation.'); this.reset();">
+          <div class="sd-rev__form-row">
+            <label>Your name<input type="text" name="author" required></label>
+            <label>Location<input type="text" name="location" placeholder="e.g. Manchester"></label>
+          </div>
+          <label>Rating
+            <select name="rating" required>
+              <option value="">Choose</option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option>
+            </select>
+          </label>
+          <label>Title<input type="text" name="title" placeholder="Sum it up in a few words"></label>
+          <label>Your review<textarea name="body" rows="5" required placeholder="Tell us about comfort, quality, delivery experience..."></textarea></label>
+          <button type="submit" class="sd-rev__form-submit">Submit review</button>
+        </form>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+(function(){
+  var root = document.getElementById('sd-reviews');
+  if (!root) return;
+
+  var chips    = root.querySelectorAll('[data-sd-rev-filter]');
+  var cards    = root.querySelectorAll('.sd-rev__card');
+  var sortSel  = root.querySelector('[data-sd-rev-sort]');
+  var listEl   = root.querySelector('[data-sd-rev-list]');
+  var moreBtn  = root.querySelector('[data-sd-rev-more]');
+  var writeBtn = root.querySelector('[data-sd-rev-write]');
+  var formWrap = document.getElementById('sd-rev-form-{{ section.id }}');
+
+  function applyFilter(filter){
+    cards.forEach(function(c){
+      var rating  = parseInt(c.dataset.rating, 10) || 0;
+      var hasPhoto = c.dataset.hasPhoto === 'true';
+      var tags = (c.dataset.tags || '');
+      var show = true;
+      if (filter === '5') show = rating === 5;
+      else if (filter === 'photos') show = hasPhoto;
+      else if (filter && filter !== 'all') show = tags.indexOf(filter) !== -1;
+      c.style.display = show ? '' : 'none';
+    });
+  }
+
+  chips.forEach(function(b){
+    b.addEventListener('click', function(){
+      chips.forEach(function(x){ x.classList.remove('is-active'); x.setAttribute('aria-selected', 'false'); });
+      b.classList.add('is-active'); b.setAttribute('aria-selected', 'true');
+      applyFilter(b.dataset.sdRevFilter);
+    });
+  });
+
+  if (sortSel) {
+    sortSel.addEventListener('change', function(){
+      var mode = sortSel.value;
+      var arr = Array.prototype.slice.call(cards);
+      arr.sort(function(a, b){
+        if (mode === 'highest') return parseInt(b.dataset.rating,10) - parseInt(a.dataset.rating,10);
+        if (mode === 'lowest')  return parseInt(a.dataset.rating,10) - parseInt(b.dataset.rating,10);
+        return 0;
+      });
+      arr.forEach(function(c){ listEl.appendChild(c); });
+    });
+  }
+
+  // Limit to first 6 initially; "Load more" reveals the rest
+  if (moreBtn) {
+    var visible = 6;
+    function applyVisible(){
+      cards.forEach(function(c, i){
+        if (i >= visible && c.style.display !== 'none') c.classList.add('is-hidden');
+        else c.classList.remove('is-hidden');
+      });
+      if (visible >= cards.length) moreBtn.style.display = 'none';
+    }
+    applyVisible();
+    moreBtn.addEventListener('click', function(){ visible += 6; applyVisible(); });
+  }
+
+  // Helpful counter
+  root.querySelectorAll('[data-sd-rev-helpful]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var n = b.querySelector('[data-sd-rev-helpful-n]');
+      n.textContent = (parseInt(n.textContent,10) || 0) + 1;
+      b.classList.add('is-on');
+    });
+  });
+
+  if (writeBtn && formWrap) {
+    writeBtn.addEventListener('click', function(){
+      formWrap.hidden = !formWrap.hidden;
+      if (!formWrap.hidden) formWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Product Reviews",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow",    "label": "Eyebrow",     "default": "Customer Reviews" },
+    { "type": "text", "id": "heading",    "label": "Heading",     "default": "Loved by thousands of UK homes." },
+    { "type": "text", "id": "subheading", "label": "Subheading",  "default": "Real reviews from verified customers. Independently collected." },
+    { "type": "text", "id": "cta_label",  "label": "Write-a-review button", "default": "Write a review" },
+    { "type": "checkbox", "id": "show_form", "label": "Show inline review form", "default": true },
+    { "type": "header", "content": "Fallback rating (used when no metafields)" },
+    { "type": "text", "id": "fallback_rating", "label": "Rating value", "default": "4.8" },
+    { "type": "text", "id": "fallback_count",  "label": "Review count", "default": "247" },
+    { "type": "header", "content": "Star breakdown (%)" },
+    { "type": "range", "id": "breakdown_5", "label": "5 star %", "min": 0, "max": 100, "step": 1, "default": 78 },
+    { "type": "range", "id": "breakdown_4", "label": "4 star %", "min": 0, "max": 100, "step": 1, "default": 16 },
+    { "type": "range", "id": "breakdown_3", "label": "3 star %", "min": 0, "max": 100, "step": 1, "default": 4 },
+    { "type": "range", "id": "breakdown_2", "label": "2 star %", "min": 0, "max": 100, "step": 1, "default": 1 },
+    { "type": "range", "id": "breakdown_1", "label": "1 star %", "min": 0, "max": 100, "step": 1, "default": 1 }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "text",     "id": "author",   "label": "Reviewer name" },
+        { "type": "text",     "id": "location", "label": "Location" },
+        { "type": "text",     "id": "date",     "label": "Date / relative", "default": "2 weeks ago" },
+        { "type": "range",    "id": "rating",   "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "checkbox", "id": "verified", "label": "Verified buyer", "default": true },
+        { "type": "text",     "id": "title",    "label": "Review title" },
+        { "type": "textarea", "id": "body",     "label": "Review body" },
+        { "type": "text",     "id": "tags",     "label": "Tags (comma-sep)", "info": "Used by filter chips: comfort, quality, delivery" },
+        { "type": "image_picker", "id": "photo_1", "label": "Photo 1" },
+        { "type": "image_picker", "id": "photo_2", "label": "Photo 2" },
+        { "type": "image_picker", "id": "photo_3", "label": "Photo 3" },
+        { "type": "text",     "id": "avatar_color", "label": "Avatar background", "default": "#A58C70" },
+        { "type": "number",   "id": "helpful_count", "label": "Helpful count", "default": 0 }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Product Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "author": "Emma L.", "location": "Manchester", "date": "3 days ago", "rating": 5, "verified": true, "title": "Absolutely worth every penny", "body": "The fabric feels gorgeous and the cushions are properly supportive. Delivery team were brilliant — on time, took the old one away. Couldn't be happier.", "tags": "comfort, quality, delivery", "avatar_color": "#A58C70", "helpful_count": 24 } },
+        { "type": "review", "settings": { "author": "James R.", "location": "Bristol", "date": "1 week ago", "rating": 5, "verified": true, "title": "Comfier than it looks", "body": "Was a bit nervous ordering online but the comfort honestly surprised me. Looks even better in person. Five stars.", "tags": "comfort, quality", "avatar_color": "#2F4858", "helpful_count": 12 } },
+        { "type": "review", "settings": { "author": "Priya S.", "location": "London", "date": "2 weeks ago", "rating": 4, "verified": true, "title": "Beautiful sofa, slow delivery", "body": "Love the sofa — fabric is lovely and quality is excellent. Took a touch longer than the estimate to arrive but worth the wait.", "tags": "quality, delivery", "avatar_color": "#C0B09F", "helpful_count": 6 } },
+        { "type": "review", "settings": { "author": "Tom H.",   "location": "Leeds", "date": "3 weeks ago", "rating": 5, "verified": true, "title": "Made our living room", "body": "Genuine quality. Frame feels really solid, finish is gorgeous. Whole family loves it.", "tags": "quality, comfort", "avatar_color": "#A58C70", "helpful_count": 18 } },
+        { "type": "review", "settings": { "author": "Sophie B.", "location": "Edinburgh", "date": "1 month ago", "rating": 5, "verified": true, "title": "Couldn't recommend more", "body": "From order to delivery, the experience was smooth. The team kept me updated and the sofa arrived perfectly packaged.", "tags": "delivery, quality", "avatar_color": "#2F4858", "helpful_count": 9 } },
+        { "type": "review", "settings": { "author": "David K.",  "location": "Cardiff", "date": "1 month ago", "rating": 5, "verified": true, "title": "Top tier comfort", "body": "Honestly the comfiest sofa I've ever owned. Built to last and the price was fair compared to high-street prices.", "tags": "comfort, quality", "avatar_color": "#A58C70", "helpful_count": 14 } }
+      ]
+    }
+  ]
+}
+{% endschema %}

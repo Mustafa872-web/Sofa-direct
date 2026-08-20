@@ -1,0 +1,34 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "sd-collection-alt",
+      "settings": {
+        "show_banner": true,
+        "products_per_page": 12,
+        "desktop_columns": 4,
+        "tablet_columns": 2,
+        "mobile_columns": "1",
+        "show_promo": true,
+        "promo_interval": 8,
+        "card_cta_label": "More details",
+        "show_finance_text": false,
+        "finance_text": "From £29/month with 0% finance",
+        "shop_by_block_1": "range",
+        "shop_by_block_2": "color",
+        "shop_by_block_3": "style"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

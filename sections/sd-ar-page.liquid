@@ -1,0 +1,279 @@
+{% comment %}
+  Standalone 3D / AR viewer page
+  ─ Works WITHOUT ARCore: shows interactive 3D viewer (orbit, zoom, pinch)
+  ─ Works WITH ARCore/iOS: adds "Place in Room" AR button
+  ─ Linked from QR code on desktop product page
+{% endcomment %}
+<style>
+  body { margin: 0; background: #111; overflow: hidden; }
+  #shopify-section-header, #shopify-section-footer,
+  .header-wrapper, footer, .footer { display: none !important; }
+
+  #sd-ar-viewer {
+    position: fixed; inset: 0;
+    width: 100vw; height: 100vh;
+    background: #1a1a1a;
+    --progress-bar-color: #2F4858;
+    --poster-color: transparent;
+  }
+
+  #sd-ar-loading {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: #1a1a1a; color: #fff; gap: 1.4rem;
+    font-family: Montserrat, sans-serif;
+  }
+  .sd-ar-spinner {
+    width: 4rem; height: 4rem;
+    border: 3px solid rgba(255,255,255,.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #sd-ar-loading p { font-size: 1.4rem; margin: 0; opacity: .8; }
+
+  /* Top bar */
+  .sd-ar-topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 8;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.6rem 2rem; gap: 1rem;
+    background: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 100%);
+  }
+  .sd-ar-topbar__back {
+    display: flex; align-items: center; gap: .6rem;
+    background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 999px; padding: .7rem 1.4rem .7rem 1rem;
+    color: #fff; cursor: pointer;
+    font-family: Montserrat, sans-serif; font-size: 1.25rem; font-weight: 600;
+    transition: background .18s;
+  }
+  .sd-ar-topbar__back:hover { background: rgba(255,255,255,.25); }
+  .sd-ar-topbar__badge {
+    background: rgba(255,255,255,.15); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 999px; padding: .5rem 1.2rem;
+    font-family: Montserrat, sans-serif; font-size: 1.1rem; font-weight: 700;
+    color: #fff; letter-spacing: .06em;
+  }
+
+  /* Bottom bar — buttons */
+  #sd-ar-launch-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 5;
+    padding: 1.6rem 2rem calc(env(safe-area-inset-bottom, 0px) + 2rem);
+    background: linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 100%);
+    display: none; flex-direction: column; align-items: center; gap: .8rem;
+  }
+  .sd-ar-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+  .sd-ar-btn-primary {
+    background: #2F4858; color: #fff;
+    border: none; border-radius: 999px;
+    padding: 1.4rem 3rem;
+    font-family: Montserrat, sans-serif; font-size: 1.4rem; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; gap: .8rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,.4);
+    transition: background .18s, transform .18s;
+  }
+  .sd-ar-btn-primary:hover { background: #3d6f7e; transform: translateY(-1px); }
+  .sd-ar-btn-primary:active { transform: scale(.97); }
+
+  .sd-ar-btn-secondary {
+    background: rgba(255,255,255,.15); backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,.2);
+    color: #fff;
+    border-radius: 999px;
+    padding: 1.2rem 2.4rem;
+    font-family: Montserrat, sans-serif; font-size: 1.3rem; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: .7rem;
+    transition: background .18s;
+  }
+  .sd-ar-btn-secondary:hover { background: rgba(255,255,255,.25); }
+
+  #sd-ar-launch-bar .sd-ar-hint {
+    color: rgba(255,255,255,.55);
+    font-family: Montserrat, sans-serif; font-size: 1.15rem; margin: 0;
+    text-align: center;
+  }
+
+  /* Touch hints overlay */
+  .sd-ar-touch-hints {
+    position: fixed; bottom: 11rem; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 2.6rem;
+    z-index: 6; pointer-events: none;
+    animation: sd-hints-fade 1s ease 4s forwards;
+  }
+  @keyframes sd-hints-fade { to { opacity: 0; } }
+  .sd-ar-touch-hint {
+    display: flex; flex-direction: column; align-items: center; gap: .4rem;
+    color: rgba(255,255,255,.7);
+    font-family: Montserrat, sans-serif; font-size: 1rem; font-weight: 600;
+  }
+
+  #sd-ar-no-model {
+    position: fixed; inset: 0;
+    display: none; align-items: center; justify-content: center;
+    background: #1a1a1a; color: rgba(255,255,255,.6);
+    font-family: Montserrat, sans-serif; font-size: 1.4rem; text-align: center; padding: 2rem;
+  }
+</style>
+
+<div id="sd-ar-loading">
+  <div class="sd-ar-spinner"></div>
+  <p>Loading 3D model…</p>
+</div>
+
+<div id="sd-ar-no-model">No 3D model specified.</div>
+
+<!-- Top bar — always visible after load -->
+<div class="sd-ar-topbar" id="sd-ar-topbar" style="display:none;">
+  <button class="sd-ar-topbar__back" onclick="window.history.length > 1 ? window.history.back() : window.close();">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back
+  </button>
+  <span class="sd-ar-topbar__badge">3D View</span>
+</div>
+
+<model-viewer
+  id="sd-ar-viewer"
+  ar
+  ar-modes="webxr scene-viewer quick-look"
+  camera-controls
+  touch-action="pan-y"
+  shadow-intensity="1"
+  exposure="0.9"
+  auto-rotate>
+  <button slot="ar-button" style="display:none;"></button>
+</model-viewer>
+
+<div id="sd-ar-launch-bar">
+  <div class="sd-ar-btns">
+    <!-- AR button — shown only if AR is available -->
+    <button class="sd-ar-btn-primary" id="sd-ar-go-btn" style="display:none;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 3H3v4"/><path d="M19 3h2v4"/><path d="M5 21H3v-4"/><path d="M19 21h2v-4"/><path d="M12 8l-4 2.5v5L12 18l4-2.5v-5L12 8z"/></svg>
+      Place in Room
+    </button>
+    <!-- Fullscreen toggle -->
+    <button class="sd-ar-btn-secondary" id="sd-ar-fs-btn" onclick="sdToggleFS()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>
+      Fullscreen
+    </button>
+  </div>
+  <p class="sd-ar-hint" id="sd-ar-hint-text"></p>
+</div>
+
+<!-- Touch gesture hints -->
+<div class="sd-ar-touch-hints" id="sd-ar-touch-hints" style="display:none;">
+  <div class="sd-ar-touch-hint">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    Drag to rotate
+  </div>
+  <div class="sd-ar-touch-hint">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3l-6 9 6 9"/><path d="M9 3l6 9-6 9"/></svg>
+    Pinch to zoom
+  </div>
+</div>
+
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<script>
+(function () {
+  var params   = new URLSearchParams(window.location.search);
+  var glbUrl   = params.get('model');
+  var usdzUrl  = params.get('usdz') || '';
+  var mv       = document.getElementById('sd-ar-viewer');
+  var loading  = document.getElementById('sd-ar-loading');
+  var bar      = document.getElementById('sd-ar-launch-bar');
+  var topbar   = document.getElementById('sd-ar-topbar');
+  var noModel  = document.getElementById('sd-ar-no-model');
+  var arBtn    = document.getElementById('sd-ar-go-btn');
+  var hintText = document.getElementById('sd-ar-hint-text');
+  var hints    = document.getElementById('sd-ar-touch-hints');
+
+  if (!glbUrl) {
+    loading.style.display = 'none';
+    noModel.style.display = 'flex';
+    return;
+  }
+
+  mv.setAttribute('src', glbUrl);
+  if (usdzUrl) mv.setAttribute('ios-src', usdzUrl);
+
+  var loadTimeout = setTimeout(function () {
+    loading.querySelector('p').textContent = 'Still loading… large models may take a moment.';
+  }, 8000);
+
+  var errorTimeout = setTimeout(function () {
+    loading.innerHTML = '<p style="color:rgba(255,255,255,.6)">Failed to load 3D model.<br>Check that the GLB URL is correct.</p>';
+  }, 30000);
+
+  mv.addEventListener('load', function () {
+    clearTimeout(loadTimeout);
+    clearTimeout(errorTimeout);
+    loading.style.display = 'none';
+    bar.style.display     = 'flex';
+    topbar.style.display  = 'flex';
+
+    // Show touch gesture hints on mobile
+    if ('ontouchstart' in window) {
+      hints.style.display = 'flex';
+    }
+
+    // Check if AR is available (needs ARCore on Android, or iOS Quick Look)
+    // model-viewer fires this when AR support is determined
+    checkAR();
+  });
+
+  function checkAR() {
+    // model-viewer needs a moment to determine AR availability
+    var attempts = 0;
+    var checkInterval = setInterval(function () {
+      attempts++;
+      if (mv.canActivateAR) {
+        clearInterval(checkInterval);
+        arBtn.style.display = 'flex';
+        hintText.textContent = 'Tap "Place in Room" to see this sofa in your space via camera';
+        topbar.querySelector('.sd-ar-topbar__badge').textContent = '3D / AR';
+        return;
+      }
+      if (attempts > 10) {
+        clearInterval(checkInterval);
+        // AR not available — that's fine, 3D viewer still works
+        hintText.textContent = 'Drag to rotate · Pinch to zoom · Scroll to pan';
+      }
+    }, 500);
+  }
+
+  // AR button click
+  arBtn.addEventListener('click', function () {
+    if (mv.canActivateAR) {
+      mv.activateAR();
+    }
+  });
+
+  mv.addEventListener('error', function (e) {
+    clearTimeout(loadTimeout);
+    clearTimeout(errorTimeout);
+    var msg = 'Failed to load 3D model.';
+    if (e.detail && e.detail.message) msg += '<br>' + e.detail.message;
+    loading.innerHTML = '<p style="color:rgba(255,255,255,.6)">' + msg + '</p>';
+  });
+
+  // Fullscreen toggle
+  window.sdToggleFS = function () {
+    if (!document.fullscreenElement) {
+      (document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen || function(){}).call(document.documentElement);
+    } else {
+      (document.exitFullscreen || document.webkitExitFullscreen || function(){}).call(document);
+    }
+  };
+})();
+</script>
+
+{% schema %}
+{
+  "name": "AR Viewer Page",
+  "settings": []
+}
+{% endschema %}

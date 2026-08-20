@@ -1,0 +1,1500 @@
+{%- liquid
+  assign sort_by           = collection.sort_by | default: collection.default_sort_by
+  assign products_per_page = section.settings.products_per_page
+  assign show_promo        = section.settings.show_promo
+  assign promo_position    = section.settings.promo_position | plus: 0
+
+  assign total_active = 0
+  for filter in collection.filters
+    assign total_active = total_active | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      if filter.min_value.value or filter.max_value.value
+        assign total_active = total_active | plus: 1
+      endif
+    endif
+  endfor
+-%}
+
+<style>
+/* ============================================================
+   TOP-FILTER COLLECTION — self-contained styles
+   ============================================================ */
+
+/* Page wrapper — defined once in filter-bar block above */
+
+/* ══════════════════════════════════════════════════════
+   PAGE & CONTAINER
+══════════════════════════════════════════════════════ */
+.tf-page { background: #f4f4f4; min-height: 60vh; }
+
+.tf-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* ══════════════════════════════════════════════════════
+   STICKY FILTER BAR
+   — overflow:visible so dropdown panels show outside
+   — horizontal scroll handled by inner mask trick
+══════════════════════════════════════════════════════ */
+.tf-filter-bar {
+  position: sticky;
+  top: var(--header-height, 0px);
+  z-index: 200;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+  /* CRITICAL: do NOT set overflow:hidden here — kills dropdowns */
+}
+.tf-filter-bar.tf-bar-shadow { box-shadow: 0 2px 8px rgba(0,0,0,.09); }
+
+.tf-filter-bar__inner {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.tf-facet-form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 52px;
+  gap: 0;
+  /* overflow visible so dropdowns escape */
+  overflow: visible;
+}
+
+/* Left */
+.tf-filter-bar__left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  /* overflow visible on parent, scroll only on children row */
+  overflow: visible;
+}
+
+.tf-filter-label {
+  font-size: 11px;
+  color: #555;
+  flex-shrink: 0;
+  font-weight: 400;
+  line-height: 1.4;
+  padding-right: 14px;
+  border-right: 1px solid #ddd;
+  margin-right: 12px;
+  white-space: nowrap;
+}
+.tf-filter-label strong { display: inline; font-weight: 700; color: #111; }
+
+/* Scrollable filter buttons row */
+.tf-filter-bar__filters {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0;
+}
+.tf-filter-bar__filters::-webkit-scrollbar { display: none; }
+
+/* Right */
+.tf-filter-bar__right {
+  flex-shrink: 0;
+  padding-left: 14px;
+  border-left: 1px solid #ddd;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow: visible;
+}
+.tf-sort-label-text {
+  font-size: 12px;
+  color: #444;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.tf-clear-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: #e30613;
+  border: 1px solid #e30613;
+  border-radius: 3px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background .18s, color .18s;
+}
+.tf-clear-all-btn:hover { background: #e30613; color: #fff; }
+
+/* ── Dropdown trigger ─────────────────────────────────────── */
+.tf-dropdown { position: relative; }
+.tf-dropdown__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid #d8d4ce;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 13px;
+  color: #2F4858;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s ease;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: 0 1px 2px rgba(47, 72, 88, 0.04);
+}
+.tf-dropdown__trigger:hover {
+  border-color: #A58C70;
+  background: #fffdf3;
+  color: #1c2e38;
+  box-shadow: 0 2px 8px rgba(165, 140, 112, 0.18);
+  transform: translateY(-1px);
+}
+.tf-dropdown__trigger--active {
+  border-color: #2F4858;
+  background: #2F4858;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(47, 72, 88, 0.25);
+}
+.tf-dropdown__trigger--active .tf-dropdown__chevron { color: #fff; }
+.tf-dropdown__chevron {
+  transition: transform .25s ease;
+  color: #888;
+  flex-shrink: 0;
+}
+.tf-dropdown[data-open] .tf-dropdown__trigger {
+  border-color: #2F4858;
+  background: #2F4858;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(47, 72, 88, 0.28);
+}
+.tf-dropdown[data-open] .tf-dropdown__trigger .tf-dropdown__chevron { color: #E8A53A; }
+.tf-dropdown[data-open] .tf-dropdown__chevron {
+  transform: rotate(180deg);
+}
+.tf-dropdown__active-count {
+  background: #E8A53A;
+  color: #1c2e38;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 1.5;
+  margin-left: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.tf-dropdown__trigger--active .tf-dropdown__active-count,
+.tf-dropdown[data-open] .tf-dropdown__active-count { background: #E8A53A; color: #1c2e38; }
+
+/* ── Dropdown panel — full-width below filter bar ─────────── */
+.tf-dropdown__panel {
+  position: fixed;         /* JS sets top / left / width    */
+  background: #fff;
+  border-top: 2px solid #2F4858;
+  border-bottom: 1px solid #e4e0db;
+  box-shadow: 0 8px 28px -4px rgba(0,0,0,0.13);
+  z-index: 9000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  pointer-events: none;
+  overflow: hidden;
+}
+.tf-dropdown__panel::before { display: none; }
+.tf-dropdown[data-open] .tf-dropdown__panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Panel header strip */
+.tf-dropdown__panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px 7px;
+  background: #f7f4f0;
+  border-bottom: 1px solid #e8e3dc;
+}
+.tf-dropdown__panel-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: #2F4858;
+}
+.tf-dropdown__panel-count {
+  font-size: 11px;
+  color: #9e9082;
+  font-weight: 500;
+}
+
+/* Items — grid of centered tiles (swatch / name / count) */
+.tf-dropdown__list {
+  list-style: none;
+  margin: 0;
+  padding: 22px 24px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+  gap: 18px 12px;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c0b09f transparent;
+}
+.tf-dropdown__list::-webkit-scrollbar { width: 5px; }
+.tf-dropdown__list::-webkit-scrollbar-thumb { background: #c0b09f; border-radius: 99px; }
+.tf-dropdown__item { margin: 0; }
+.tf-dropdown__item--disabled { opacity: .38; pointer-events: none; }
+.tf-dropdown__checkbox { display: none; }
+
+/* Tile — column: swatch/box on top, label, count */
+.tf-dropdown__label-check {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 4px 2px 6px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  user-select: none;
+  text-align: center;
+  transition: transform .14s ease;
+}
+.tf-dropdown__label-check:hover { transform: translateY(-1px); }
+
+/* Swatch dot */
+.tf-swatch-dot {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.25), 0 1px 2px rgba(0,0,0,0.04);
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.tf-dropdown__label-check:hover .tf-swatch-dot {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 2px rgba(47,72,88,0.25), 0 2px 6px rgba(0,0,0,0.08);
+}
+.tf-dropdown__item.tf-checked .tf-swatch-dot {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2F4858;
+}
+
+/* Square box for non-swatch filters (Material, Brand, Size) */
+.tf-dropdown__check-box {
+  width: 52px;
+  height: 52px;
+  border: 1.5px solid #d5cfc8;
+  border-radius: 10px;
+  flex-shrink: 0;
+  position: relative;
+  background: #fff;
+  transition: border-color .14s, background .14s, box-shadow .14s;
+}
+.tf-dropdown__label-check:hover .tf-dropdown__check-box {
+  border-color: #A58C70;
+  background: #fdf8f2;
+}
+.tf-dropdown__item.tf-checked .tf-dropdown__check-box {
+  background: #2F4858;
+  border-color: #2F4858;
+}
+.tf-dropdown__item.tf-checked .tf-dropdown__check-box::after {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 14px;
+  width: 12px;
+  height: 22px;
+  border: 2.5px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(44deg);
+}
+
+/* Label & count */
+.tf-dropdown__value {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #2F4858;
+  line-height: 1.25;
+  word-break: break-word;
+}
+.tf-dropdown__item.tf-checked .tf-dropdown__value { font-weight: 700; }
+.tf-dropdown__count-badge {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #b4a898;
+  line-height: 1;
+  margin-top: 2px;
+}
+.tf-dropdown__count-badge::before { content: '('; }
+.tf-dropdown__count-badge::after  { content: ')'; }
+
+/* Footer strip */
+.tf-dropdown__footer {
+  padding: 8px 20px 9px;
+  border-top: 1px solid #eae5df;
+  background: #faf7f3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tf-dropdown__clear {
+  font-size: 12px;
+  color: #e30613;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity .14s;
+}
+.tf-dropdown__clear:hover { opacity: 0.75; text-decoration: underline; }
+.tf-dropdown__footer-hint { font-size: 11px; color: #b0a090; }
+
+/* ── Price range ──────────────────────────────────────────── */
+.tf-dropdown__price { padding: 14px 16px 6px; }
+.tf-dropdown__price-hint { font-size: 12px; color: #888; margin: 0 0 10px; }
+.tf-dropdown__price-inputs {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.tf-price-input { flex: 1; }
+.tf-price-input__label { display: block; font-size: 11px; color: #888; margin-bottom: 4px; }
+.tf-price-input__wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d2d2d2;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.tf-price-input__wrap:focus-within { border-color: #1a1a1a; }
+.tf-price-input__symbol {
+  padding: 0 6px;
+  font-size: 13px;
+  color: #555;
+  background: #f8f8f8;
+  border-right: 1px solid #e0e0e0;
+  line-height: 34px;
+}
+.tf-price-input__field {
+  width: 100%;
+  padding: 7px 8px;
+  border: none;
+  font-size: 13px;
+  outline: none;
+  background: #fff;
+  font-family: inherit;
+  color: #222;
+}
+.tf-price-input__sep { font-size: 16px; color: #aaa; padding-bottom: 8px; }
+
+/* ── Sort dropdown ────────────────────────────────────────── */
+.tf-sort-wrap { position: relative; }
+.tf-sort-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px 5px 11px;
+  border: 1px solid #c0c0c0;
+  border-radius: 3px;
+  background: #fff;
+  font-size: 12.5px;
+  color: #222;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-weight: 400;
+  transition: border-color .15s;
+}
+.tf-sort-trigger:hover { border-color: #666; }
+.tf-sort-wrap[data-open] .tf-sort-trigger { border-color: #333; }
+.tf-sort-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 210px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.13);
+  z-index: 300;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity .18s, transform .18s, visibility .18s;
+  pointer-events: none;
+  padding: 6px 0;
+}
+.tf-sort-wrap[data-open] .tf-sort-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.tf-sort-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: #222;
+  transition: background .12s;
+}
+.tf-sort-option:hover { background: #f5f5f5; }
+.tf-sort-option input[type="radio"] { display: none; }
+.tf-sort-tick {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #e30613;
+  opacity: 0;
+}
+.tf-sort-option--active .tf-sort-tick { opacity: 1; }
+.tf-sort-option--active .tf-sort-label { font-weight: 600; }
+
+/* ── Active filter pills ──────────────────────────────────── */
+#TfActiveFilters {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 8px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  min-height: 1px;
+}
+.tf-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: #ebebeb;
+  border-radius: 20px;
+  font-size: 12.5px;
+  color: #222;
+  text-decoration: none;
+  transition: background .15s;
+  white-space: nowrap;
+}
+.tf-pill:hover { background: #ddd; }
+.tf-pill__x { font-size: 15px; color: #777; line-height: 1; }
+.tf-clear-all-link {
+  font-size: 12.5px;
+  color: #e30613;
+  text-decoration: none;
+  margin-left: 4px;
+  font-weight: 500;
+}
+.tf-clear-all-link:hover { text-decoration: underline; }
+
+/* ── Results count ────────────────────────────────────────── */
+.tf-results-header {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 14px 20px 4px;
+  text-align: center;
+}
+.tf-results-count {
+  font-size: 13.5px;
+  color: #666;
+}
+.tf-results-count strong { color: #222; }
+
+/* ── Product grid ─────────────────────────────────────────── */
+#TfProductGridContainer {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 14px 20px 60px;
+  transition: opacity .25s;
+}
+#TfProductGridContainer.tf-loading {
+  opacity: .35;
+  pointer-events: none;
+}
+.tf-product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* ── Product card ─────────────────────────────────────────── */
+.tf-card {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px rgba(0,0,0,.07);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow .22s, transform .22s;
+}
+.tf-card:hover {
+  box-shadow: 0 6px 22px rgba(0,0,0,.13);
+  transform: translateY(-2px);
+}
+.tf-card__media {
+  position: relative;
+  overflow: hidden;
+  background: #f5f5f5;
+  aspect-ratio: 4/3;
+}
+/* Badge */
+.tf-card__badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  background: #e30613;
+  color: #fff;
+}
+.tf-card__badge--new-in { background: #0a6b3a; }
+.tf-card__badge--best-seller { background: #c47c00; }
+/* Wishlist */
+.tf-card__wishlist {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #888;
+  opacity: 0;
+  transition: opacity .2s, color .2s, background .2s;
+  backdrop-filter: blur(4px);
+}
+.tf-card:hover .tf-card__wishlist { opacity: 1; }
+.tf-card__wishlist:hover,
+.tf-card__wishlist.tf-wishlisted { color: #e30613; background: #fff; }
+.tf-card__wishlist.tf-wishlisted path { fill: #e30613; }
+/* Image link + slider */
+.tf-card__image-link {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  outline: none;
+}
+.tf-card__slider { position: relative; height: 100%; }
+.tf-card__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.tf-card__slide--active { opacity: 1; }
+.tf-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.tf-card__img--placeholder { padding: 18%; color: #ccc; }
+/* Arrow buttons */
+.tf-card__slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.42);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .2s, background .2s;
+}
+.tf-card:hover .tf-card__slider-btn { opacity: 1; }
+.tf-card__slider-btn:hover { background: rgba(0,0,0,.7); }
+.tf-card__slider-btn--prev { left: 8px; }
+.tf-card__slider-btn--next { right: 8px; }
+/* Dots */
+.tf-card__dots {
+  position: absolute;
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 5;
+}
+.tf-card__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.5);
+  transition: background .2s, transform .2s;
+}
+.tf-card__dot--active {
+  background: #fff;
+  transform: scale(1.4);
+}
+/* Card info */
+.tf-card__info {
+  padding: 13px 15px 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 5px;
+}
+.tf-card__title-link { text-decoration: none; color: inherit; }
+.tf-card__title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.tf-card__colours {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: #777;
+}
+.tf-card__price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 1px;
+}
+.tf-card__price-current {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.tf-card__price-sale { color: #e30613; }
+.tf-card__price-compare {
+  font-size: 12.5px;
+  color: #aaa;
+  text-decoration: line-through;
+}
+.tf-card__save-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  background: #fff3f3;
+  color: #e30613;
+  border: 1px solid #ffd0d0;
+  border-radius: 3px;
+}
+.tf-card__finance {
+  font-size: 11px;
+  color: #888;
+  margin: 0;
+  line-height: 1.4;
+}
+.tf-card__cta {
+  display: block;
+  text-align: center;
+  padding: 10px 14px;
+  margin-top: auto;
+  background: #e30613;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: background .2s;
+}
+.tf-card__cta:hover { background: #c0050f; }
+
+/* ── Promo card ───────────────────────────────────────────── */
+.tf-promo-card {
+  background: linear-gradient(140deg, #12122a 0%, #1a1a3e 45%, #0d2b5e 100%);
+  border-radius: 8px;
+  padding: 32px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 280px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.18);
+}
+.tf-promo-card::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(227,6,19,.25) 0%, transparent 70%);
+}
+.tf-promo-card::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: -30px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255,255,255,.06) 0%, transparent 70%);
+}
+.tf-promo-card__eyebrow {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: #e30613;
+  margin: 0 0 10px;
+  position: relative;
+  z-index: 1;
+}
+.tf-promo-card__heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 4px;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+}
+.tf-promo-card__sub {
+  font-size: 28px;
+  font-weight: 900;
+  color: #e30613;
+  margin: 0 0 10px;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+}
+.tf-promo-card__body {
+  font-size: 13px;
+  color: rgba(255,255,255,.6);
+  margin: 0 0 22px;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+.tf-promo-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  background: #e30613;
+  color: #fff;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: background .2s, transform .18s;
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+}
+.tf-promo-card__cta:hover {
+  background: #c0050f;
+  transform: translateX(3px);
+}
+
+/* ── Empty state ──────────────────────────────────────────── */
+.tf-empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: #666;
+  font-size: 15px;
+}
+.tf-empty a {
+  display: inline-block;
+  margin-top: 14px;
+  color: #e30613;
+  font-size: 14px;
+}
+
+/* ── Infinite scroll spinner ──────────────────────────────── */
+.tf-infinite-spinner {
+  text-align: center;
+  padding: 24px 0 40px;
+}
+.tf-spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid #ddd;
+  border-top-color: #e30613;
+  border-radius: 50%;
+  animation: tf-spin .7s linear infinite;
+}
+@keyframes tf-spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 989px) {
+  .tf-product-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 749px) {
+  .tf-product-grid { grid-template-columns: 1fr; gap: 12px; }
+  .tf-filter-bar__inner { padding: 0 10px; }
+  .tf-facet-form { min-height: 46px; }
+  .tf-filter-label { display: none; }
+  .tf-sort-label-text { display: none; }
+  #TfProductGridContainer { padding: 10px 10px 40px; }
+  .tf-results-header { padding: 10px 10px 4px; }
+  #TfActiveFilters { padding: 6px 10px; }
+  .tf-promo-card { min-height: 200px; padding: 22px 18px; }
+}
+</style>
+
+{%- comment -%} ═══════════════════════════════════════════════
+  PAGE
+═════════════════════════════════════════════════════════════ {%- endcomment -%}
+<div class="tf-page" id="TfSection-{{ section.id }}">
+
+  {%- comment -%} ── Filter Bar ── {%- endcomment -%}
+  <div class="tf-filter-bar" id="TfFilterBar">
+    <div class="tf-filter-bar__inner">
+      <form id="TfFacetForm" class="tf-facet-form" novalidate>
+
+        <div class="tf-filter-bar__left">
+          <span class="tf-filter-label">
+            Filter <strong>{{ collection.products_count }}</strong> Results by:
+          </span>
+          <div class="tf-filter-bar__filters" id="TfFiltersList">
+            {%- for filter in collection.filters -%}
+              {%- render 'filter-dropdown', filter: filter, filter_index: forloop.index -%}
+            {%- endfor -%}
+
+            {%- if total_active > 0 -%}
+              <a href="{{ collection.url }}" class="tf-clear-all-btn tf-facet-remove-link">
+                ✕ Clear ({{ total_active }})
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="tf-filter-bar__right">
+          <span class="tf-sort-label-text">Sort by:</span>
+          <div class="tf-sort-wrap" id="TfSortWrap">
+            <button type="button" class="tf-sort-trigger" aria-expanded="false" aria-controls="TfSortPanel">
+              <span class="tf-sort-label-active">
+                {%- for option in collection.sort_options -%}
+                  {%- if option.value == sort_by -%}{{ option.name }}{%- endif -%}
+                {%- endfor -%}
+              </span>
+              <svg class="tf-dropdown__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="tf-sort-panel" id="TfSortPanel" aria-hidden="true">
+              {%- for option in collection.sort_options -%}
+                <label class="tf-sort-option{% if option.value == sort_by %} tf-sort-option--active{% endif %}">
+                  <input type="radio" name="sort_by" value="{{ option.value }}" {% if option.value == sort_by %}checked{% endif %}>
+                  <svg class="tf-sort-tick" width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true">
+                    <path d="M1 5L4.5 8.5L12 1" stroke="#e30613" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="tf-sort-label">{{ option.name }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  {%- comment -%} ── Active filters ── {%- endcomment -%}
+  <div id="TfActiveFilters">
+    {%- if total_active > 0 -%}
+      {%- for filter in collection.filters -%}
+        {%- if filter.type == 'list' or filter.type == 'boolean' -%}
+          {%- for value in filter.active_values -%}
+            <a href="{{ value.url_to_remove }}" class="tf-pill tf-facet-remove-link">
+              {{ filter.label }}: {{ value.label | escape }}
+              <span class="tf-pill__x" aria-hidden="true">×</span>
+            </a>
+          {%- endfor -%}
+        {%- elsif filter.type == 'price_range' -%}
+          {%- if filter.min_value.value or filter.max_value.value -%}
+            <a href="{{ filter.url_to_remove }}" class="tf-pill tf-facet-remove-link">
+              Price:
+              {%- if filter.min_value.value -%}{{ filter.min_value.value | money }}{%- else -%}{{ 0 | money }}{%- endif -%}
+              &ndash;
+              {%- if filter.max_value.value -%}{{ filter.max_value.value | money }}{%- else -%}{{ filter.range_max | money }}{%- endif -%}
+              <span class="tf-pill__x" aria-hidden="true">×</span>
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      <a href="{{ collection.url }}" class="tf-clear-all-link tf-facet-remove-link">Clear all</a>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Results count ── {%- endcomment -%}
+  <div class="tf-results-header">
+    <span class="tf-results-count" id="TfResultCount">
+      <strong>{{ collection.products_count }}</strong>
+      {%- if collection.products_count == 1 -%}&nbsp;result{%- else -%}&nbsp;results{%- endif -%}
+    </span>
+  </div>
+
+  {%- comment -%} ── Product grid ── {%- endcomment -%}
+  {%- paginate collection.products by products_per_page -%}
+  <div id="TfProductGridContainer">
+
+    {%- if collection.products.size > 0 -%}
+      <div class="tf-product-grid">
+        {%- liquid
+          assign promo_done = false
+          assign idx = 0
+        -%}
+        {%- for product in collection.products -%}
+          {%- assign _tags_norm = product.tags | join: ',' | downcase | split: ',' -%}
+          {%- if _tags_norm contains 'none sale item' -%}{%- continue -%}{%- endif -%}
+          {%- assign idx = idx | plus: 1 -%}
+
+          {%- if show_promo and promo_done == false and idx == promo_position -%}
+            {%- assign promo_done = true -%}
+            <div class="tf-promo-card">
+              {%- if section.settings.promo_eyebrow != blank -%}
+                <p class="tf-promo-card__eyebrow">{{ section.settings.promo_eyebrow }}</p>
+              {%- endif -%}
+              <h2 class="tf-promo-card__heading">{{ section.settings.promo_heading | default: 'SPEND & SAVE' }}</h2>
+              <p class="tf-promo-card__sub">{{ section.settings.promo_subheading | default: 'SAVE UP TO £500' }}</p>
+              {%- if section.settings.promo_body != blank -%}
+                <p class="tf-promo-card__body">{{ section.settings.promo_body }}</p>
+              {%- endif -%}
+              <a
+                href="{{ section.settings.promo_cta_url | default: collection.url }}"
+                class="tf-promo-card__cta"
+              >
+                {{ section.settings.promo_cta_label | default: 'Shop Now' }}
+                <svg width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true">
+                  <path d="M1 5H12M8 1L12 5L8 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </div>
+          {%- endif -%}
+
+          {%- render 'product-card-top',
+            product: product,
+            lazy_load: forloop.first == false,
+            section_id: section.id
+          -%}
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.next -%}
+        <div
+          id="TfScrollSentinel"
+          data-next-url="{{ paginate.next.url }}"
+          style="height:1px;margin-top:40px;"
+          aria-hidden="true"
+        ></div>
+        <div id="TfInfiniteSpinner" class="tf-infinite-spinner" aria-label="Loading more products" style="display:none;">
+          <span class="tf-spinner"></span>
+        </div>
+      {%- endif -%}
+
+    {%- else -%}
+      <div class="tf-empty">
+        <p>No products match your current filters.</p>
+        {%- if total_active > 0 -%}
+          <a href="{{ collection.url }}">Clear all filters</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+  {%- endpaginate -%}
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const form          = document.getElementById('TfFacetForm');
+  const gridContainer = document.getElementById('TfProductGridContainer');
+  const resultCount   = document.getElementById('TfResultCount');
+  const activeBar     = document.getElementById('TfActiveFilters');
+  const sectionId     = 'main-collection-top-filter';
+
+  /* ── helpers ─────────────────────────────────────── */
+  function setLoading (on) {
+    gridContainer.classList.toggle('tf-loading', on);
+  }
+
+  function initSliders (root) {
+    root.querySelectorAll('[data-slider]').forEach(function (slider) {
+      if (slider.dataset.sliderReady) return;
+      slider.dataset.sliderReady = '1';
+
+      var media   = slider.closest('.tf-card__media');
+      var slides  = Array.from(slider.querySelectorAll('.tf-card__slide'));
+      var dots    = media ? Array.from(media.querySelectorAll('.tf-card__dot')) : [];
+      var current = 0;
+
+      if (slides.length < 2) return;
+
+      function goTo (n) {
+        slides[current].classList.remove('tf-card__slide--active');
+        if (dots[current]) dots[current].classList.remove('tf-card__dot--active');
+        current = (n + slides.length) % slides.length;
+        slides[current].classList.add('tf-card__slide--active');
+        if (dots[current]) dots[current].classList.add('tf-card__dot--active');
+      }
+
+      var prev = media && media.querySelector('.tf-card__slider-btn--prev');
+      var next = media && media.querySelector('.tf-card__slider-btn--next');
+      if (prev) prev.addEventListener('click', function (e) { e.preventDefault(); goTo(current - 1); });
+      if (next) next.addEventListener('click', function (e) { e.preventDefault(); goTo(current + 1); });
+
+      var tx = 0;
+      slider.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+      slider.addEventListener('touchend', function (e) {
+        var dx = tx - e.changedTouches[0].clientX;
+        if (Math.abs(dx) > 35) goTo(dx > 0 ? current + 1 : current - 1);
+      });
+    });
+  }
+
+  function initWishlist (root) {
+    root.querySelectorAll('.tf-card__wishlist').forEach(function (btn) {
+      if (btn.dataset.wlReady) return;
+      btn.dataset.wlReady = '1';
+      btn.addEventListener('click', function () {
+        this.classList.toggle('tf-wishlisted');
+      });
+    });
+  }
+
+  /* ── Infinite scroll ──────────────────────────────── */
+  var tfInfiniteActive = false;
+  var tfObserver       = null;
+
+  function fetchNextPage () {
+    var sentinel = document.getElementById('TfScrollSentinel');
+    var spinner  = document.getElementById('TfInfiniteSpinner');
+    if (!sentinel || tfInfiniteActive) return;
+
+    var nextUrl = sentinel.dataset.nextUrl;
+    if (!nextUrl) return;
+
+    tfInfiniteActive = true;
+    if (spinner) spinner.style.display = '';
+
+    fetch(nextUrl + '&section_id=' + sectionId)
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var doc     = new DOMParser().parseFromString(html, 'text/html');
+        var newGrid = doc.querySelector('.tf-product-grid');
+        var curGrid = document.querySelector('.tf-product-grid');
+
+        if (newGrid && curGrid) {
+          newGrid.querySelectorAll('.tf-card, .tf-promo-card').forEach(function (el) {
+            curGrid.appendChild(el);
+          });
+          initSliders(curGrid);
+          initWishlist(curGrid);
+        }
+
+        var newSentinel = doc.getElementById('TfScrollSentinel');
+        if (newSentinel && newSentinel.dataset.nextUrl) {
+          sentinel.dataset.nextUrl = newSentinel.dataset.nextUrl;
+        } else {
+          /* no more pages — remove sentinel & spinner */
+          sentinel.remove();
+          if (spinner) spinner.remove();
+          if (tfObserver) { tfObserver.disconnect(); tfObserver = null; }
+          window.removeEventListener('scroll', onWindowScroll);
+        }
+
+        if (spinner) spinner.style.display = 'none';
+        tfInfiniteActive = false;
+      })
+      .catch(function () {
+        var sp = document.getElementById('TfInfiniteSpinner');
+        if (sp) sp.style.display = 'none';
+        tfInfiniteActive = false;
+      });
+  }
+
+  /* Scroll-based trigger — fires when sentinel is within 400px of viewport */
+  function isSentinelNearBottom () {
+    var sentinel = document.getElementById('TfScrollSentinel');
+    if (!sentinel) return false;
+    var rect = sentinel.getBoundingClientRect();
+    return rect.top <= window.innerHeight + 400;
+  }
+
+  function onWindowScroll () {
+    if (isSentinelNearBottom()) fetchNextPage();
+  }
+
+  function initInfiniteScroll () {
+    var sentinel = document.getElementById('TfScrollSentinel');
+    if (tfObserver) { tfObserver.disconnect(); tfObserver = null; }
+    window.removeEventListener('scroll', onWindowScroll);
+    if (!sentinel) return;
+
+    /* Use IntersectionObserver as primary, window scroll as fallback */
+    if ('IntersectionObserver' in window) {
+      tfObserver = new IntersectionObserver(function (entries) {
+        if (entries[0].isIntersecting) fetchNextPage();
+      }, { rootMargin: '0px 0px 400px 0px', threshold: 0 });
+      tfObserver.observe(sentinel);
+    }
+    /* Always attach scroll fallback — handles cases where IO misses */
+    window.addEventListener('scroll', onWindowScroll, { passive: true });
+    /* Fire immediately in case sentinel already visible */
+    setTimeout(function () { if (isSentinelNearBottom()) fetchNextPage(); }, 200);
+  }
+
+  /* ── AJAX filtering ───────────────────────────────── */
+  function updateFromDoc (doc, url) {
+    var ng = doc.getElementById('TfProductGridContainer');
+    if (ng) gridContainer.innerHTML = ng.innerHTML;
+
+    var nc = doc.getElementById('TfResultCount');
+    if (nc && resultCount) resultCount.innerHTML = nc.innerHTML;
+
+    var na = doc.getElementById('TfActiveFilters');
+    if (na && activeBar) activeBar.innerHTML = na.innerHTML;
+
+    history.pushState({}, '', url);
+    setLoading(false);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    initSliders(gridContainer);
+    initWishlist(gridContainer);
+    tfInfiniteActive = false;
+    initInfiniteScroll();
+    syncFormToUrl(url);
+  }
+
+  function syncFormToUrl (url) {
+    if (!form) return;
+    var params = new URLSearchParams(url.split('?')[1] || '');
+    form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+      cb.checked = params.getAll(cb.name).indexOf(cb.value) !== -1;
+    });
+    form.querySelectorAll('input[type="radio"][name="sort_by"]').forEach(function (r) {
+      r.checked = r.value === (params.get('sort_by') || '');
+    });
+    updateSortLabel();
+    updateDropdownActiveStates();
+  }
+
+  function updateSortLabel () {
+    var checked = form && form.querySelector('input[name="sort_by"]:checked');
+    var lbl     = document.querySelector('.tf-sort-label-active');
+    if (checked && lbl) {
+      var el = checked.closest('.tf-sort-option');
+      if (el) lbl.textContent = el.querySelector('.tf-sort-label').textContent;
+    }
+    document.querySelectorAll('.tf-sort-option').forEach(function (o) {
+      o.classList.toggle('tf-sort-option--active', !!o.querySelector('input:checked'));
+    });
+  }
+
+  function updateDropdownActiveStates () {
+    document.querySelectorAll('.tf-dropdown').forEach(function (dd) {
+      var hasChecked = !!dd.querySelector('input[type="checkbox"]:checked');
+      var trigger    = dd.querySelector('.tf-dropdown__trigger');
+      if (trigger) trigger.classList.toggle('tf-dropdown__trigger--active', hasChecked);
+      var countEl = trigger && trigger.querySelector('.tf-dropdown__active-count');
+      var n = dd.querySelectorAll('input[type="checkbox"]:checked').length;
+      if (hasChecked) {
+        if (!countEl) {
+          countEl = document.createElement('span');
+          countEl.className = 'tf-dropdown__active-count';
+          trigger.insertBefore(countEl, trigger.querySelector('.tf-dropdown__chevron'));
+        }
+        countEl.textContent = n;
+      } else if (countEl) {
+        countEl.remove();
+      }
+    });
+  }
+
+  var debounceTimer;
+  function doFilter () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function () {
+      if (!form) return;
+      var data   = new FormData(form);
+      var params = new URLSearchParams(data);
+      /* strip blank values */
+      Array.from(params.entries()).forEach(function (pair) {
+        if (pair[1] === '') params.delete(pair[0]);
+      });
+      var url = window.location.pathname + '?' + params.toString();
+      setLoading(true);
+      fetch(url + '&section_id=' + sectionId)
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          updateFromDoc(new DOMParser().parseFromString(html, 'text/html'), url);
+        })
+        .catch(function () { setLoading(false); });
+    }, 280);
+  }
+
+  if (form) {
+    form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+      cb.addEventListener('change', doFilter);
+    });
+    form.querySelectorAll('input[type="radio"][name="sort_by"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        closeAllDropdowns(null);
+        doFilter();
+        updateSortLabel();
+      });
+    });
+    form.querySelectorAll('input[type="number"]').forEach(function (inp) {
+      inp.addEventListener('change', doFilter);
+    });
+  }
+
+  /* Intercept facet-remove links (pills + clear-all) */
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('.tf-facet-remove-link');
+    if (!link) return;
+    e.preventDefault();
+    var url = link.getAttribute('href');
+    setLoading(true);
+    fetch(url + '&section_id=' + sectionId)
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        updateFromDoc(new DOMParser().parseFromString(html, 'text/html'), url);
+      })
+      .catch(function () { setLoading(false); });
+  });
+
+  /* ── Panel positioning (fixed, escapes overflow clips) ─────
+     Panel is full-width — matches the filter bar's inner content
+     width and aligns to its left edge. Sits flush under the bar. */
+  function positionPanel (dd) {
+    var panel = dd.querySelector('.tf-dropdown__panel');
+    if (!panel) return;
+    var bar      = document.getElementById('TfFilterBar');
+    var inner    = bar ? bar.querySelector('.tf-filter-bar__inner') : null;
+    var barEl    = inner || bar;
+    if (!barEl) return;
+    var barRect  = barEl.getBoundingClientRect();
+    panel.style.top   = barRect.bottom + 'px';
+    panel.style.left  = barRect.left + 'px';
+    panel.style.width = barRect.width + 'px';
+  }
+
+  function repositionOpenPanels () {
+    document.querySelectorAll('.tf-dropdown[data-open]').forEach(function (dd) {
+      positionPanel(dd);
+    });
+  }
+
+  window.addEventListener('scroll',  repositionOpenPanels, { passive: true });
+  window.addEventListener('resize',  repositionOpenPanels, { passive: true });
+
+  /* ── Dropdown toggles ─────────────────────────────── */
+  function closeAllDropdowns (except) {
+    document.querySelectorAll('.tf-dropdown[data-open]').forEach(function (dd) {
+      if (dd === except) return;
+      dd.removeAttribute('data-open');
+      var t = dd.querySelector('.tf-dropdown__trigger');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
+    var sw = document.getElementById('TfSortWrap');
+    if (sw && sw !== except) sw.removeAttribute('data-open');
+  }
+
+  document.querySelectorAll('.tf-dropdown').forEach(function (dd) {
+    var trigger = dd.querySelector('.tf-dropdown__trigger');
+    if (!trigger) return;
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = dd.hasAttribute('data-open');
+      closeAllDropdowns(dd);
+      if (!open) {
+        positionPanel(dd);
+        dd.setAttribute('data-open', '');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  var sortWrap = document.getElementById('TfSortWrap');
+  if (sortWrap) {
+    sortWrap.querySelector('.tf-sort-trigger').addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = sortWrap.hasAttribute('data-open');
+      closeAllDropdowns(sortWrap);
+      if (!open) sortWrap.setAttribute('data-open', '');
+    });
+  }
+
+  document.addEventListener('click', function () { closeAllDropdowns(null); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAllDropdowns(null);
+  });
+
+  /* ── Init ─────────────────────────────────────────── */
+  /* sticky shadow on scroll */
+  var filterBar = document.getElementById('TfFilterBar');
+  if (filterBar) {
+    window.addEventListener('scroll', function () {
+      filterBar.classList.toggle('tf-bar-shadow', window.scrollY > 10);
+    }, { passive: true });
+  }
+
+  initSliders(document);
+  initWishlist(document);
+  initInfiniteScroll();
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Collection — Top Filter",
+  "tag": "section",
+  "class": "section-tf-collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Promo Card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_promo",
+      "label": "Show promo card",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "promo_position",
+      "label": "Insert at position",
+      "info": "Which product slot the promo card replaces",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "promo_eyebrow",
+      "label": "Eyebrow label",
+      "default": "Limited Time Offer"
+    },
+    {
+      "type": "text",
+      "id": "promo_heading",
+      "label": "Heading",
+      "default": "SPEND & SAVE"
+    },
+    {
+      "type": "text",
+      "id": "promo_subheading",
+      "label": "Sub-heading (highlight)",
+      "default": "SAVE UP TO £500"
+    },
+    {
+      "type": "textarea",
+      "id": "promo_body",
+      "label": "Body text",
+      "default": "On selected sofas and corner groups this season."
+    },
+    {
+      "type": "text",
+      "id": "promo_cta_label",
+      "label": "CTA button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "promo_cta_url",
+      "label": "CTA button URL"
+    },
+    {
+      "type": "header",
+      "content": "Product Card"
+    },
+    {
+      "type": "text",
+      "id": "card_cta_label",
+      "label": "CTA button text",
+      "default": "More details"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_finance_text",
+      "label": "Show finance text",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "finance_text",
+      "label": "Finance text",
+      "default": "From £29/month with 0% finance"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection — Top Filter"
+    }
+  ]
+}
+{% endschema %}

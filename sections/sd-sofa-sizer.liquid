@@ -1,0 +1,1183 @@
+<link rel="stylesheet" href="{{ 'sd-sofa-sizer.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-sofa-sizer.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign hero_heading   = section.settings.hero_heading   | default: 'Find Your Perfect Sofa Size'
+  assign hero_sub       = section.settings.hero_sub       | default: 'Answer a few questions and instantly see which sofas will look stunning — and actually fit — in your space.'
+  assign hero_cta       = section.settings.hero_cta_label | default: 'Start Sizing'
+  assign hero_image     = section.settings.hero_image
+  assign collection_h   = section.settings.collection_handle | default: 'sofas'
+  assign tool_eyebrow   = section.settings.tool_eyebrow   | default: 'Interactive Tool'
+  assign tool_title     = section.settings.tool_title     | default: 'Your Personalised Room Planner'
+  assign benefits_title = section.settings.benefits_title | default: 'Why Use the Sofa Sizer?'
+-%}
+
+<div id="sd-sofa-sizer-{{ section.id }}" class="sd-sofa-sizer" data-collection="{{ collection_h }}">
+
+  {%- comment -%}═══════════════════════════════════════ HERO ═{%- endcomment -%}
+  <section class="sds-hero" aria-label="Sofa Sizer hero">
+
+    <div class="sds-hero__bg"></div>
+
+    {%- if hero_image != blank -%}
+      <div class="sds-hero__bg-img"
+        style="background-image: url('{{ hero_image | image_url: width: 1920 }}');"
+        aria-hidden="true">
+      </div>
+    {%- endif -%}
+
+    <div class="sds-hero__grid-overlay" aria-hidden="true"></div>
+
+    <div class="sds-hero__inner">
+
+      <div class="sds-hero__content">
+        <div class="sds-hero__badge">Room Planning Tool</div>
+
+        <h1 class="sds-hero__heading">
+          {%- assign heading_parts = hero_heading | split: ' | ' -%}
+          {%- for part in heading_parts -%}
+            {%- if forloop.last and heading_parts.size > 1 -%}
+              <em>{{ part }}</em>
+            {%- else -%}
+              {{ part }}
+              {%- unless forloop.last -%}<br>{%- endunless -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </h1>
+
+        <p class="sds-hero__sub">{{ hero_sub }}</p>
+
+        <button
+          class="sds-hero__cta"
+          id="sds-hero-cta-{{ section.id }}"
+          aria-label="{{ hero_cta }}"
+        >
+          {{ hero_cta }}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+
+        <div class="sds-hero__stats">
+          <div class="sds-hero__stat">
+            <b>{{ section.settings.stat_1_val | default: '500+' }}</b>
+            <span>{{ section.settings.stat_1_lbl | default: 'Sofas sized' }}</span>
+          </div>
+          <div class="sds-hero__stat">
+            <b>{{ section.settings.stat_2_val | default: '2 min' }}</b>
+            <span>{{ section.settings.stat_2_lbl | default: 'To complete' }}</span>
+          </div>
+          <div class="sds-hero__stat">
+            <b>{{ section.settings.stat_3_val | default: '100%' }}</b>
+            <span>{{ section.settings.stat_3_lbl | default: 'Free to use' }}</span>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Animated room illustration {%- endcomment -%}
+      <div class="sds-hero__visual" aria-hidden="true">
+        <svg class="sds-hero__room-art" viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Room floor -->
+          <rect x="40" y="80" width="420" height="290" rx="16" fill="rgba(255,250,234,0.08)" stroke="rgba(165,140,112,0.4)" stroke-width="2"/>
+          <!-- Floor grid -->
+          <line x1="145" y1="80" x2="145" y2="370" stroke="rgba(165,140,112,0.12)" stroke-width="1"/>
+          <line x1="250" y1="80" x2="250" y2="370" stroke="rgba(165,140,112,0.12)" stroke-width="1"/>
+          <line x1="355" y1="80" x2="355" y2="370" stroke="rgba(165,140,112,0.12)" stroke-width="1"/>
+          <line x1="40" y1="180" x2="460" y2="180" stroke="rgba(165,140,112,0.12)" stroke-width="1"/>
+          <line x1="40" y1="275" x2="460" y2="275" stroke="rgba(165,140,112,0.12)" stroke-width="1"/>
+          <!-- Sofa body -->
+          <rect x="100" y="230" width="300" height="110" rx="14" fill="rgba(165,140,112,0.3)" stroke="rgba(165,140,112,0.6)" stroke-width="2"/>
+          <!-- Sofa back -->
+          <rect x="100" y="210" width="300" height="35" rx="10" fill="rgba(165,140,112,0.4)" stroke="rgba(165,140,112,0.6)" stroke-width="2"/>
+          <!-- Sofa cushions -->
+          <rect x="110" y="242" width="88" height="80" rx="10" fill="rgba(192,176,159,0.4)" stroke="rgba(165,140,112,0.4)" stroke-width="1.5"/>
+          <rect x="206" y="242" width="88" height="80" rx="10" fill="rgba(192,176,159,0.4)" stroke="rgba(165,140,112,0.4)" stroke-width="1.5"/>
+          <rect x="302" y="242" width="88" height="80" rx="10" fill="rgba(192,176,159,0.4)" stroke="rgba(165,140,112,0.4)" stroke-width="1.5"/>
+          <!-- Sofa arms -->
+          <rect x="78" y="220" width="28" height="90" rx="8" fill="rgba(165,140,112,0.4)" stroke="rgba(165,140,112,0.5)" stroke-width="1.5"/>
+          <rect x="394" y="220" width="28" height="90" rx="8" fill="rgba(165,140,112,0.4)" stroke="rgba(165,140,112,0.5)" stroke-width="1.5"/>
+          <!-- Coffee table -->
+          <rect x="175" y="130" width="150" height="75" rx="10" fill="rgba(47,72,88,0.25)" stroke="rgba(47,72,88,0.5)" stroke-width="1.5"/>
+          <!-- Table decor -->
+          <circle cx="215" cy="167" r="12" fill="rgba(165,140,112,0.3)" stroke="rgba(165,140,112,0.5)" stroke-width="1"/>
+          <circle cx="285" cy="167" r="8" fill="rgba(165,140,112,0.2)" stroke="rgba(165,140,112,0.4)" stroke-width="1"/>
+          <!-- Dimension arrows -->
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="rgba(165,140,112,0.7)"/>
+            </marker>
+          </defs>
+          <line x1="40" y1="55" x2="460" y2="55" stroke="rgba(165,140,112,0.5)" stroke-width="1.5" marker-start="url(#arr)" marker-end="url(#arr)"/>
+          <text x="250" y="42" font-family="Montserrat,sans-serif" font-size="13" fill="rgba(165,140,112,0.8)" text-anchor="middle" font-weight="600">420 cm</text>
+          <line x1="478" y1="80" x2="478" y2="370" stroke="rgba(165,140,112,0.5)" stroke-width="1.5" marker-start="url(#arr)" marker-end="url(#arr)"/>
+          <text x="494" y="228" font-family="Montserrat,sans-serif" font-size="13" fill="rgba(165,140,112,0.8)" text-anchor="middle" font-weight="600" transform="rotate(90,494,228)">290 cm</text>
+        </svg>
+      </div>
+
+    </div>
+  </section>
+
+  {%- comment -%}═══════════════════════════════════════ WIZARD ═{%- endcomment -%}
+  <section class="sds-wizard" id="sds-wizard-{{ section.id }}" aria-label="Sofa sizer tool">
+    <div class="sds-wizard__container">
+
+      <span class="sds-section-eyebrow">{{ tool_eyebrow }}</span>
+      <span class="sds-section-title">{{ tool_title }}</span>
+
+      {%- comment -%} Progress indicator {%- endcomment -%}
+      <nav class="sds-progress" aria-label="Tool steps">
+        {%- assign step_labels = 'Room,Sofa,Layout,Preview,Results' | split: ',' -%}
+        {%- for lbl in step_labels -%}
+          <div class="sds-progress__step{% if forloop.first %} active{% endif %}" data-step="{{ forloop.index }}" aria-label="Step {{ forloop.index }}: {{ lbl }}">
+            <div class="sds-progress__circle">
+              <svg class="sds-tick" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              <span class="sds-step-num">{{ forloop.index }}</span>
+            </div>
+            <span class="sds-progress__label">{{ lbl }}</span>
+          </div>
+          {%- unless forloop.last -%}
+            <div class="sds-progress__connector"></div>
+          {%- endunless -%}
+        {%- endfor -%}
+      </nav>
+
+      {%- comment -%} Wizard card {%- endcomment -%}
+      <div class="sds-card">
+
+        {%- comment -%}──── STEP 1: Room Size ────{%- endcomment -%}
+        <div class="sds-panel active" id="sds-panel-1">
+          <p class="sds-panel__step-num">Step 1 of 5</p>
+          <h2 class="sds-panel__title">Your Room Dimensions</h2>
+          <p class="sds-panel__sub">Enter the width and depth of the wall where your sofa will go.</p>
+
+          <div class="sds-unit-toggle" role="group" aria-label="Measurement unit">
+            <button class="sds-unit-btn active" data-unit="cm">cm</button>
+            <button class="sds-unit-btn" data-unit="in">inches</button>
+          </div>
+
+          <div class="sds-room-inputs">
+            <div class="sds-input-group">
+              <label for="sds-room-width">
+                Room Width
+                <span class="sds-val-display"><span class="sds-val-width">350</span> <span class="sds-unit-label">cm</span></span>
+              </label>
+              <input type="range" id="sds-room-width" class="sds-slider" min="100" max="800" value="350" step="5" aria-label="Room width">
+              <input type="number" id="sds-room-width-num" class="sds-num-input" value="350" min="100" max="800" aria-label="Room width number">
+            </div>
+            <div class="sds-input-group">
+              <label for="sds-room-depth">
+                Room Depth
+                <span class="sds-val-display"><span class="sds-val-depth">400</span> <span class="sds-unit-label">cm</span></span>
+              </label>
+              <input type="range" id="sds-room-depth" class="sds-slider" min="100" max="800" value="400" step="5" aria-label="Room depth">
+              <input type="number" id="sds-room-depth-num" class="sds-num-input" value="400" min="100" max="800" aria-label="Room depth number">
+            </div>
+          </div>
+
+          <div class="sds-room-canvas-wrap">
+            <canvas id="sds-room-canvas" width="420" height="220" aria-label="Room size visualisation"></canvas>
+          </div>
+
+          <div class="sds-panel__footer">
+            <span></span>
+            <button class="sds-btn sds-btn--primary" data-sds-next>
+              Next: Choose Sofa
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {%- comment -%}──── STEP 2: Sofa Type ────{%- endcomment -%}
+        <div class="sds-panel" id="sds-panel-2">
+          <p class="sds-panel__step-num">Step 2 of 5</p>
+          <h2 class="sds-panel__title">Select Your Sofa Type</h2>
+          <p class="sds-panel__sub">Pick the style of sofa you're planning to buy.</p>
+
+          <div class="sds-sofa-grid" role="group" aria-label="Sofa type selection">
+
+            <button class="sds-choice-card" data-sofa="two-seater" aria-pressed="false">
+              <div class="sds-choice-card__tick" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="sds-choice-card__icon" aria-hidden="true">
+                {%- comment -%} 2-seater top-down SVG {%- endcomment -%}
+                <svg viewBox="0 0 88 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="14" width="80" height="42" rx="8" fill="#e8e0d8" stroke="#A58C70" stroke-width="2"/>
+                  <rect x="4" y="8" width="80" height="16" rx="6" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="12" y="22" width="28" height="28" rx="6" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="48" y="22" width="28" height="28" rx="6" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="2" y="18" width="8" height="32" rx="4" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="78" y="18" width="8" height="32" rx="4" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <p class="sds-choice-card__name">2-Seater</p>
+              <p class="sds-choice-card__detail">140 – 160 cm wide</p>
+            </button>
+
+            <button class="sds-choice-card" data-sofa="three-seater" aria-pressed="false">
+              <div class="sds-choice-card__tick" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="sds-choice-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 88 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="14" width="80" height="42" rx="8" fill="#e8e0d8" stroke="#A58C70" stroke-width="2"/>
+                  <rect x="4" y="8" width="80" height="16" rx="6" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="10" y="22" width="19" height="28" rx="5" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="34" y="22" width="20" height="28" rx="5" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="59" y="22" width="19" height="28" rx="5" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="2" y="18" width="8" height="32" rx="4" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="78" y="18" width="8" height="32" rx="4" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <p class="sds-choice-card__name">3-Seater</p>
+              <p class="sds-choice-card__detail">190 – 220 cm wide</p>
+            </button>
+
+            <button class="sds-choice-card" data-sofa="corner" aria-pressed="false">
+              <div class="sds-choice-card__tick" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="sds-choice-card__icon" aria-hidden="true">
+                {%- comment -%} Corner / L-shape top-down {%- endcomment -%}
+                <svg viewBox="0 0 88 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <!-- horizontal arm -->
+                  <rect x="4" y="32" width="52" height="28" rx="7" fill="#e8e0d8" stroke="#A58C70" stroke-width="1.8"/>
+                  <rect x="4" y="26" width="52" height="14" rx="5" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="10" y="40" width="20" height="16" rx="4" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.3"/>
+                  <rect x="34" y="40" width="18" height="16" rx="4" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.3"/>
+                  <!-- vertical arm -->
+                  <rect x="52" y="4" width="28" height="50" rx="7" fill="#e8e0d8" stroke="#A58C70" stroke-width="1.8"/>
+                  <rect x="52" y="4" width="14" height="50" rx="5" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="62" y="10" width="14" height="16" rx="4" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.3"/>
+                  <rect x="62" y="30" width="14" height="18" rx="4" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.3"/>
+                  <!-- corner seat -->
+                  <rect x="52" y="32" width="24" height="28" rx="4" fill="#d9cec4" stroke="#A58C70" stroke-width="1.3"/>
+                </svg>
+              </div>
+              <p class="sds-choice-card__name">Corner</p>
+              <p class="sds-choice-card__detail">L-shape, 250 × 200 cm</p>
+            </button>
+
+            <button class="sds-choice-card" data-sofa="recliner" aria-pressed="false">
+              <div class="sds-choice-card__tick" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="sds-choice-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 88 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="12" width="80" height="46" rx="8" fill="#e8e0d8" stroke="#A58C70" stroke-width="2"/>
+                  <rect x="4" y="6" width="80" height="16" rx="6" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="12" y="22" width="28" height="30" rx="6" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="48" y="22" width="28" height="30" rx="6" fill="#f5f0ea" stroke="#A58C70" stroke-width="1.5"/>
+                  <!-- Footrest indication -->
+                  <rect x="14" y="50" width="24" height="6" rx="3" fill="#C0B09F" stroke="#A58C70" stroke-width="1"/>
+                  <rect x="50" y="50" width="24" height="6" rx="3" fill="#C0B09F" stroke="#A58C70" stroke-width="1"/>
+                  <rect x="2" y="16" width="8" height="34" rx="4" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="78" y="16" width="8" height="34" rx="4" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <p class="sds-choice-card__name">Recliner</p>
+              <p class="sds-choice-card__detail">220 – 240 cm wide</p>
+            </button>
+
+          </div>
+
+          <div class="sds-panel__footer">
+            <button class="sds-btn sds-btn--outline" data-sds-prev>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Back
+            </button>
+            <button class="sds-btn sds-btn--primary" data-sds-next>
+              Next: Layout
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {%- comment -%}──── STEP 3: Layout ────{%- endcomment -%}
+        <div class="sds-panel" id="sds-panel-3">
+          <p class="sds-panel__step-num">Step 3 of 5</p>
+          <h2 class="sds-panel__title">Choose Your Layout</h2>
+          <p class="sds-panel__sub">How would you like the sofa to sit in your room?</p>
+
+          <div class="sds-layout-grid" role="group" aria-label="Layout selection">
+
+            <button class="sds-choice-card" data-layout="straight" aria-pressed="false">
+              <div class="sds-choice-card__tick" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="sds-choice-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 80 60" fill="none">
+                  <rect x="8" y="16" width="64" height="28" rx="7" fill="#e8e0d8" stroke="#A58C70" stroke-width="2"/>
+                  <rect x="8" y="10" width="64" height="14" rx="5" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <p class="sds-choice-card__name">Straight</p>
+              <p class="sds-choice-card__detail">Against one wall</p>
+            </button>
+
+            <button class="sds-choice-card" data-layout="lshape" aria-pressed="false">
+              <div class="sds-choice-card__tick" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="sds-choice-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 80 60" fill="none">
+                  <rect x="8" y="30" width="46" height="24" rx="6" fill="#e8e0d8" stroke="#A58C70" stroke-width="2"/>
+                  <rect x="8" y="24" width="46" height="12" rx="4" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="50" y="8" width="24" height="44" rx="6" fill="#e8e0d8" stroke="#A58C70" stroke-width="2"/>
+                  <rect x="50" y="8" width="12" height="44" rx="4" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <rect x="50" y="30" width="24" height="24" rx="4" fill="#d9cec4" stroke="#A58C70" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <p class="sds-choice-card__name">L-Shape</p>
+              <p class="sds-choice-card__detail">Two adjoining walls</p>
+            </button>
+
+            <button class="sds-choice-card" data-layout="ushape" aria-pressed="false">
+              <div class="sds-choice-card__tick" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="sds-choice-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 80 60" fill="none">
+                  <!-- back -->
+                  <rect x="8" y="8" width="64" height="14" rx="5" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <!-- center -->
+                  <rect x="8" y="22" width="64" height="24" rx="6" fill="#e8e0d8" stroke="#A58C70" stroke-width="2"/>
+                  <!-- left arm -->
+                  <rect x="8" y="22" width="16" height="30" rx="5" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                  <!-- right arm -->
+                  <rect x="56" y="22" width="16" height="30" rx="5" fill="#C0B09F" stroke="#A58C70" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <p class="sds-choice-card__name">U-Shape</p>
+              <p class="sds-choice-card__detail">Three-sided arrangement</p>
+            </button>
+
+          </div>
+
+          <div class="sds-panel__footer">
+            <button class="sds-btn sds-btn--outline" data-sds-prev>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Back
+            </button>
+            <button class="sds-btn sds-btn--primary" data-sds-next>
+              See Preview
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {%- comment -%}──── STEP 4: Live Preview ────{%- endcomment -%}
+        <div class="sds-panel" id="sds-panel-4">
+          <p class="sds-panel__step-num">Step 4 of 5</p>
+          <h2 class="sds-panel__title">Room & Sofa Preview</h2>
+          <p class="sds-panel__sub">See how your chosen sofa fits inside your room — to scale.</p>
+
+          <div class="sds-preview-grid">
+            <div class="sds-preview-canvas-wrap">
+              <canvas id="sds-preview-canvas" width="460" height="360" aria-label="Room preview"></canvas>
+            </div>
+
+            <div class="sds-preview-side">
+              <div class="sds-fit-badge sds-fit-badge--perfect">
+                <span class="sds-fit-badge__icon">✓</span>
+                <span class="sds-fit-badge__status">Perfect Fit</span>
+                <p class="sds-fit-badge__detail">Your sofa fits comfortably with good clearance space around it.</p>
+              </div>
+
+              <div class="sds-dim-summary">
+                <div class="sds-dim-row">
+                  <span>Room size</span>
+                  <span class="sds-dim-room">— × —</span>
+                </div>
+                <div class="sds-dim-row">
+                  <span>Sofa size</span>
+                  <span class="sds-dim-sofa">— × —</span>
+                </div>
+              </div>
+
+              <div class="sds-bars">
+                <div class="sds-bar" id="sds-bar-width">
+                  <div class="sds-bar__header">
+                    <span class="sds-bar__lbl">Width clearance</span>
+                    <span class="sds-bar__val">—</span>
+                  </div>
+                  <div class="sds-bar__track">
+                    <div class="sds-bar__fill sds-bar__fill--good" style="width:60%"></div>
+                  </div>
+                </div>
+                <div class="sds-bar" id="sds-bar-depth">
+                  <div class="sds-bar__header">
+                    <span class="sds-bar__lbl">Depth clearance</span>
+                    <span class="sds-bar__val">—</span>
+                  </div>
+                  <div class="sds-bar__track">
+                    <div class="sds-bar__fill sds-bar__fill--good" style="width:65%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sds-panel__footer">
+            <button class="sds-btn sds-btn--outline" data-sds-prev>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Back
+            </button>
+            <button class="sds-btn sds-btn--primary" data-sds-next>
+              View Recommendations
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {%- comment -%}──── STEP 5: Results ────{%- endcomment -%}
+        <div class="sds-panel" id="sds-panel-5">
+          <p class="sds-panel__step-num">Step 5 of 5</p>
+          <h2 class="sds-panel__title">Your Recommended Sofas</h2>
+          <p class="sds-panel__sub">Based on your room and preferences, here are sofas that will fit beautifully.</p>
+
+          <div class="sds-results-summary" id="sds-summary-bar">
+            <span>Room:</span> <b class="sds-sum-room">—</b>
+            <span>&nbsp;·&nbsp; Sofa:</span> <b class="sds-sum-sofa">—</b>
+            <span>&nbsp;·&nbsp; Fit:</span> <b class="sds-sum-fit">—</b>
+          </div>
+
+          <div class="sds-products-grid" id="sds-products-grid">
+            <div class="sds-products-loading">Finding your perfect match…</div>
+          </div>
+
+          <div class="sds-results-actions">
+            <a href="/collections/{{ collection_h }}" class="sds-btn sds-btn--brown">
+              Browse All Sofas
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <button class="sds-btn sds-btn--outline" data-sds-reset>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.36"/></svg>
+              Start Over
+            </button>
+          </div>
+        </div>
+
+      </div>{%- comment -%}/.sds-card{%- endcomment -%}
+
+    </div>
+  </section>
+
+  {%- comment -%}═══════════════════════════════════════ BENEFITS ═{%- endcomment -%}
+  <section class="sds-benefits" aria-label="Why use Sofa Sizer">
+    <div class="sds-benefits__container">
+
+      <div class="sds-benefits__header">
+        <span class="sds-benefits__eyebrow">Why Use Our Tool</span>
+        <h2 class="sds-benefits__title">{{ benefits_title }}</h2>
+      </div>
+
+      <div class="sds-benefits__grid">
+
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'benefit' -%}
+            <div class="sds-benefit-card" {{ block.shopify_attributes }}>
+              <div class="sds-benefit-card__icon">
+                {%- case block.settings.icon -%}
+                  {%- when 'ruler' -%}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 16L16 2l6 6L8 22z"/><line x1="9" y1="15" x2="14" y2="10"/><line x1="6" y1="18" x2="8" y2="16"/><line x1="12" y1="12" x2="14" y2="10"/></svg>
+                  {%- when 'home' -%}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  {%- when 'check' -%}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  {%- when 'clock' -%}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  {%- else -%}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                {%- endcase -%}
+              </div>
+              <h3 class="sds-benefit-card__title">{{ block.settings.title }}</h3>
+              <p class="sds-benefit-card__text">{{ block.settings.text }}</p>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+      </div>
+    </div>
+  </section>
+
+</div>{%- comment -%}/#sd-sofa-sizer{%- endcomment -%}
+
+<script>
+(function () {
+  'use strict';
+
+  var root = document.getElementById('sd-sofa-sizer-{{ section.id }}');
+  if (!root) return;
+
+  /* ── Sofa dimensions (cm): [width, depth] ── */
+  var DIMS = {
+    'two-seater':   { straight: [145,85],  lshape: [185,130], ushape: [225,170] },
+    'three-seater': { straight: [205,92],  lshape: [255,160], ushape: [295,210] },
+    'corner':       { straight: [205,92],  lshape: [265,205], ushape: [330,245] },
+    'recliner':     { straight: [225,105], lshape: [270,165], ushape: [310,210] }
+  };
+
+  /* ── State ── */
+  var S = {
+    step:      1,
+    unit:      'cm',
+    roomW:     350,
+    roomD:     400,
+    sofaType:  null,
+    layout:    null,
+    fit:       null
+  };
+
+  /* ── Helpers ── */
+  function q(sel)       { return root.querySelector(sel); }
+  function qa(sel)      { return root.querySelectorAll(sel); }
+  function id(i)        { return document.getElementById(i); }
+  function toIn(v)      { return +(v / 2.54).toFixed(1); }
+  function toCm(v)      { return Math.round(v * 2.54); }
+  function disp(cm)     { return S.unit === 'cm' ? cm : toIn(cm); }
+  function unit()       { return S.unit === 'cm' ? 'cm' : '"'; }
+  function clamp(v,a,b) { return Math.min(b, Math.max(a, v)); }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.arcTo(x + w, y, x + w, y + r, r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h);
+    ctx.arcTo(x, y + h, x, y + h - r, r);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y, x + r, y, r);
+    ctx.closePath();
+  }
+
+  /* ════════════════════════════════════════════
+     STEP NAVIGATION
+     ════════════════════════════════════════════ */
+  function goTo(n) {
+    /* hide current */
+    qa('.sds-panel.active').forEach(function(p) { p.classList.remove('active'); });
+    /* show target */
+    var target = id('sds-panel-' + n);
+    if (!target) return;
+    target.classList.add('active');
+    S.step = n;
+    updateProgress(n);
+    if (n === 4) drawPreview();
+    if (n === 5) loadProducts();
+    /* smooth scroll to wizard top */
+    var wizard = id('sds-wizard-{{ section.id }}');
+    if (wizard) {
+      var top = wizard.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+  }
+
+  function updateProgress(step) {
+    qa('.sds-progress__step').forEach(function(el, i) {
+      var s = i + 1;
+      el.classList.toggle('active', s === step);
+      el.classList.toggle('done',   s < step);
+      var tick = el.querySelector('.sds-tick');
+      var num  = el.querySelector('.sds-step-num');
+      if (tick) tick.style.display = s < step ? 'block' : 'none';
+      if (num)  num.style.display  = s < step ? 'none'  : 'block';
+    });
+    qa('.sds-progress__connector').forEach(function(el, i) {
+      el.classList.toggle('done', i + 1 < step);
+    });
+  }
+
+  /* ════════════════════════════════════════════
+     UNIT TOGGLE
+     ════════════════════════════════════════════ */
+  qa('.sds-unit-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      qa('.sds-unit-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      S.unit = btn.dataset.unit;
+      qa('.sds-unit-label').forEach(function(l) { l.textContent = unit(); });
+      refreshRoomDisplay();
+    });
+  });
+
+  /* ════════════════════════════════════════════
+     STEP 1 — ROOM INPUTS
+     ════════════════════════════════════════════ */
+  var widthSlider   = id('sds-room-width');
+  var depthSlider   = id('sds-room-depth');
+  var widthNum      = id('sds-room-width-num');
+  var depthNum      = id('sds-room-depth-num');
+  var valWidthEls   = qa('.sds-val-width');
+  var valDepthEls   = qa('.sds-val-depth');
+  var roomCanvas    = id('sds-room-canvas');
+
+  function refreshRoomDisplay() {
+    var dw = disp(S.roomW);
+    var dd = disp(S.roomD);
+    valWidthEls.forEach(function(el) { el.textContent = dw; });
+    valDepthEls.forEach(function(el) { el.textContent = dd; });
+    if (widthNum) widthNum.value = dw;
+    if (depthNum) depthNum.value = dd;
+    updateSliderTrack(widthSlider, S.roomW, 100, 800);
+    updateSliderTrack(depthSlider, S.roomD, 100, 800);
+    drawRoomCanvas();
+  }
+
+  function updateSliderTrack(slider, val, min, max) {
+    if (!slider) return;
+    var pct = ((val - min) / (max - min)) * 100;
+    slider.style.setProperty('--sds-pct', pct + '%');
+  }
+
+  if (widthSlider) widthSlider.addEventListener('input', function() {
+    S.roomW = +this.value;
+    refreshRoomDisplay();
+  });
+
+  if (depthSlider) depthSlider.addEventListener('input', function() {
+    S.roomD = +this.value;
+    refreshRoomDisplay();
+  });
+
+  if (widthNum) widthNum.addEventListener('change', function() {
+    var v = parseFloat(this.value);
+    var cm = S.unit === 'cm' ? v : toCm(v);
+    S.roomW = clamp(Math.round(cm), 100, 800);
+    if (widthSlider) widthSlider.value = S.roomW;
+    refreshRoomDisplay();
+  });
+
+  if (depthNum) depthNum.addEventListener('change', function() {
+    var v = parseFloat(this.value);
+    var cm = S.unit === 'cm' ? v : toCm(v);
+    S.roomD = clamp(Math.round(cm), 100, 800);
+    if (depthSlider) depthSlider.value = S.roomD;
+    refreshRoomDisplay();
+  });
+
+  function drawRoomCanvas() {
+    if (!roomCanvas) return;
+    var W = roomCanvas.width, H = roomCanvas.height;
+    var ctx = roomCanvas.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+
+    var pad = 30;
+    var aspect = S.roomW / S.roomD;
+    var maxW = W - pad * 2, maxH = H - pad * 2;
+    var rw, rd;
+    if (aspect >= 1) { rw = maxW; rd = Math.min(maxH, maxW / aspect); }
+    else             { rd = maxH; rw = Math.min(maxW, maxH * aspect); }
+    var rx = (W - rw) / 2, ry = (H - rd) / 2;
+
+    /* Room fill */
+    ctx.fillStyle = '#efe8df';
+    roundRect(ctx, rx, ry, rw, rd, 8); ctx.fill();
+
+    /* Grid */
+    var gs = Math.max(rw, rd) / 8;
+    ctx.strokeStyle = 'rgba(165,140,112,.18)'; ctx.lineWidth = 1;
+    for (var x = rx + gs; x < rx + rw - 1; x += gs) {
+      ctx.beginPath(); ctx.moveTo(x, ry); ctx.lineTo(x, ry + rd); ctx.stroke();
+    }
+    for (var y = ry + gs; y < ry + rd - 1; y += gs) {
+      ctx.beginPath(); ctx.moveTo(rx, y); ctx.lineTo(rx + rw, y); ctx.stroke();
+    }
+
+    /* Border */
+    ctx.strokeStyle = '#A58C70'; ctx.lineWidth = 2;
+    roundRect(ctx, rx, ry, rw, rd, 8); ctx.stroke();
+
+    /* Labels */
+    ctx.fillStyle = '#888'; ctx.font = 'bold 11px Montserrat,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText(disp(S.roomW) + unit(), rx + rw / 2, ry - 6);
+    ctx.save();
+    ctx.translate(rx - 8, ry + rd / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textBaseline = 'top';
+    ctx.fillText(disp(S.roomD) + unit(), 0, 0);
+    ctx.restore();
+  }
+
+  /* ════════════════════════════════════════════
+     STEP 2 — SOFA TYPE CARDS
+     ════════════════════════════════════════════ */
+  qa('[data-sofa]').forEach(function(card) {
+    card.addEventListener('click', function() {
+      qa('[data-sofa]').forEach(function(c) {
+        c.classList.remove('selected');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      card.classList.add('selected');
+      card.setAttribute('aria-pressed', 'true');
+      S.sofaType = card.dataset.sofa;
+    });
+  });
+
+  /* ════════════════════════════════════════════
+     STEP 3 — LAYOUT CARDS
+     ════════════════════════════════════════════ */
+  qa('[data-layout]').forEach(function(card) {
+    card.addEventListener('click', function() {
+      qa('[data-layout]').forEach(function(c) {
+        c.classList.remove('selected');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      card.classList.add('selected');
+      card.setAttribute('aria-pressed', 'true');
+      S.layout = card.dataset.layout;
+    });
+  });
+
+  /* ════════════════════════════════════════════
+     STEP 4 — PREVIEW
+     ════════════════════════════════════════════ */
+  function getSofaDims() {
+    var type   = S.sofaType || 'three-seater';
+    var layout = S.layout   || 'straight';
+    var d = (DIMS[type] || DIMS['three-seater'])[layout] || DIMS['three-seater']['straight'];
+    return { w: d[0], d: d[1] };
+  }
+
+  function getFit(rw, rd, sw, sd) {
+    if (sw > rw || sd > rd) return 'large';
+    var cw = rw - sw, cd = rd - sd;
+    if (cw < 80 || cd < 80) return 'tight';
+    return 'perfect';
+  }
+
+  function drawPreview() {
+    var sofa = getSofaDims();
+    var fit  = getFit(S.roomW, S.roomD, sofa.w, sofa.d);
+    S.fit = fit;
+
+    /* Fit badge */
+    var badge = q('.sds-fit-badge');
+    if (badge) {
+      badge.className = 'sds-fit-badge sds-fit-badge--' + fit;
+      var icon   = badge.querySelector('.sds-fit-badge__icon');
+      var status = badge.querySelector('.sds-fit-badge__status');
+      var detail = badge.querySelector('.sds-fit-badge__detail');
+      var icons  = { perfect: '✓', tight: '⚠', large: '✕' };
+      var titles = { perfect: 'Perfect Fit', tight: 'Tight Fit', large: 'Too Large' };
+      var cw     = Math.max(0, S.roomW - sofa.w);
+      var cd     = Math.max(0, S.roomD - sofa.d);
+      var details = {
+        perfect: disp(cw) + unit() + ' width · ' + disp(cd) + unit() + ' depth clearance — comfortable movement.',
+        tight:   'The sofa fits but space will feel snug. Consider walkways carefully.',
+        large:   'This sofa exceeds your room dimensions. Try a smaller type or layout.'
+      };
+      if (icon)   icon.textContent   = icons[fit];
+      if (status) status.textContent = titles[fit];
+      if (detail) detail.textContent = details[fit];
+    }
+
+    /* Dimension summary */
+    var dimRoom = q('.sds-dim-room');
+    var dimSofa = q('.sds-dim-sofa');
+    if (dimRoom) dimRoom.textContent = disp(S.roomW) + ' × ' + disp(S.roomD) + ' ' + unit();
+    if (dimSofa) dimSofa.textContent = disp(sofa.w)  + ' × ' + disp(sofa.d)  + ' ' + unit();
+
+    /* Clearance bars */
+    updateBar('sds-bar-width', S.roomW - sofa.w, S.roomW);
+    updateBar('sds-bar-depth', S.roomD - sofa.d, S.roomD);
+
+    /* Canvas */
+    var canvas = id('sds-preview-canvas');
+    if (!canvas) return;
+    var W = canvas.width, H = canvas.height;
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, W, H);
+
+    var pad = 36;
+    var scale = Math.min((W - pad * 2) / S.roomW, (H - pad * 2) / S.roomD);
+    var rw = S.roomW * scale, rd = S.roomD * scale;
+    var rx = (W - rw) / 2, ry = (H - rd) / 2;
+
+    /* Room */
+    ctx.fillStyle = '#ede7de';
+    roundRect(ctx, rx, ry, rw, rd, 10); ctx.fill();
+
+    /* Grid */
+    var gs = 30 * scale;
+    ctx.strokeStyle = 'rgba(165,140,112,.15)'; ctx.lineWidth = 1;
+    if (gs > 8) {
+      for (var x = rx + gs; x < rx + rw - 1; x += gs) {
+        ctx.beginPath(); ctx.moveTo(x, ry); ctx.lineTo(x, ry + rd); ctx.stroke();
+      }
+      for (var y = ry + gs; y < ry + rd - 1; y += gs) {
+        ctx.beginPath(); ctx.moveTo(rx, y); ctx.lineTo(rx + rw, y); ctx.stroke();
+      }
+    }
+
+    /* Room border */
+    ctx.strokeStyle = '#C0B09F'; ctx.lineWidth = 2;
+    roundRect(ctx, rx, ry, rw, rd, 10); ctx.stroke();
+
+    /* Sofa footprint */
+    var sw = Math.min(sofa.w, S.roomW) * scale;
+    var sd = Math.min(sofa.d, S.roomD) * scale;
+    var sx = rx + (rw - sw) / 2;
+    var sy = ry + rd - sd - Math.max(0, (S.roomD - sofa.d) * 0.15) * scale;
+    sy = clamp(sy, ry + 4, ry + rd - sd - 2);
+
+    var sofaColors = { perfect: '#4caf50', tight: '#ff9800', large: '#f44336' };
+    var sc = sofaColors[fit];
+
+    ctx.globalAlpha = fit === 'large' ? 0.6 : 0.82;
+    ctx.fillStyle = sc;
+    roundRect(ctx, sx, sy, sw, sd, 7); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = sc; ctx.lineWidth = 2.5;
+    roundRect(ctx, sx, sy, sw, sd, 7); ctx.stroke();
+
+    /* Sofa label */
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 12px Montserrat,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    if (sw > 48 && sd > 18) ctx.fillText('Sofa', sx + sw / 2, sy + sd / 2);
+
+    /* Room dim label */
+    ctx.fillStyle = '#A58C70';
+    ctx.font = 'bold 11px Montserrat,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(disp(S.roomW) + ' × ' + disp(S.roomD) + ' ' + unit(), W / 2, ry + 6);
+  }
+
+  function updateBar(barId, clearance, roomDim) {
+    var bar = id(barId);
+    if (!bar) return;
+    var fill = bar.querySelector('.sds-bar__fill');
+    var val  = bar.querySelector('.sds-bar__val');
+    var pct  = clearance <= 0 ? 0 : Math.min(100, (clearance / roomDim) * 100);
+    var cls  = clearance >= 80 ? 'good' : clearance >= 20 ? 'warn' : 'bad';
+    if (fill) {
+      fill.style.width = pct + '%';
+      fill.className = 'sds-bar__fill sds-bar__fill--' + cls;
+    }
+    if (val) val.textContent = disp(Math.max(0, clearance)) + unit();
+  }
+
+  /* ════════════════════════════════════════════
+     STEP 5 — PRODUCTS
+     ════════════════════════════════════════════ */
+  var productsLoaded = false;
+
+  function loadProducts() {
+    if (productsLoaded) return;
+    productsLoaded = true;
+
+    var grid   = id('sds-products-grid');
+    var handle = root.dataset.collection || 'sofas';
+    var url    = '/collections/' + handle + '/products.json?limit=8';
+
+    /* Update summary bar */
+    var sumRoom = q('.sds-sum-room');
+    var sumSofa = q('.sds-sum-sofa');
+    var sumFit  = q('.sds-sum-fit');
+    if (sumRoom) sumRoom.textContent = disp(S.roomW) + ' × ' + disp(S.roomD) + ' ' + unit();
+    if (sumSofa) sumSofa.textContent = (S.sofaType || '—').replace('-', ' ');
+    if (sumFit)  sumFit.textContent  = S.fit ? (S.fit.charAt(0).toUpperCase() + S.fit.slice(1)) : '—';
+
+    fetch(url)
+      .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function(data) { renderProducts(data.products || []); })
+      .catch(function() {
+        if (grid) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:3rem;color:#aaa;font-size:1.5rem;">Browse our collection to find your perfect sofa.</p>';
+      });
+  }
+
+  function fmt(cents) {
+    var n = cents / 100;
+    return '£' + (n % 1 === 0 ? n.toFixed(0) : n.toFixed(2));
+  }
+
+  function renderProducts(products) {
+    var grid = id('sds-products-grid');
+    if (!grid) return;
+    if (!products.length) {
+      grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:3rem;color:#aaa;font-size:1.5rem;"><a href="/collections/sofas" style="color:var(--sds-teal);font-weight:700;">Browse all sofas →</a></p>';
+      return;
+    }
+    grid.innerHTML = '';
+    products.slice(0, 4).forEach(function(p) {
+      var img = p.images && p.images[0] ? p.images[0].src.replace(/\.(jpg|png|webp)/, '_600x450.$1') : '';
+      var price = p.variants && p.variants[0] && p.variants[0].price ? fmt(Math.round(parseFloat(p.variants[0].price) * 100)) : '';
+      var url   = '/products/' + p.handle;
+      var card  = document.createElement('article');
+      card.className = 'sds-product-card';
+      card.innerHTML =
+        '<div class="sds-product-card__img">' +
+          (img ? '<img src="' + img + '" alt="' + p.title.replace(/"/g,'&quot;') + '" loading="lazy" width="600" height="450">' : '') +
+        '</div>' +
+        '<div class="sds-product-card__body">' +
+          '<h3 class="sds-product-card__name">' + p.title + '</h3>' +
+          (price ? '<p class="sds-product-card__price">' + price + '</p>' : '') +
+        '</div>' +
+        '<a href="' + url + '" class="sds-product-card__cta">View Product</a>';
+      grid.appendChild(card);
+    });
+  }
+
+  /* ════════════════════════════════════════════
+     NAVIGATION WIRING
+     ════════════════════════════════════════════ */
+  qa('[data-sds-next]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      /* Validate before advancing */
+      if (S.step === 2 && !S.sofaType) {
+        showToast('Please select a sofa type to continue.');
+        return;
+      }
+      if (S.step === 3 && !S.layout) {
+        showToast('Please select a layout to continue.');
+        return;
+      }
+      if (S.step < 5) goTo(S.step + 1);
+    });
+  });
+
+  qa('[data-sds-prev]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (S.step > 1) goTo(S.step - 1);
+    });
+  });
+
+  qa('[data-sds-reset]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      S.sofaType = null; S.layout = null; S.fit = null; S.step = 1;
+      productsLoaded = false;
+      qa('[data-sofa], [data-layout]').forEach(function(c) {
+        c.classList.remove('selected');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      var grid = id('sds-products-grid');
+      if (grid) grid.innerHTML = '<div class="sds-products-loading">Finding your perfect match…</div>';
+      goTo(1);
+    });
+  });
+
+  /* Hero CTA scroll */
+  var heroCta = id('sds-hero-cta-{{ section.id }}');
+  if (heroCta) {
+    heroCta.addEventListener('click', function() {
+      var wizard = id('sds-wizard-{{ section.id }}');
+      if (wizard) wizard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  /* ── Toast notification (soft validation) ── */
+  function showToast(msg) {
+    var existing = root.querySelector('.sds-toast');
+    if (existing) existing.remove();
+    var t = document.createElement('div');
+    t.className = 'sds-toast';
+    t.textContent = msg;
+    Object.assign(t.style, {
+      position:'fixed', bottom:'2.4rem', left:'50%', transform:'translateX(-50%)',
+      background:'#2F4858', color:'#fff', padding:'1.2rem 2.8rem',
+      borderRadius:'9999px', fontSize:'1.4rem', fontWeight:'600',
+      boxShadow:'0 8px 24px rgba(0,0,0,.2)', zIndex:'9999',
+      fontFamily:'Montserrat,sans-serif',
+      animation:'sds-toast-in .3s ease both'
+    });
+    document.head.insertAdjacentHTML('beforeend','<style>@keyframes sds-toast-in{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}</style>');
+    document.body.appendChild(t);
+    setTimeout(function() { if (t.parentNode) t.remove(); }, 2800);
+  }
+
+  /* ── Init ── */
+  refreshRoomDisplay();
+  updateProgress(1);
+
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Sofa Sizer",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Hero heading",
+      "info": "Use ' | ' to split lines. Last part becomes italic gold.",
+      "default": "Find Your Perfect | Sofa Size"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_sub",
+      "label": "Hero subtext",
+      "default": "Answer a few questions and instantly see which sofas will look stunning — and actually fit — in your space."
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_label",
+      "label": "CTA button label",
+      "default": "Start Sizing"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero background image"
+    },
+    {
+      "type": "header",
+      "content": "Stats"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_val",
+      "label": "Stat 1 value",
+      "default": "500+"
+    },
+    {
+      "type": "text",
+      "id": "stat_1_lbl",
+      "label": "Stat 1 label",
+      "default": "Sofas sized"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_val",
+      "label": "Stat 2 value",
+      "default": "2 min"
+    },
+    {
+      "type": "text",
+      "id": "stat_2_lbl",
+      "label": "Stat 2 label",
+      "default": "To complete"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_val",
+      "label": "Stat 3 value",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "stat_3_lbl",
+      "label": "Stat 3 label",
+      "default": "Free to use"
+    },
+    {
+      "type": "header",
+      "content": "Tool"
+    },
+    {
+      "type": "text",
+      "id": "tool_eyebrow",
+      "label": "Eyebrow label",
+      "default": "Interactive Tool"
+    },
+    {
+      "type": "text",
+      "id": "tool_title",
+      "label": "Tool section title",
+      "default": "Your Personalised Room Planner"
+    },
+    {
+      "type": "text",
+      "id": "collection_handle",
+      "label": "Products collection handle",
+      "info": "Shopify collection handle for results e.g. sofas",
+      "default": "sofas"
+    },
+    {
+      "type": "header",
+      "content": "Benefits Section"
+    },
+    {
+      "type": "text",
+      "id": "benefits_title",
+      "label": "Benefits section title",
+      "default": "Why Use the Sofa Sizer?"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "ruler",  "label": "Ruler / measure" },
+            { "value": "home",   "label": "Home" },
+            { "value": "check",  "label": "Checkmark" },
+            { "value": "clock",  "label": "Clock" },
+            { "value": "star",   "label": "Star" }
+          ],
+          "default": "ruler"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Precise Measurements"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Our tool calculates exact clearance so you know exactly what will fit before you buy."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "SD Sofa Sizer",
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "ruler",
+            "title": "Precise Measurements",
+            "text": "Real-time calculations account for the sofa plus essential walkway clearance around it."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "home",
+            "title": "Plan Any Room",
+            "text": "Works for lounge, living room, studio or open-plan spaces of any shape and size."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "check",
+            "title": "Shop With Confidence",
+            "text": "No more returns. Know your sofa fits perfectly before it arrives at your door."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "clock",
+            "title": "Under 2 Minutes",
+            "text": "A guided step-by-step experience — from room dimensions to personalised picks."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

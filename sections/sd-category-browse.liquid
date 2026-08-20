@@ -1,0 +1,506 @@
+<link rel="stylesheet" href="{{ 'sd-category-browse.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-category-browse.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- assign newline_char = '
+' -%}
+{%- liquid
+  assign heading = section.settings.heading | default: 'Find Your Perfect Sofa'
+  assign eyebrow = section.settings.eyebrow
+  assign view_all_label = section.settings.view_all_label
+  assign view_all_url   = section.settings.view_all_url
+  assign heading_lines  = heading | strip | split: newline_char
+-%}
+
+<section
+  id="sd-catbrowse-{{ section.id }}"
+  class="sd-catbrowse"
+  aria-label="{{ heading | escape }}"
+>
+  <div class="page-width">
+
+    <div class="sd-catbrowse__intro">
+      {%- if eyebrow != blank -%}
+        <p class="sd-catbrowse__eyebrow">
+          <span class="sd-catbrowse__eyebrow-dash" aria-hidden="true"></span>
+          <span class="sd-catbrowse__eyebrow-text">{{ eyebrow | escape }}</span>
+          <span class="sd-catbrowse__eyebrow-dash" aria-hidden="true"></span>
+        </p>
+      {%- endif -%}
+
+      {%- if heading != blank -%}
+        <h2 class="sd-catbrowse__heading">
+          {%- for line in heading_lines -%}
+            <span class="sd-catbrowse__heading-line{% if forloop.last and heading_lines.size > 1 %} sd-catbrowse__heading-line--accent{% endif %}">{{- line -}}</span>
+            {%- unless forloop.last -%}<br>{%- endunless -%}
+          {%- endfor -%}
+        </h2>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── Tab bar ── {%- endcomment -%}
+    {%- if section.blocks.size > 0 -%}
+      {%- liquid
+        assign first_tab = section.blocks.first
+        assign first_collection = collections[first_tab.settings.collection]
+        assign default_view_all_url = view_all_url
+        if first_collection != blank
+          assign default_view_all_url = first_collection.url
+        endif
+      -%}
+      <div class="sd-catbrowse__tabs-row">
+        <div class="sd-catbrowse__tabs" role="tablist" aria-label="Sofa categories">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'tab' -%}
+              {%- assign tab_collection = collections[block.settings.collection] -%}
+              <button
+                class="sd-catbrowse__tab{% if forloop.first %} sd-catbrowse__tab--active{% endif %}"
+                role="tab"
+                aria-selected="{{ forloop.first | json }}"
+                aria-controls="tab-{{ section.id }}-{{ forloop.index }}"
+                data-tab-target="tab-{{ section.id }}-{{ forloop.index }}"
+                data-collection-url="{% if tab_collection != blank %}{{ tab_collection.url }}{% endif %}"
+                data-tab-label="{{ block.settings.tab_label | escape }}"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.tab_label }}
+              </button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+
+        {%- if view_all_label != blank -%}
+          <a
+            href="{{ default_view_all_url | default: '#' }}"
+            class="sd-catbrowse__view-all"
+            data-view-all
+            data-label-template="{{ view_all_label | escape }}"
+          >
+            <span data-view-all-text>{{ view_all_label }}</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} ── Tab panels ── {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'tab' -%}
+          {%- assign panel_collection = collections[block.settings.collection] -%}
+          <div
+            id="tab-{{ section.id }}-{{ forloop.index }}"
+            class="sd-catbrowse__panel{% unless forloop.first %} sd-catbrowse__panel--hidden{% endunless %}"
+            role="tabpanel"
+            aria-labelledby="tab-{{ section.id }}-{{ forloop.index }}"
+            {{ block.shopify_attributes }}
+          >
+            <div class="sd-catbrowse__carousel-wrap">
+              <div class="sd-catbrowse__grid">
+
+                {%- if panel_collection != blank and panel_collection.products_count > 0 -%}
+
+                  {%- for product in panel_collection.products limit: 6 -%}
+                    {%- liquid
+                      assign card_alt = product.featured_image.alt | default: product.title | escape
+                      assign has_sale = false
+                      assign discount_pct = 0
+                      if product.compare_at_price_max > product.price
+                        assign has_sale = true
+                        assign savings = product.compare_at_price_max | minus: product.price
+                        assign discount_pct = savings | times: 100 | divided_by: product.compare_at_price_max
+                      endif
+                    -%}
+                    <div class="sd-catbrowse__card{% if has_sale %} sd-catbrowse__card--sale{% endif %}">
+
+                      {%- if has_sale -%}
+                        <span class="sd-catbrowse__card-badge" aria-hidden="true">−{{ discount_pct }}% OFF</span>
+                      {%- endif -%}
+
+                      <div class="sd-catbrowse__card-image-wrap">
+                        {%- if product.featured_image != blank -%}
+                          <a href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+                            {{
+                              product.featured_image
+                              | image_url: width: 720
+                              | image_tag:
+                                class: 'sd-catbrowse__card-img',
+                                widths: '360,540,720',
+                                sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw',
+                                alt: card_alt,
+                                loading: 'lazy'
+                            }}
+                          </a>
+                        {%- else -%}
+                          <a href="{{ product.url }}">
+                            {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'sd-catbrowse__card-img' }}
+                          </a>
+                        {%- endif -%}
+                      </div>
+
+                      <div class="sd-catbrowse__card-info">
+                        <div class="sd-catbrowse__card-text">
+                          <p class="sd-catbrowse__card-title">
+                            <a href="{{ product.url }}">{{ product.title }}</a>
+                          </p>
+                          {%- if product.product_type != blank -%}
+                            <p class="sd-catbrowse__card-subtitle">{{ product.product_type }}</p>
+                          {%- endif -%}
+                        </div>
+                        <a href="{{ product.url }}" class="sd-catbrowse__card-cta" aria-label="{{ product.title | escape }}">
+                          <span>
+                            {%- if has_sale -%}
+                              <span class="sd-catbrowse__card-rrp">{{ product.compare_at_price_max | money }}</span>
+                            {%- endif -%}
+                            {{ product.price | money }}
+                          </span>
+                          <span>Buy Now</span>
+                        </a>
+                      </div>
+
+                    </div>
+                  {%- endfor -%}
+
+                {%- else -%}
+
+                  {%- comment -%} Placeholder cards for editor {%- endcomment -%}
+                  {%- for i in (1..3) -%}
+                    <div class="sd-catbrowse__card">
+                      <div class="sd-catbrowse__card-image-wrap">
+                        {{ 'product-' | append: i | placeholder_svg_tag: 'sd-catbrowse__card-img' }}
+                      </div>
+                      <div class="sd-catbrowse__card-info">
+                        <div class="sd-catbrowse__card-text">
+                          <p class="sd-catbrowse__card-title">Sample Sofa</p>
+                          <p class="sd-catbrowse__card-subtitle">3 Seater Recliner</p>
+                        </div>
+                        <a href="#" class="sd-catbrowse__card-cta">
+                          <span>£1,299.99</span>
+                          <span>Buy Now</span>
+                        </a>
+                      </div>
+                    </div>
+                  {%- endfor -%}
+
+                {%- endif -%}
+
+              </div>
+
+              {%- comment -%} Next arrow — visible on mobile carousel {%- endcomment -%}
+              <button class="sd-catbrowse__arrow" aria-label="Next product">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+
+    {%- comment -%} ── Trustpilot trust card ── {%- endcomment -%}
+    {%- if section.settings.show_trustpilot -%}
+      {%- liquid
+        assign tp_rating = section.settings.tp_rating | default: 4.8
+        assign tp_count = section.settings.tp_count | default: '2,400'
+        assign tp_url = section.settings.tp_url
+        assign tp_label = section.settings.tp_label | default: 'Excellent'
+        assign tp_heading = section.settings.tp_heading | default: 'Trusted by thousands of UK homes'
+        assign full_stars = tp_rating | floor
+      -%}
+      <aside class="sd-catbrowse__trustpilot" aria-label="Customer reviews on Trustpilot">
+        <div class="sd-catbrowse__tp-left">
+          <p class="sd-catbrowse__tp-heading">{{ tp_heading }}</p>
+          <p class="sd-catbrowse__tp-sub">Independent reviews from verified customers — see why we're rated {{ tp_label | downcase }} on Trustpilot.</p>
+
+          {%- assign u1 = section.settings.tp_usp_1 -%}
+          {%- assign u2 = section.settings.tp_usp_2 -%}
+          {%- assign u3 = section.settings.tp_usp_3 -%}
+          {%- if u1 != blank or u2 != blank or u3 != blank -%}
+            <ul class="sd-catbrowse__tp-usps" role="list">
+              {%- if u1 != blank -%}
+                <li class="sd-catbrowse__tp-usp">
+                  <span class="sd-catbrowse__tp-usp-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M6 19a2 2 0 100-4 2 2 0 000 4zM18 19a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                  <span>{{ u1 }}</span>
+                </li>
+              {%- endif -%}
+              {%- if u2 != blank -%}
+                <li class="sd-catbrowse__tp-usp">
+                  <span class="sd-catbrowse__tp-usp-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                  <span>{{ u2 }}</span>
+                </li>
+              {%- endif -%}
+              {%- if u3 != blank -%}
+                <li class="sd-catbrowse__tp-usp">
+                  <span class="sd-catbrowse__tp-usp-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M19 5L5 19M8 9a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM16 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                  <span>{{ u3 }}</span>
+                </li>
+              {%- endif -%}
+            </ul>
+          {%- endif -%}
+        </div>
+        <div class="sd-catbrowse__tp-right">
+          <div class="sd-catbrowse__tp-stars" aria-label="{{ tp_rating }} out of 5 stars">
+            {%- for i in (1..5) -%}
+              <span class="sd-catbrowse__tp-star{% if forloop.index <= full_stars %} sd-catbrowse__tp-star--full{% endif %}" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              </span>
+            {%- endfor -%}
+          </div>
+          <div class="sd-catbrowse__tp-meta">
+            <span class="sd-catbrowse__tp-label">{{ tp_label }}</span>
+            <span class="sd-catbrowse__tp-rating"><strong>{{ tp_rating }}</strong>/5</span>
+            <span class="sd-catbrowse__tp-count">based on {{ tp_count }} reviews</span>
+          </div>
+          {%- if tp_url != blank -%}
+            <a href="{{ tp_url }}" class="sd-catbrowse__tp-link" target="_blank" rel="noopener">
+              Read all reviews on Trustpilot
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 17L17 7M17 7H8M17 7v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </aside>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+(function () {
+  var section = document.getElementById('sd-catbrowse-{{ section.id }}');
+  if (!section) return;
+
+  /* ── Tab switching ── */
+  var tabs    = section.querySelectorAll('.sd-catbrowse__tab');
+  var panels  = section.querySelectorAll('.sd-catbrowse__panel');
+  var viewAll = section.querySelector('[data-view-all]');
+
+  function syncViewAll(tab) {
+    if (!viewAll || !tab) return;
+    var url = tab.getAttribute('data-collection-url');
+    if (url) {
+      viewAll.setAttribute('href', url);
+      viewAll.style.removeProperty('display');
+    } else {
+      /* No collection on this tab → hide the link instead of leaving a dead # */
+      viewAll.style.display = 'none';
+    }
+  }
+
+  /* Initialise to whichever tab is active at first render */
+  var initialActive = section.querySelector('.sd-catbrowse__tab--active') || tabs[0];
+  syncViewAll(initialActive);
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var target = tab.getAttribute('data-tab-target');
+
+      tabs.forEach(function (t) {
+        t.classList.remove('sd-catbrowse__tab--active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      panels.forEach(function (p) {
+        p.classList.add('sd-catbrowse__panel--hidden');
+      });
+
+      tab.classList.add('sd-catbrowse__tab--active');
+      tab.setAttribute('aria-selected', 'true');
+
+      var panel = document.getElementById(target);
+      if (panel) panel.classList.remove('sd-catbrowse__panel--hidden');
+
+      syncViewAll(tab);
+
+      /* Re-trigger card animations on the newly active panel */
+      panel && panel.querySelectorAll('.sd-catbrowse__card').forEach(function (card, i) {
+        card.style.transitionDelay = (0.32 + i * 0.12) + 's';
+      });
+    });
+  });
+
+  /* ── Mobile carousel arrow ── */
+  section.querySelectorAll('.sd-catbrowse__arrow').forEach(function (arrow) {
+    arrow.addEventListener('click', function () {
+      var grid = arrow.closest('.sd-catbrowse__carousel-wrap').querySelector('.sd-catbrowse__grid');
+      if (!grid) return;
+      var card = grid.querySelector('.sd-catbrowse__card');
+      if (!card) return;
+      var scrollAmount = card.offsetWidth + 16; /* card width + gap */
+      grid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+  });
+
+  /* ── Scroll-triggered entrance animation ── */
+  function activate() {
+    section.classList.add('is-visible');
+  }
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            activate();
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08 }
+    );
+    observer.observe(section);
+  } else {
+    activate();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Category Browse",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow label",
+      "info": "Small label shown above the heading. Leave blank to hide.",
+      "default": "Our Collection"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Section heading (use Enter for line break)",
+      "info": "The last line gets accent styling (brand color).",
+      "default": "Find Your\nPerfect Sofa"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View-all link label",
+      "info": "Shown next to the tabs. Leave blank to hide.",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "View-all fallback URL",
+      "info": "Used only when the active tab has no collection set. The active tab's collection URL takes precedence."
+    },
+    {
+      "type": "header",
+      "content": "Trustpilot trust card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trustpilot",
+      "label": "Show Trustpilot card below products",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tp_heading",
+      "label": "Trust heading",
+      "default": "Trusted by thousands of UK homes"
+    },
+    {
+      "type": "text",
+      "id": "tp_label",
+      "label": "Rating label",
+      "info": "e.g. Excellent, Great, Good",
+      "default": "Excellent"
+    },
+    {
+      "type": "text",
+      "id": "tp_rating",
+      "label": "Rating (out of 5)",
+      "default": "4.8"
+    },
+    {
+      "type": "text",
+      "id": "tp_count",
+      "label": "Review count",
+      "info": "e.g. 2,400 or 12,000+",
+      "default": "2,400"
+    },
+    {
+      "type": "url",
+      "id": "tp_url",
+      "label": "Trustpilot reviews URL",
+      "info": "Link to your Trustpilot business page."
+    },
+    {
+      "type": "header",
+      "content": "Trust badges (USPs)",
+      "info": "Shown as a row below the description. Leave blank to hide."
+    },
+    {
+      "type": "text",
+      "id": "tp_usp_1",
+      "label": "USP 1 (truck icon)",
+      "default": "Free UK Delivery"
+    },
+    {
+      "type": "text",
+      "id": "tp_usp_2",
+      "label": "USP 2 (shield icon)",
+      "default": "5-Year Frame Warranty"
+    },
+    {
+      "type": "text",
+      "id": "tp_usp_3",
+      "label": "USP 3 (percent icon)",
+      "default": "0% Finance Available"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Category Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Tab label",
+          "default": "Armchairs"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "SD Category Browse",
+      "settings": {
+        "heading": "Find Your\nPerfect Sofa"
+      },
+      "blocks": [
+        { "type": "tab", "settings": { "tab_label": "Armchairs" } },
+        { "type": "tab", "settings": { "tab_label": "2 & 3 Seater Sofas" } },
+        { "type": "tab", "settings": { "tab_label": "Corner Sofas" } },
+        { "type": "tab", "settings": { "tab_label": "Leather Sofas" } },
+        { "type": "tab", "settings": { "tab_label": "Fabric Sofas" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="{{ 'sd-info.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-info.css' | asset_url | stylesheet_tag }}</noscript>
+
+<section class="sd-info-cta">
+  <div class="sd-info-cta__inner">
+    <div>
+      {%- if section.settings.heading != blank -%}
+        <h2 class="sd-info-cta__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.body != blank -%}
+        <p class="sd-info-cta__text">{{ section.settings.body }}</p>
+      {%- endif -%}
+    </div>
+    <div class="sd-info-cta__actions">
+      {%- for block in section.blocks -%}
+        <a class="sd-info-cta__btn {% if block.settings.outline %}sd-info-cta__btn--outline{% endif %}"
+           href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+          {{ block.settings.label }}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Info CTA",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "body", "label": "Body" }
+  ],
+  "blocks": [
+    {
+      "type": "button",
+      "name": "Button",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "checkbox", "id": "outline", "label": "Outline style", "default": false }
+      ]
+    }
+  ],
+  "presets": [ { "name": "SD Info CTA" } ]
+}
+{% endschema %}

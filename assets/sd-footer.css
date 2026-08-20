@@ -1,0 +1,466 @@
+/* ============================================================
+   SD Footer — brand-themed, responsive, menu-driven
+   Teal background · Recoleta headings · gold + cream accents
+   Layout: brand | nav columns | newsletter
+   Empty columns are not rendered (handled in Liquid), so the
+   nav grid simply collapses — no empty gaps.
+   ============================================================ */
+
+/* ── Brand tokens (fall back to literals if theme vars absent) ── */
+.sd-footer {
+  --sdf-teal-1: #2f4858;
+  --sdf-teal-2: #243843;
+  --sdf-cream:  var(--sd-clr-cream, #fffaea);
+  --sdf-gold-1: #d4b876;
+  --sdf-gold-2: #c9a85c;
+  --sdf-brown:  var(--sd-clr-accent-brown, #a58c70);
+  --sdf-text:   rgba(255, 255, 255, 0.72);
+  --sdf-text-dim: rgba(255, 255, 255, 0.55);
+
+  position: relative;
+  overflow: hidden;
+  border-top: none;
+  color: var(--sdf-text);
+  background:
+    radial-gradient(ellipse 60% 50% at 100% 0%, rgba(192, 176, 159, 0.10), transparent 70%),
+    linear-gradient(180deg, var(--sdf-teal-1) 0%, var(--sdf-teal-2) 100%);
+  padding-top: 4.0rem;
+  padding-bottom: 0;
+}
+
+/* Centered content container (horizontal padding comes from the global
+   container system in sd-brand-theme.css, matching other sections). */
+.sd-footer__main,
+.sd-footer__bottom {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 1700px);
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Thin gold accent strip along the top edge */
+.sd-footer__top-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 168, 92, 0) 8%,
+    rgba(212, 184, 118, 0.55) 35%,
+    rgba(201, 168, 92, 0.85) 50%,
+    rgba(212, 184, 118, 0.55) 65%,
+    rgba(201, 168, 92, 0) 92%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Main layout ────────────────────────────────────────────
+   Mobile-first: single column stack.
+   Desktop: brand | nav | newsletter side by side.
+   ──────────────────────────────────────────────────────────── */
+.sd-footer__main {
+  display: flex;
+  flex-direction: column;
+  gap: 4.0rem;
+  margin-bottom: 2.0rem;
+}
+
+/* ── Brand column ── */
+.sd-footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+/* Optional logo image — shown above the brand name */
+.sd-footer__logo-img-link {
+  display: inline-block;
+  width: 100%;          /* capped by inline max-width from the setting */
+  line-height: 0;
+  text-decoration: none;
+}
+
+.sd-footer__logo-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 8rem;
+  object-fit: contain;
+}
+
+.sd-footer__logo {
+  font-family: 'Bayon', sans-serif;
+  font-size: 4.0rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.08rem;
+  color: var(--sdf-cream);
+  text-transform: uppercase;
+  text-decoration: none;
+  display: block;
+}
+
+.sd-footer__tagline {
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--sdf-text);
+  margin: 0;
+  max-width: 36rem;
+}
+
+/* Social icons */
+.sd-footer__socials {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0 0;
+}
+
+.sd-footer__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: background 0.22s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.22s ease, color 0.22s ease;
+}
+
+.sd-footer__social:hover {
+  background: var(--sdf-brown);
+  border-color: var(--sdf-brown);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Brand-icon variant — SVG ships its own coloured circle */
+.sd-footer__social--brand,
+.sd-footer__social--brand:hover {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.sd-footer__social--brand { overflow: hidden; }
+.sd-footer__social--brand svg { width: 100%; height: 100%; display: block; }
+
+/* ── Nav columns ──
+   Grid auto-fits however many columns are actually rendered. */
+.sd-footer__nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3.2rem 2.0rem;
+}
+
+.sd-footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  min-width: 0;
+}
+
+.sd-footer__col-heading {
+  font-family: var(--sd-font-display, 'Recoleta Alt', Georgia, serif);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--sdf-cream);
+  text-transform: none;
+  letter-spacing: 0;
+  margin: 0;
+  position: relative;
+  padding-bottom: 0.9rem;
+}
+
+/* Gold underline accent */
+.sd-footer__col-heading::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 2.6rem;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(212, 184, 118, 0.85) 0%, rgba(201, 168, 92, 0.55) 60%, rgba(201, 168, 92, 0) 100%);
+  border-radius: 2px;
+}
+
+.sd-footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sd-footer__link {
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.62);
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.2s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-footer__link:hover,
+.sd-footer__link[aria-current="page"] {
+  color: var(--sdf-cream);
+  transform: translateX(4px);
+}
+
+/* ── Newsletter ── */
+.sd-footer__newsletter {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.sd-footer__news-text {
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.4rem;
+  line-height: 1.6;
+  color: var(--sdf-text);
+  margin: 0;
+  max-width: 36rem;
+}
+
+.sd-footer__news-form { margin: 0; }
+
+.sd-footer__news-field {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: 38rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.8rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.sd-footer__news-field:focus-within {
+  border-color: rgba(212, 184, 118, 0.7);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.sd-footer__news-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 4.0rem;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  outline: none;
+  color: #fff;
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.4rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.sd-footer__news-input::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+/* Kill the browser autofill background (Chrome/Edge paint a white/yellow box
+   that breaks the dark field). The huge transition delay keeps the autofill
+   background from ever painting, while text stays white. */
+.sd-footer__news-input:-webkit-autofill,
+.sd-footer__news-input:-webkit-autofill:hover,
+.sd-footer__news-input:-webkit-autofill:focus,
+.sd-footer__news-input:-webkit-autofill:active {
+  -webkit-text-fill-color: #fff;
+  caret-color: #fff;
+  -webkit-box-shadow: 0 0 0 1000px transparent inset;
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+.sd-footer__news-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 4.0rem;
+  height: 4.0rem;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #1f2d36;
+  background: linear-gradient(135deg, var(--sdf-gold-1), var(--sdf-gold-2));
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), filter 0.2s ease;
+}
+
+.sd-footer__news-btn:hover { transform: translateX(2px); filter: brightness(1.06); }
+
+.sd-footer__news-note {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin: 0;
+}
+.sd-footer__news-note--ok  { color: #8fe0b0; }
+.sd-footer__news-note--err { color: #ffb4a0; }
+
+/* ── Bottom bar ── */
+.sd-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.6rem;
+  /* vertical only — keep the global container's horizontal padding so the
+     bottom bar lines up with .sd-footer__main */
+  padding-block: 2.4rem 2.8rem;
+  margin-top: 2.0rem;
+}
+
+/* Gold gradient divider */
+.sd-footer__bottom::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 184, 118, 0.20) 30%, rgba(201, 168, 92, 0.35) 50%, rgba(212, 184, 118, 0.20) 70%, transparent 100%);
+}
+
+.sd-footer__copy,
+.sd-footer__reg {
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: var(--sdf-text-dim);
+  margin: 0;
+}
+
+/* Payment method icons */
+.sd-footer__payments {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sd-footer__pay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.18));
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), filter 0.22s ease;
+}
+
+.sd-footer__pay:hover {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.28));
+}
+
+.sd-footer__pay svg { display: block; border-radius: 0.4rem; overflow: hidden; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* ── 750px – 1099px — brand, nav columns and newsletter share a 3-column
+   grid: row 1 = brand + 2 menus, row 2 = remaining menus + newsletter. ── */
+@media screen and (min-width: 750px) and (max-width: 1099px) {
+  .sd-footer { padding-top: 6.0rem; }
+
+  .sd-footer__main {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3.6rem 3.0rem;
+    margin-bottom: 2.0rem;
+  }
+
+  /* brand is the first cell of row 1 (not full width) */
+  .sd-footer__nav { display: contents; }        /* columns flow into the grid */
+
+  .sd-footer__newsletter { align-self: start; } /* flows after the menus */
+}
+
+/* ── Desktop ≥ 1100px — brand | nav | newsletter side by side ── */
+@media screen and (min-width: 1100px) {
+  .sd-footer { padding-top: 8.0rem; }
+
+  .sd-footer__main {
+    display: grid;
+    grid-template-columns: minmax(22rem, 1.1fr) minmax(0, 2.4fr) minmax(26rem, 1.2fr);
+    gap: 5.0rem;
+    align-items: start;
+    margin-bottom: 2.0rem;
+  }
+
+  .sd-footer__logo { font-size: 4.4rem; letter-spacing: 0.1rem; }
+
+  .sd-footer__nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 3.0rem 3.2rem;
+  }
+
+  /* Newsletter sits in the right-hand grid track */
+  .sd-footer__newsletter { align-self: start; }
+}
+
+/* ── Mobile ≤ 749px — menus + newsletter share one grid ──
+   The nav uses display:contents so its columns become direct items of
+   the main grid; the newsletter then flows into the next free cell
+   (e.g. the empty space beside the last column / after Company). */
+@media screen and (max-width: 749px) {
+  .sd-footer { padding: 4.0rem 0; }
+
+  .sd-footer__main {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.8rem 2.0rem;
+    margin-bottom: 0;
+  }
+
+  .sd-footer__brand { grid-column: 1 / -1; }   /* full-width top */
+
+  .sd-footer__nav { display: contents; }        /* columns flow into the grid */
+
+  .sd-footer__newsletter { align-self: start; } /* fills the next free cell */
+
+  .sd-footer__logo { font-size: 3.6rem; }
+  .sd-footer__tagline { font-size: 1.5rem; max-width: 100%; }
+
+  .sd-footer__col { gap: 1.1rem; }
+  .sd-footer__col-heading { font-size: 1.5rem; }
+  .sd-footer__links { gap: 1.0rem; }
+
+  /* Compact newsletter so it sits neatly in a single grid cell */
+  .sd-footer__news-text { display: none; }
+  .sd-footer__news-field {
+    max-width: 100%;
+    flex-wrap: wrap;
+    padding-left: 1.4rem;
+  }
+  .sd-footer__news-input { flex: 1 1 8rem; }
+
+  .sd-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    padding-block: 2.0rem;
+    margin-top: 1.0rem;
+  }
+
+  /* Payment icons can wrap below the copyright on small screens */
+  .sd-footer__payments { gap: 0.6rem; }
+}

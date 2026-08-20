@@ -1,0 +1,622 @@
+/* ============================================================
+   SD Mega Menu — Figma Make exact match
+   ============================================================
+   5-column grid:
+   1. Fabric Sofas    2. Leather + Style    3. Size + Price
+   4. Shop by Colour  5. Featured Cards
+   Bottom bar: quick links
+   ============================================================ */
+
+/* ── Reset Dawn's default mega-menu styles ────────────────── */
+.sd-megamenu .mega-menu__content,
+.sd-megamenu .mega-menu__list {
+  all: unset;
+  display: block;
+}
+
+/* ── Dropdown panel ───────────────────────────────────────── */
+.sd-megamenu__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.25s,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mega-menu[open] .sd-megamenu__panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.sd-megamenu__inner {
+  max-width: 128rem;
+  margin: 0 auto;
+  padding: 3.2rem 4.8rem;
+  max-height: calc(100vh - 18rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* ── 5-column grid (default: 4 nav + 1 featured) ─────────── */
+.sd-megamenu__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1.1fr;
+  gap: 3.2rem;
+}
+
+/* When the promo card is empty, the featured column is dropped
+   and the nav grid expands to 5 equal columns. */
+.sd-megamenu__grid--cols5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* ── Stacked column (top group + bottom group) ──────────── */
+.sd-megamenu__col--stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+}
+.sd-megamenu__col-group { display: block; }
+.sd-megamenu__col-group--bottom { margin-top: 0.4rem; }
+/* "By Price" stacked beneath the colour swatches in the same column */
+.sd-megamenu__col-group--price { margin-top: 0.8rem; }
+
+/* Span modifiers — when parent has only 1 or 2 child groups, stretch the column */
+.sd-megamenu__col--span2 { grid-column: span 2; }
+.sd-megamenu__col--span4 { grid-column: span 4; }
+
+/* ── Column heading ───────────────────────────────────────── */
+.sd-megamenu__col-title {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2f4858;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 1.6rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sd-megamenu__col-title-link {
+  color: inherit;
+  text-decoration: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  transition: color 0.18s ease;
+}
+
+.sd-megamenu__col-title-link:hover {
+  color: var(--sd-clr-accent-brown, #a58c70);
+}
+
+/* Column thumbnail: small rounded image rendered next to the column title.
+   Auto-resolved from the linked collection's image in Liquid. */
+.sd-megamenu__col-thumb {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: #f7f6f3;
+  flex-shrink: 0;
+  display: block;
+  line-height: 0;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sd-megamenu__col-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.sd-megamenu__col-title-link:hover .sd-megamenu__col-thumb {
+  transform: scale(1.04);
+}
+.sd-megamenu__col-title-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* Hide the col-title border when a thumb is present — looks tighter */
+.sd-megamenu__col-group--has-thumb > .sd-megamenu__col-title {
+  border-bottom: none;
+  padding-bottom: 0.4rem;
+}
+
+.sd-megamenu__col-title--secondary {
+  color: var(--sd-clr-accent-brown, #a58c70);
+  margin-top: 2.4rem;
+}
+
+/* ── Link list ────────────────────────────────────────────── */
+.sd-megamenu__links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Multi-column when a single child group holds many grandchildren */
+.sd-megamenu__links--2col,
+.sd-megamenu__links--3col {
+  display: block;
+  column-gap: 3.2rem;
+}
+.sd-megamenu__links--2col { column-count: 2; }
+.sd-megamenu__links--3col { column-count: 3; }
+.sd-megamenu__links--2col > li,
+.sd-megamenu__links--3col > li {
+  break-inside: avoid;
+  margin-bottom: 0.8rem;
+}
+
+.sd-megamenu__link {
+  font-family: var(--sd-font-body);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #4b5563;
+  text-decoration: none;
+  padding: 0.2rem 0;
+  display: block;
+  transition: color 0.18s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-megamenu__link:hover {
+  color: #2f4858;
+  transform: translateX(4px);
+}
+/* Swatch links shouldn't slide on hover — they have their own focus ring */
+.sd-megamenu__link--swatch:hover,
+.sd-megamenu__link--swatch-only:hover {
+  transform: none;
+}
+
+/* Third-level links that carry a colour/image swatch */
+.sd-megamenu__link--swatch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Swatch dot shared base — overrides the standalone .sd-megamenu__swatch above */
+.sd-megamenu__link--swatch .sd-megamenu__swatch {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+  display: inline-block;
+  padding: 5px;
+}
+
+/* Image swatch: clip the image to the circle */
+.sd-megamenu__swatch--img {
+  overflow: hidden;
+  line-height: 0;
+}
+
+/* "Shop by Colour" column: 5-per-row grid of swatch dots, no labels, no show-more */
+.sd-megamenu__col-group--colors .sd-megamenu__links {
+  display: grid;
+  grid-template-columns: repeat(5, max-content);
+  gap: 0.8rem 1rem;
+  justify-content: start;
+}
+.sd-megamenu__col-group--colors .sd-megamenu__links li {
+  list-style: none;
+  margin: 0;
+}
+/* Reveal every swatch (no 10-item truncation) and hide the "+ more" button */
+.sd-megamenu__col-group--colors .sd-megamenu__links [data-nav-more-item] {
+  display: list-item !important;
+}
+.sd-megamenu__col-group--colors .sd-megamenu__links [data-nav-show-more-wrap] {
+  display: none !important;
+}
+/* Active swatch link: remove left padding so the dot stays aligned in the grid */
+.sd-megamenu__col-group.sd-megamenu__col-group--colors .sd-megamenu__link[aria-current="page"] {
+  padding-left: 0 !important;
+}
+.sd-megamenu__link--swatch-only {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 0;
+}
+.sd-megamenu__link--swatch-only .sd-megamenu__swatch {
+  width: 3.2rem;
+  height: 3.2rem;
+}
+.sd-megamenu__link--swatch-only:hover .sd-megamenu__swatch,
+.sd-megamenu__link--swatch-only:focus-visible .sd-megamenu__swatch {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px #2f4858;
+}
+
+.sd-megamenu__swatch--img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Colour swatches ──────────────────────────────────────── */
+.sd-megamenu__colours {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.sd-megamenu__colour {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 99.9rem;
+  background: #f7f6f3;
+  text-decoration: none;
+  font-family: var(--sd-font-body);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #374151;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sd-megamenu__colour:hover {
+  background: #ede9e4;
+  color: #2f4858;
+}
+
+.sd-megamenu__swatch {
+  width: 2.0rem;
+  height: 2.0rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+/* ── Featured cards column ────────────────────────────────── */
+.sd-megamenu__featured {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+/* Valencia-style promo card */
+.sd-megamenu__promo-card {
+  border-radius: 1.6rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #c0b09f;
+}
+
+.sd-megamenu__promo-img-wrap {
+  position: relative;
+  height: 14.4rem;
+  overflow: hidden;
+}
+
+.sd-megamenu__promo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.88);
+}
+
+.sd-megamenu__promo-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(192, 176, 159, 0.7) 100%);
+}
+
+.sd-megamenu__promo-body {
+  padding: 1.2rem 1.6rem 1.6rem;
+}
+
+.sd-megamenu__promo-title {
+  font-family: var(--sd-font-body);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2f4858;
+  margin: 0 0 0.4rem;
+}
+
+.sd-megamenu__promo-desc {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #3d4f4a;
+  line-height: 1.5;
+  margin: 0 0 1.2rem;
+}
+
+.sd-megamenu__promo-cta {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  background: #2f4858;
+  border-radius: 1.2rem;
+  padding: 0.8rem 1.2rem;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.sd-megamenu__promo-cta:hover {
+  opacity: 0.9;
+}
+
+/* Secondary card (New In & Sale) */
+.sd-megamenu__info-card {
+  border-radius: 1.6rem;
+  background: #f7f6f3;
+  border: 1px solid #e5e0d8;
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.sd-megamenu__info-title {
+  font-family: var(--sd-font-body);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2f4858;
+  margin: 0;
+}
+
+.sd-megamenu__info-desc {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #6b7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.sd-megamenu__info-cta {
+  display: block;
+  text-align: center;
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2f4858;
+  background: #fff;
+  border: 1.5px solid #2f4858;
+  border-radius: 1.2rem;
+  padding: 0.8rem 1.2rem;
+  text-decoration: none;
+  margin-top: 0.4rem;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sd-megamenu__info-cta:hover {
+  background: #2f4858;
+  color: #fff;
+}
+
+/* ── Bottom bar ───────────────────────────────────────────── */
+.sd-megamenu__bottom {
+  margin-top: 2.4rem;
+  padding-top: 2.0rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sd-megamenu__bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+.sd-megamenu__bottom-link {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--sd-clr-accent-brown, #a58c70);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.sd-megamenu__bottom-link:hover {
+  color: #2f4858;
+}
+
+.sd-megamenu__bottom-view-all {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2f4858;
+  text-decoration: none;
+  transition: text-decoration 0.15s ease;
+}
+
+.sd-megamenu__bottom-view-all:hover {
+  text-decoration: underline;
+}
+
+/* ── Show More button (mega menu + dropdown) ──────────────── */
+.sd-nav__show-more-btn {
+  background: none;
+  border: none;
+  padding: 0.3rem 0;
+  font-family: var(--sd-font-body);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--sd-clr-accent-brown, #a58c70);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.sd-nav__show-more-btn:hover {
+  color: #2f4858;
+}
+
+/* ── Featured Products (replaces Promo / Info cards when enabled) ── */
+.sd-megamenu__featured-products {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.sd-megamenu__featured-heading {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2f4858;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.4rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sd-megamenu__featured-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.sd-megamenu__featured-item {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0.6rem;
+  border-radius: 1rem;
+  text-decoration: none;
+  background: transparent;
+  transition: background 0.2s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-megamenu__featured-item:hover {
+  background: #f7f6f3;
+  transform: translateY(-2px);
+}
+
+.sd-megamenu__featured-img {
+  width: 6.4rem;
+  height: 6.4rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  background: #ede9e4;
+  flex-shrink: 0;
+  display: block;
+  line-height: 0;
+}
+
+.sd-megamenu__featured-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sd-megamenu__featured-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.sd-megamenu__featured-title {
+  font-family: var(--sd-font-body);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2f4858;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sd-megamenu__featured-price {
+  font-family: var(--sd-font-body);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--sd-clr-teal, #2f4858);
+}
+@media only screen and (max-width:1320px){
+.sd-megamenu__col-group--colors .sd-megamenu__links {
+    grid-template-columns: repeat(4, max-content);
+}
+}
+@media only screen and (max-width:1150px){
+.sd-megamenu__col-group--colors .sd-megamenu__links {
+    grid-template-columns: repeat(3, max-content);
+}
+}
+/* ============================================================
+   ANIMATION — panel fade + per-column stagger reveal
+   ============================================================ */
+.sd-megamenu__col {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.mega-menu[open] .sd-megamenu__col {
+  opacity: 1;
+  transform: translateY(0);
+}
+.mega-menu[open] .sd-megamenu__col:nth-child(1) { transition-delay: 0.04s; }
+.mega-menu[open] .sd-megamenu__col:nth-child(2) { transition-delay: 0.08s; }
+.mega-menu[open] .sd-megamenu__col:nth-child(3) { transition-delay: 0.12s; }
+.mega-menu[open] .sd-megamenu__col:nth-child(4) { transition-delay: 0.16s; }
+.mega-menu[open] .sd-megamenu__col:nth-child(5) { transition-delay: 0.20s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-megamenu__panel,
+  .sd-megamenu__col,
+  .sd-megamenu__link,
+  .sd-megamenu__col-thumb,
+  .sd-megamenu__featured-item {
+    transition: none !important;
+  }
+  .sd-megamenu__col {
+    opacity: 1;
+    transform: none;
+  }
+  .sd-megamenu__link:hover,
+  .sd-megamenu__featured-item:hover {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — hide mega menu below 990px (mobile drawer used)
+   ============================================================ */
+@media screen and (max-width: 989px) {
+  .sd-megamenu__panel {
+    display: none !important;
+  }
+}

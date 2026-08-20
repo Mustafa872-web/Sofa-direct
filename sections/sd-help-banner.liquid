@@ -1,0 +1,184 @@
+<link rel="stylesheet" href="{{ 'sd-help-banner.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-help-banner.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign eyebrow      = section.settings.eyebrow      | default: 'Speak to a Sofa Specialist'
+  assign heading      = section.settings.heading      | default: 'Need help ordering? We are here.'
+  assign subheading   = section.settings.subheading   | default: 'Our friendly UK-based team can help you choose the right size, fabric and delivery — no pressure, just expert advice.'
+  assign phone_label  = section.settings.phone_label  | default: 'CALL US FREE'
+  assign phone_number = section.settings.phone_number | default: '02476 581 053'
+  assign phone_hours  = section.settings.phone_hours  | default: 'Mon–Sat 08:00 – 18:00'
+  assign cta_label    = section.settings.cta_label    | default: 'Call Now'
+  assign chat_label   = section.settings.chat_label   | default: 'Or chat live'
+  assign chat_url     = section.settings.chat_url
+  assign tel_clean = phone_number | remove: ' ' | remove: '(' | remove: ')' | remove: '-'
+-%}
+
+<section
+  id="sd-help-{{ section.id }}"
+  class="sd-help{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  aria-label="{{ heading | escape }}"
+>
+  {%- comment -%} Decorative top + bottom curves {%- endcomment -%}
+  <svg class="sd-help__curve sd-help__curve--top" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,60 C480,0 960,0 1440,60 L1440,0 L0,0 Z" fill="currentColor"/>
+  </svg>
+  <svg class="sd-help__curve sd-help__curve--bot" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,0 C480,60 960,60 1440,0 L1440,60 L0,60 Z" fill="currentColor"/>
+  </svg>
+
+  <div class="sd-help__bg" aria-hidden="true">
+    <span class="sd-help__halo sd-help__halo--1"></span>
+    <span class="sd-help__halo sd-help__halo--2"></span>
+  </div>
+
+  <div class="sd-help__container page-width">
+
+    {%- comment -%} ── LEFT: calm professional phone with 2 ring pulse ── {%- endcomment -%}
+    <div class="sd-help__visual">
+      <span class="sd-help__phone-ring sd-help__phone-ring--2" aria-hidden="true"></span>
+      <span class="sd-help__phone-ring sd-help__phone-ring--1" aria-hidden="true"></span>
+      <span class="sd-help__phone-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+      </span>
+    </div>
+
+    {%- comment -%} ── CENTER: copy ── {%- endcomment -%}
+    <div class="sd-help__copy">
+      {%- if eyebrow != blank -%}
+        <span class="sd-help__eyebrow">
+          <span class="sd-help__eyebrow-dot"></span>
+          {{ eyebrow }}
+          <span class="sd-help__eyebrow-dot"></span>
+        </span>
+      {%- endif -%}
+      {%- if heading != blank -%}
+        <h2 class="sd-help__heading">{{ heading }}</h2>
+      {%- endif -%}
+      {%- if subheading != blank -%}
+        <p class="sd-help__subheading">{{ subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} ── RIGHT: phone number + CTAs ── {%- endcomment -%}
+    <div class="sd-help__action">
+      <a href="tel:{{ tel_clean }}" class="sd-help__number" aria-label="Call {{ phone_number }}">
+        <span class="sd-help__number-label">{{ phone_label }}</span>
+        <span class="sd-help__number-digits">{{ phone_number }}</span>
+        {%- if phone_hours != blank -%}
+          <span class="sd-help__number-hours">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+            </svg>
+            {{ phone_hours }}
+          </span>
+        {%- endif -%}
+      </a>
+
+      <div class="sd-help__ctas">
+        <a href="tel:{{ tel_clean }}" class="sd-help__cta sd-help__cta--primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          {{ cta_label }}
+        </a>
+
+        {%- if chat_url != blank and chat_label != blank -%}
+          <a href="{{ chat_url }}" class="sd-help__cta sd-help__cta--ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            {{ chat_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Help Banner",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Copy"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Speak to a Sofa Specialist"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Need help ordering? We are here."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Our friendly UK-based team can help you choose the right size, fabric and delivery - no pressure, just expert advice."
+    },
+    {
+      "type": "header",
+      "content": "Phone"
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "label": "Phone label",
+      "default": "CALL US FREE"
+    },
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "Phone number",
+      "default": "02476 581 053"
+    },
+    {
+      "type": "text",
+      "id": "phone_hours",
+      "label": "Opening hours",
+      "default": "Mon-Sat 08:00 - 18:00"
+    },
+    {
+      "type": "header",
+      "content": "CTAs"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Primary button label",
+      "default": "Call Now"
+    },
+    {
+      "type": "text",
+      "id": "chat_label",
+      "label": "Secondary link label",
+      "default": "Or chat live"
+    },
+    {
+      "type": "url",
+      "id": "chat_url",
+      "label": "Secondary link URL",
+      "info": "Leave blank to hide the chat link."
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Help Banner"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

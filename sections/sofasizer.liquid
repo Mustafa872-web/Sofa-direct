@@ -1,0 +1,1475 @@
+{%- comment -%}
+  Sofasizer Section — Shopify
+  ───────────────────────────
+  A fully interactive sofa sizer/visualizer with drag-resize handles,
+  dimension-based filtering, room comparison, and product grid.
+
+  REQUIRED PRODUCT METAIELDS:
+  • custom.width   (number, in cm)
+  • custom.height  (number, in cm)
+  • custom.depth   (number, in cm)
+  • custom.seats   (number)
+  • custom.category  (string: corner, 3-seater, 2-seater, recliner, chaise)
+  • custom.material  (string, e.g. "Soft Weave Fabric")
+  • custom.monthly_price (number)
+  • custom.finance_term  (string, e.g. "4 years 0% APR")
+
+  VARIANT COLORS:
+  Each product variant is treated as a color option.
+  Make sure variants have a "Color" option defined.
+{%- endcomment -%}
+
+{{ 'sofasizer-section.css' | asset_url | stylesheet_tag }}
+
+{%- assign collection = collections[section.settings.collection] -%}
+{%- assign currency_symbol = section.settings.currency_symbol -%}
+
+{%- comment -%} Build products JSON for JavaScript — all products except the "Care Protection" vendor {%- endcomment -%}
+{%- capture products_json -%}
+  [
+  {%- assign sz_first = true -%}
+  {%- paginate collection.products by 250 -%}
+    {%- for product in collection.products -%}
+      {%- if product.vendor == 'Care Protection' -%}{%- continue -%}{%- endif -%}
+      {%- comment -%} Sofasizer image required — skip any product whose custom.sofasizer_image metafield is empty {%- endcomment -%}
+      {%- unless product.metafields.custom.sofasizer_image.value.image -%}{%- continue -%}{%- endunless -%}
+      {%- unless sz_first -%},{%- endunless -%}{%- assign sz_first = false -%}
+      {
+        "id": "{{ product.id }}",
+        "handle": "{{ product.handle }}",
+        "variantId": {{ product.selected_or_first_available_variant.id | default: product.variants.first.id }},
+        "available": {{ product.available }},
+        "name": {{ product.title | json }},
+        "type": {{ product.type | json }},
+        "material": {{ product.metafields.custom.material.value | json }},
+        "category": {{ product.metafields.custom.category.value | json }},
+        "price": {{ product.price | divided_by: 100 }},
+        "monthlyPrice": {{ product.metafields.custom.monthly_price.value | json }},
+        "financeTerm": {{ product.metafields.custom.finance_term.value | json }},
+        "seats": {{ product.metafields.custom.seats.value | json }},
+        "priority": {{ product.metafields.custom.priority.value | json }},
+        "dimensions": {
+          "h": {{ product.metafields.custom.height.value | json }},
+          "w": {{ product.metafields.custom.width.value | json }},
+          "d": {{ product.metafields.custom.depth.value | json }}
+        },
+        "image": "{% if product.metafields.custom.sofasizer_image.value.image %}{{ product.metafields.custom.sofasizer_image.value.image | image_url: width: 600 }}{% else %}{{ product.featured_image | image_url: width: 600 }}{% endif %}",
+        "url": "{{ product.url }}",
+        {%- assign co = product.metafields.custom.product_colors.value -%}
+        "colors": [
+          {%- if co != blank -%}
+            { "name": {{ co.name | default: 'Colour' | json }}, "hex": "{{ co.color_code | default: '#888888' }}", "swatch": "{% if co.image != blank %}{{ co.image | image_url: width: 96 }}{% endif %}" }
+          {%- elsif product.metafields.custom.colour.value != blank -%}
+            { "name": {{ product.metafields.custom.colour.value | json }}, "hex": "#888888", "swatch": "" }
+          {%- endif -%}
+        ]
+      }
+    {%- endfor -%}
+  {%- endpaginate -%}
+  ]
+{%- endcapture -%}
+
+<section
+  id="sofasizer-{{ section.id }}"
+  class="sofasizer-section"
+  data-section-id="{{ section.id }}"
+  data-products='{{ products_json }}'
+  data-currency="{{ currency_symbol }}"
+  data-width-tolerance="{{ section.settings.width_tolerance }}"
+  data-height-tolerance="{{ section.settings.height_tolerance }}"
+  data-depth-tolerance="{{ section.settings.depth_tolerance }}"
+  data-default-width="{{ section.settings.default_width }}"
+  data-default-height="{{ section.settings.default_height }}"
+  data-default-depth="{{ section.settings.default_depth }}"
+>
+  {%- comment -%} ─── HEADER ─── {%- endcomment -%}
+  <header class="sofasizer-header">
+    <div class="sofasizer-container">
+      <div class="sofasizer-header__inner">
+        <div class="sofasizer-header__brand">
+          <div class="sofasizer-header__icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"/><path d="M4 18v2"/><path d="M20 18v2"/><path d="M12 4v9"/></svg>
+          </div>
+          <h1 class="sofasizer-header__title">{{ section.settings.heading }}</h1>
+        </div>
+        <p class="sofasizer-header__subtitle">{{ section.settings.subtitle }}</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="sofasizer-main">
+    <div class="sofasizer-container">
+
+      {%- comment -%} ─── FILTER TABS ─── {%- endcomment -%}
+      <div class="sofasizer-tabs" data-sofasizer-tabs>
+        <div class="sofasizer-tabs__nav">
+          <button class="sofasizer-tab-btn active" data-tab="size">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"/><path d="M4 18v2"/><path d="M20 18v2"/><path d="M12 4v9"/></svg>
+            <span class="sofasizer-tab-btn__label">Size</span>
+          </button>
+          <button class="sofasizer-tab-btn" data-tab="colour">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+            <span class="sofasizer-tab-btn__label">Colour</span>
+          </button>
+          <button class="sofasizer-tab-btn" data-tab="type">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <span class="sofasizer-tab-btn__label">Type</span>
+          </button>
+          <button class="sofasizer-tab-btn" data-tab="material">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+            <span class="sofasizer-tab-btn__label">Material</span>
+          </button>
+          <button class="sofasizer-tab-btn" data-tab="price">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span class="sofasizer-tab-btn__label">Price</span>
+          </button>
+        </div>
+
+        {%- comment -%} Tab Content: Colour {%- endcomment -%}
+        <div class="sofasizer-tab-content" data-tab-content="colour" style="display:none;">
+          <div class="sofasizer-colour-swatches" data-colour-swatches></div>
+        </div>
+
+        {%- comment -%} Tab Content: Type {%- endcomment -%}
+        <div class="sofasizer-tab-content" data-tab-content="type" style="display:none;">
+          <div class="sofasizer-type-buttons" data-type-buttons>
+            <button class="sofasizer-type-btn active" data-type="all">All</button>
+            <button class="sofasizer-type-btn" data-type="corner">Corner</button>
+            <button class="sofasizer-type-btn" data-type="3-seater">3-Seater</button>
+            <button class="sofasizer-type-btn" data-type="2-seater">2-Seater</button>
+            <button class="sofasizer-type-btn" data-type="recliner">Recliner</button>
+            <button class="sofasizer-type-btn" data-type="chaise">Chaise</button>
+          </div>
+        </div>
+
+        {%- comment -%} Tab Content: Material {%- endcomment -%}
+        <div class="sofasizer-tab-content" data-tab-content="material" style="display:none;">
+          <div class="sofasizer-type-buttons" data-material-buttons></div>
+        </div>
+
+        {%- comment -%} Tab Content: Price (min–max slider) {%- endcomment -%}
+        <div class="sofasizer-tab-content" data-tab-content="price" style="display:none;">
+          <div class="sofasizer-price-slider" data-price-slider>
+            <div class="sofasizer-price-slider__values">
+              <span class="sofasizer-price-slider__val" data-price-min-label></span>
+              <span class="sofasizer-price-slider__sep">–</span>
+              <span class="sofasizer-price-slider__val" data-price-max-label></span>
+            </div>
+            <div class="sofasizer-price-slider__track">
+              <input type="range" class="sofa-range sofa-range--price" data-price-min aria-label="Minimum price">
+              <input type="range" class="sofa-range sofa-range--price" data-price-max aria-label="Maximum price">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} ─── ACTIVE FILTERS ─── {%- endcomment -%}
+      <div class="sofasizer-active-filters" data-active-filters>
+        <span class="sofasizer-filter-pill" data-filter-size>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>
+          <span data-filter-size-text></span>
+        </span>
+        <button class="sofasizer-clear-btn" data-clear-all>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Clear All
+        </button>
+      </div>
+
+      {%- comment -%} ─── MAIN GRID: Visualizer + Side Panel ─── {%- endcomment -%}
+      <div class="sofasizer-main-grid">
+
+        {%- comment -%} ─ LEFT: Visualizer + Controls ─ {%- endcomment -%}
+        <div class="sofasizer-viz-column">
+
+          {%- comment -%} Visualizer Card {%- endcomment -%}
+          <div class="sofasizer-viz-card">
+            <div class="sofasizer-viz-card__info" data-selected-info style="display:none;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              <span data-selected-info-text></span>
+            </div>
+            <div class="sofasizer-viz-card__actions">
+              <button class="sofasizer-viz-action" data-toggle-room title="Show Room">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>
+              </button>
+              <button class="sofasizer-viz-action" data-expand title="Expand">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/><path d="M9 21H3v-6"/></svg>
+              </button>
+            </div>
+
+            {%- comment -%} VISUALIZER with drag handles {%- endcomment -%}
+            <div class="sofasizer-visualizer" data-visualizer>
+              <div class="sofasizer-visualizer__grid" data-grid-svg>
+                <svg class="sofasizer-grid-svg" data-grid-svg-el></svg>
+              </div>
+              <div class="sofasizer-visualizer__image" data-viz-image></div>
+
+              {%- comment -%} Ruler: Width (bottom) {%- endcomment -%}
+              <div class="sofasizer-ruler sofasizer-ruler--width" data-ruler-width>
+                <div class="sofasizer-ruler__cap"></div>
+                <div class="sofasizer-ruler__line"></div>
+                <div class="sofasizer-ruler__cap"></div>
+                <div class="sofasizer-ruler__label"><span data-ruler-width-label></span></div>
+              </div>
+
+              {%- comment -%} Ruler: Depth (right) {%- endcomment -%}
+              <div class="sofasizer-ruler sofasizer-ruler--depth" data-ruler-depth>
+                <div class="sofasizer-ruler__cap-h"></div>
+                <div class="sofasizer-ruler__line-v"></div>
+                <div class="sofasizer-ruler__cap-h"></div>
+                <div class="sofasizer-ruler__label"><span data-ruler-depth-label></span></div>
+              </div>
+
+              {%- comment -%} Ruler: Height (left) {%- endcomment -%}
+              <div class="sofasizer-ruler sofasizer-ruler--height" data-ruler-height>
+                <div class="sofasizer-ruler__cap-h"></div>
+                <div class="sofasizer-ruler__line-v"></div>
+                <div class="sofasizer-ruler__cap-h"></div>
+                <div class="sofasizer-ruler__label"><span data-ruler-height-label></span></div>
+              </div>
+
+              {%- comment -%} Product name badge {%- endcomment -%}
+              <div class="sofasizer-product-badge" data-product-badge style="display:none;">
+                <span data-product-badge-text></span>
+              </div>
+
+              {%- comment -%} DRAG HANDLES {%- endcomment -%}
+              <div class="sofasizer-handle sofasizer-handle--width" data-handle="width" title="Drag to resize width">
+                <div class="sofasizer-handle__bar">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                </div>
+              </div>
+              <div class="sofasizer-handle sofasizer-handle--depth" data-handle="depth" title="Drag to resize depth">
+                <div class="sofasizer-handle__bar-h">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="9" r="1.5"/><circle cx="6" cy="9" r="1.5"/><circle cx="18" cy="9" r="1.5"/><circle cx="12" cy="15" r="1.5"/><circle cx="6" cy="15" r="1.5"/><circle cx="18" cy="15" r="1.5"/></svg>
+                </div>
+              </div>
+              <div class="sofasizer-handle sofasizer-handle--corner" data-handle="corner" title="Drag to resize width + depth">
+                <div class="sofasizer-handle__corner-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="12" height="20" x="6" y="2" rx="2"/><rect width="20" height="12" x="2" y="6" rx="2"/></svg>
+                </div>
+              </div>
+              <div class="sofasizer-handle sofasizer-handle--height" data-handle="height" title="Drag to resize height">
+                <div class="sofasizer-handle__bar-height">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                </div>
+              </div>
+
+              {%- comment -%} Drag hint {%- endcomment -%}
+              <div class="sofasizer-drag-hint" data-drag-hint>Drag handles to resize and filter products</div>
+
+              {%- comment -%} Drag feedback tooltip {%- endcomment -%}
+              <div class="sofasizer-drag-tooltip" data-drag-tooltip style="display:none;">
+                <span data-drag-tooltip-w></span>
+                <span class="sofasizer-drag-tooltip__sep"></span>
+                <span data-drag-tooltip-h></span>
+                <span class="sofasizer-drag-tooltip__sep"></span>
+                <span data-drag-tooltip-d></span>
+              </div>
+            </div>
+          </div>
+
+          {%- comment -%} Room Size Input {%- endcomment -%}
+          <div class="sofasizer-room-card" data-room-card>
+            <div class="sofasizer-room-card__header">
+              <div class="sofasizer-room-card__title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <span>Room Dimensions</span>
+              </div>
+              <label class="sofasizer-switch">
+                <span>Show Room</span>
+                <input type="checkbox" data-room-toggle>
+                <span class="sofasizer-switch__slider"></span>
+              </label>
+            </div>
+            <div class="sofasizer-room-card__inputs" data-room-inputs style="display:none;">
+              <div class="sofasizer-dim-field">
+                <label>Room Width (cm)</label>
+                <input type="number" min="200" max="800" value="400" data-room-width-input>
+                <input type="range" min="200" max="800" value="400" class="sofa-range" data-room-width-range>
+                <div class="sofasizer-dim-field__range-labels"><span>200</span><span>800</span></div>
+              </div>
+              <div class="sofasizer-dim-field">
+                <label>Room Depth (cm)</label>
+                <input type="number" min="200" max="800" value="350" data-room-depth-input>
+                <input type="range" min="200" max="800" value="350" class="sofa-range" data-room-depth-range>
+                <div class="sofasizer-dim-field__range-labels"><span>200</span><span>800</span></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {%- comment -%} ─ RIGHT: Adjust Dimensions (top) + Available Colours (bottom) ─ {%- endcomment -%}
+        <div class="sofasizer-side-column">
+
+          {%- comment -%} Dimension Controls — right side, top {%- endcomment -%}
+          <div class="sofasizer-controls-card">
+            <h3 class="sofasizer-controls-card__title">Adjust Dimensions</h3>
+            <div class="sofasizer-controls-grid">
+              <div class="sofasizer-dim-field">
+                <div class="sofasizer-dim-field__header">
+                  <label>Height (H)</label><span>cm</span>
+                </div>
+                <input type="number" min="40" max="120" data-height-input class="sofasizer-dim-input">
+                <input type="range" min="40" max="120" class="sofa-range" data-height-range>
+                <div class="sofasizer-dim-field__range-labels"><span>40</span><span>120</span></div>
+              </div>
+              <div class="sofasizer-dim-field">
+                <div class="sofasizer-dim-field__header">
+                  <label>Width (W)</label><span>cm</span>
+                </div>
+                <input type="number" min="50" max="400" data-width-input class="sofasizer-dim-input">
+                <input type="range" min="50" max="400" class="sofa-range" data-width-range>
+                <div class="sofasizer-dim-field__range-labels"><span>50</span><span>400</span></div>
+              </div>
+              <div class="sofasizer-dim-field">
+                <div class="sofasizer-dim-field__header">
+                  <label>Depth (D)</label><span>cm</span>
+                </div>
+                <input type="number" min="60" max="200" data-depth-input class="sofasizer-dim-input">
+                <input type="range" min="60" max="200" class="sofa-range" data-depth-range>
+                <div class="sofasizer-dim-field__range-labels"><span>60</span><span>200</span></div>
+              </div>
+            </div>
+          </div>
+
+          {%- comment -%} Available colours across ALL matching products (top) {%- endcomment -%}
+          <div class="sofasizer-palette-card" data-palette-card style="display:none;">
+            <div class="sofasizer-palette-card__head">
+              <h3 class="sofasizer-palette-card__title">Available Colours</h3>
+              <span class="sofasizer-palette-card__count" data-palette-count></span>
+            </div>
+            <p class="sofasizer-palette-card__hint">Colours from all matching sofas - tap to filter</p>
+            <div class="sofasizer-palette" data-palette></div>
+          </div>
+
+          {%- comment -%} Available materials across ALL matching products {%- endcomment -%}
+          <div class="sofasizer-palette-card" data-material-palette-card style="display:none;">
+            <div class="sofasizer-palette-card__head">
+              <h3 class="sofasizer-palette-card__title">Available Material</h3>
+              <span class="sofasizer-palette-card__count" data-material-palette-count></span>
+            </div>
+            <p class="sofasizer-palette-card__hint">Materials from all matching sofas - tap to filter</p>
+            <div class="sofasizer-palette sofasizer-palette--material" data-material-palette></div>
+          </div>
+
+          {%- comment -%} Selected Product Info {%- endcomment -%}
+          <div class="sofasizer-selected-card" data-selected-card style="display:none;">
+            <h3 class="sofasizer-selected-card__title">Selected Product</h3>
+            <h4 class="sofasizer-selected-card__name" data-selected-name></h4>
+            <p class="sofasizer-selected-card__type" data-selected-type></p>
+            <div class="sofasizer-selected-card__dims" data-selected-dims></div>
+            <div class="sofasizer-selected-card__match" data-selected-match></div>
+            <div class="sofasizer-selected-card__price">
+              <span class="sofasizer-selected-card__price-value" data-selected-price></span>
+              <span class="sofasizer-selected-card__monthly" data-selected-monthly></span>
+            </div>
+            <div class="sofasizer-selected-card__colours" data-selected-colours></div>
+            <a class="sofasizer-selected-card__cta" data-selected-cta href="#">View Product</a>
+          </div>
+
+          {%- comment -%} Resizer Dimensions Stats {%- endcomment -%}
+          <div class="sofasizer-stats-card">
+            <h3 class="sofasizer-stats-card__title">Resizer Dimensions</h3>
+            <div class="sofasizer-stats-card__dim">
+              <span>Height</span><strong data-stats-height></strong>
+              <div class="sofasizer-progress"><div class="sofasizer-progress__bar sofa-progress--height" data-stats-height-bar></div></div>
+            </div>
+            <div class="sofasizer-stats-card__dim">
+              <span>Width</span><strong data-stats-width></strong>
+              <div class="sofasizer-progress"><div class="sofasizer-progress__bar" data-stats-width-bar></div></div>
+            </div>
+            <div class="sofasizer-stats-card__dim">
+              <span>Depth</span><strong data-stats-depth></strong>
+              <div class="sofasizer-progress"><div class="sofasizer-progress__bar" data-stats-depth-bar></div></div>
+            </div>
+
+            <div class="sofasizer-stats-card__room-fit" data-room-fit style="display:none;">
+              <h4>Room Fit Check</h4>
+              <div class="sofasizer-stats-card__fit-row">
+                <span>Width clearance</span><strong data-fit-width></strong>
+              </div>
+              <div class="sofasizer-stats-card__fit-row">
+                <span>Depth clearance</span><strong data-fit-depth></strong>
+              </div>
+              <p class="sofasizer-stats-card__fit-note">Minimum 60cm clearance recommended</p>
+            </div>
+
+            <div class="sofasizer-stats-card__count">
+              <h4>Matching Products</h4>
+              <p class="sofasizer-stats-card__count-num" data-match-count>0</p>
+              <p class="sofasizer-stats-card__count-label">products fit your dimensions</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} ─── PRODUCT GRID ─── {%- endcomment -%}
+      <div class="sofasizer-products">
+        <div class="sofasizer-products__header">
+          <div>
+            <h2 class="sofasizer-products__title">{{ section.settings.products_heading }}</h2>
+            <p class="sofasizer-products__subtitle" data-products-subtitle></p>
+          </div>
+        </div>
+        <div class="sofasizer-products__grid" data-products-grid></div>
+        <div class="sofasizer-products__empty" data-products-empty style="display:none;">
+          <div class="sofasizer-products__empty-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <h3>No products found</h3>
+          <p>Try adjusting your size, type, or price filters to see more results.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  {%- if section.settings.show_footer -%}
+  <footer class="sofasizer-footer">
+    <div class="sofasizer-container">
+      <span>{{ section.settings.footer_text }}</span>
+    </div>
+  </footer>
+  {%- endif -%}
+</section>
+
+<script>
+(function() {
+  'use strict';
+
+  /* ─── DATA ─── */
+  const sectionEl = document.getElementById('sofasizer-{{ section.id }}');
+  if (!sectionEl) return;
+
+  const PRODUCTS = JSON.parse(sectionEl.dataset.products || '[]');
+  // Arrange small → big by the Priority metafield (set in admin, ranked by width).
+  // Products without a priority sink to the end.
+  PRODUCTS.forEach(p => { p.priority = (p.priority === 0 || p.priority) ? parseInt(p.priority, 10) : null; });
+  PRODUCTS.sort((a, b) => ((a.priority != null ? a.priority : 1e9) - (b.priority != null ? b.priority : 1e9)));
+  const CURRENCY = sectionEl.dataset.currency || '£';
+  const WIDTH_TOL = parseInt(sectionEl.dataset.widthTolerance) || 30;
+  const HEIGHT_TOL = parseInt(sectionEl.dataset.heightTolerance) || 20;
+  const DEPTH_TOL = parseInt(sectionEl.dataset.depthTolerance) || 30;
+
+  // Price bounds for the min–max slider, derived from the products.
+  const _prices = PRODUCTS.map(p => p.price).filter(v => typeof v === 'number' && !isNaN(v));
+  const PRICE_FLOOR = _prices.length ? Math.floor(Math.min.apply(null, _prices)) : 0;
+  const PRICE_CEIL = _prices.length ? Math.ceil(Math.max.apply(null, _prices)) : 5000;
+
+  /* ─── STATE ─── */
+  const state = {
+    sofaHeight: parseInt(sectionEl.dataset.defaultHeight) || 89,
+    sofaWidth: parseInt(sectionEl.dataset.defaultWidth) || 294,
+    sofaDepth: parseInt(sectionEl.dataset.defaultDepth) || 105,
+    roomWidth: 400,
+    roomDepth: 350,
+    showRoom: false,
+    isExpanded: false,
+    activeTab: 'size',
+    selectedType: 'all',
+    selectedMaterial: 'all',
+    priceMin: PRICE_FLOOR,
+    priceMax: PRICE_CEIL,
+    selectedColor: '',
+    paletteColor: '',
+    selectedProductId: null,
+    pinnedProductId: null,
+    activeAxis: null,
+    isDragging: null,
+    dragStart: null,
+    containerWidth: 0,
+    hoveredHandle: null,
+    filteredProducts: [],
+    selectedProduct: null
+  };
+
+  /* ─── DOM REFS ─── */
+  const $ = (sel) => sectionEl.querySelector(sel);
+  const $$ = (sel) => sectionEl.querySelectorAll(sel);
+
+  /* ─── FILTER LOGIC ─── */
+  function filterProducts() {
+    let products = [...PRODUCTS];
+
+    if (state.selectedType !== 'all') {
+      products = products.filter(p => p.category === state.selectedType);
+    }
+    if (state.selectedMaterial !== 'all') {
+      products = products.filter(p => (p.material || '').trim().toLowerCase() === state.selectedMaterial);
+    }
+    // Price range from the min–max slider
+    products = products.filter(p => typeof p.price !== 'number' || (p.price >= state.priceMin && p.price <= state.priceMax));
+
+    // Only products that have dimensions can be size-matched.
+    const sizeable = products.filter(p => p.dimensions);
+
+    // Match driver:
+    //   • height axis  → match by HEIGHT (priority is width-based, irrelevant here)
+    //   • everything else (width / depth / corner / default) → PRIORITY-driven.
+    // The Priority metafield ranks every sofa small→big (by width), so we map the
+    // current width to a target priority and pick the nearest — stepping through
+    // products one-by-one as the resizer changes (even ~1-2 cm).
+    let closeness, sized;
+    if (state.activeAxis === 'height') {
+      closeness = (p) => Math.abs((p.dimensions.h || 0) - state.sofaHeight);
+      sized = sizeable.filter(p => p.dimensions.h && Math.abs(p.dimensions.h - state.sofaHeight) <= HEIGHT_TOL);
+      if (!sized.length) sized = sizeable.slice().sort((a, b) => closeness(a) - closeness(b)).slice(0, 50);
+    } else {
+      const havePr = sizeable.filter(p => p.priority != null);
+      const prs = havePr.map(p => p.priority);
+      const minPr = prs.length ? Math.min.apply(null, prs) : 1;
+      const maxPr = prs.length ? Math.max.apply(null, prs) : 1;
+      const t = Math.max(0, Math.min(1, (state.sofaWidth - 50) / (400 - 50)));
+      const targetP = minPr + t * (maxPr - minPr);
+      closeness = (p) => (p.priority != null ? Math.abs(p.priority - targetP) : 1e9);
+      // Window of the nearest-priority sofas (keeps the list short and shifting).
+      sized = havePr.slice().sort((a, b) => closeness(a) - closeness(b)).slice(0, 50);
+    }
+
+    products = sized.sort((a, b) => closeness(a) - closeness(b));
+
+    // Palette = colours of ALL dimension/type/price-matching products (before colour filter)
+    state.paletteProducts = products.slice();
+
+    // Optional colour filter (set by clicking a palette swatch)
+    if (state.paletteColor) {
+      products = products.filter(p => p.colors && p.colors[0] && ((p.colors[0].name || '').trim().toLowerCase() === state.paletteColor));
+    }
+
+    state.filteredProducts = products;
+
+    // Resolve the shown product.
+    // By default ALWAYS follow the closest match (top of the listing) so the
+    // visualizer image updates on every small size change — even 1-2 cm, and
+    // even when no product sits exactly at that size (closest still wins).
+    // Only a product the user explicitly TAPPED stays pinned, until the next resize.
+    let chosen = null;
+    if (state.pinnedProductId) {
+      chosen = products.find(p => p.id === state.pinnedProductId) || null;
+    }
+    if (!chosen) chosen = products.length > 0 ? products[0] : null;
+    state.selectedProduct = chosen;
+    state.selectedProductId = chosen ? chosen.id : null;
+  }
+
+  /* ─── RENDER ─── */
+  function render() {
+    filterProducts();
+    renderVisualizer();
+    renderSidePanel();
+    renderProductGrid();
+    renderFilters();
+    renderStats();
+    renderPalette();
+    renderMaterialPalette();
+  }
+
+  function renderPalette() {
+    const card = $('[data-palette-card]');
+    const wrap = $('[data-palette]');
+    const countEl = $('[data-palette-count]');
+    if (!card || !wrap) return;
+
+    // Aggregate unique colours across all matching products.
+    // De-duplicate by NAME (case/space-insensitive) so a colour never repeats.
+    const colors = new Map(); // key(lower) -> { name, key, hex, swatch, count }
+    (state.paletteProducts || []).forEach(p => {
+      const c = p.colors && p.colors[0];
+      if (!c || !c.name) return;
+      const key = c.name.trim().toLowerCase();
+      if (!key) return;
+      if (colors.has(key)) { colors.get(key).count++; }
+      else { colors.set(key, { name: c.name.trim(), key: key, hex: c.hex || '#888', swatch: c.swatch || '', count: 1 }); }
+    });
+
+    if (colors.size === 0) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    if (countEl) countEl.textContent = colors.size + (colors.size === 1 ? ' colour' : ' colours');
+
+    wrap.innerHTML = Array.from(colors.values())
+      .sort((a, b) => b.count - a.count)
+      .map(c => {
+        const active = state.paletteColor === c.key ? ' active' : '';
+        const fill = c.swatch
+          ? `<span class="sofasizer-palette__img" style="background-image:url('${c.swatch}')"></span>`
+          : `<span class="sofasizer-palette__fill" style="background:${c.hex}"></span>`;
+        return `<button class="sofasizer-palette__chip${active}" data-palette-color="${c.key.replace(/"/g,'&quot;')}" title="${c.name}">
+            ${fill}
+            <span class="sofasizer-palette__name">${c.name}</span>
+            <span class="sofasizer-palette__num">${c.count}</span>
+          </button>`;
+      }).join('');
+
+    wrap.querySelectorAll('[data-palette-color]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.paletteColor;
+        state.paletteColor = (state.paletteColor === name) ? '' : name; // toggle
+        render();
+      });
+    });
+  }
+
+  function renderMaterialPalette() {
+    const card = $('[data-material-palette-card]');
+    const wrap = $('[data-material-palette]');
+    const countEl = $('[data-material-palette-count]');
+    if (!card || !wrap) return;
+
+    // Unique materials across all matching products (case-insensitive)
+    const mats = new Map(); // key -> { name, key, count }
+    (state.paletteProducts || []).forEach(p => {
+      const m = (p.material || '').trim();
+      const key = m.toLowerCase();
+      if (!key) return;
+      if (mats.has(key)) { mats.get(key).count++; }
+      else { mats.set(key, { name: m, key: key, count: 1 }); }
+    });
+
+    if (mats.size === 0) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    if (countEl) countEl.textContent = mats.size + (mats.size === 1 ? ' material' : ' materials');
+
+    wrap.innerHTML = Array.from(mats.values())
+      .sort((a, b) => b.count - a.count)
+      .map(m => {
+        const active = state.selectedMaterial === m.key ? ' active' : '';
+        return `<button class="sofasizer-palette__chip sofasizer-mat-chip${active}" data-material-palette="${m.key.replace(/"/g, '&quot;')}" title="${m.name}">
+            <span class="sofasizer-palette__name">${m.name}</span>
+            <span class="sofasizer-palette__num">${m.count}</span>
+          </button>`;
+      }).join('');
+
+    wrap.querySelectorAll('[data-material-palette]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.materialPalette;
+        state.selectedMaterial = (state.selectedMaterial === key) ? 'all' : key; // toggle
+        render();
+      });
+    });
+  }
+
+  function renderVisualizer() {
+    const vizEl = $('[data-visualizer]');
+    if (!vizEl) return;
+
+    const cw = vizEl.offsetWidth || 560;
+    state.containerWidth = cw;
+
+    // ── Front-elevation coordinate frame: X = width (cm), Y = height (cm) ──
+    const vizH = state.isExpanded ? 460 : 380;
+    vizEl.style.minHeight = vizH + 'px';
+    vizEl.style.height = vizH + 'px';
+    const AXIS_X = 46;        // left gutter for Y (height) labels
+    const PAD_RIGHT = 34;
+    const PAD_TOP = 24;
+    const PAD_BOTTOM = 28;    // bottom gutter for X (width) labels
+    const WIDTH_MAX = 450;    // X axis max (cm)
+    const HEIGHT_MAX = 120;   // Y axis max (cm)
+    const drawW = Math.max(50, cw - AXIS_X - PAD_RIGHT);
+    const drawH = Math.max(50, vizH - PAD_TOP - PAD_BOTTOM);
+    const wScale = drawW / WIDTH_MAX;
+    const hScale = drawH / HEIGHT_MAX;
+    state.wScale = wScale;     // used by drag handler
+    state.hScale = hScale;
+
+    const originX = AXIS_X;
+    const baselineY = PAD_TOP + drawH;
+    const sofaW = state.sofaWidth * wScale;   // px width
+    const sofaH = state.sofaHeight * hScale;  // px height
+    const sofaLeft = originX;
+    const sofaTop = baselineY - sofaH;
+    const rightX = sofaLeft + sofaW;
+
+    // SVG axes + dotted guide box
+    const svgEl = $('[data-grid-svg-el]');
+    if (svgEl) {
+      svgEl.setAttribute('viewBox', `0 0 ${cw} ${vizH}`);
+      svgEl.setAttribute('preserveAspectRatio', 'none');
+      svgEl.style.width = '100%';
+      svgEl.style.height = vizH + 'px';
+      svgEl.style.minHeight = vizH + 'px';
+
+      const AXIS = '#9A8E80', GUIDE = '#6F665E';
+      let svg = '';
+      svg += `<rect x="${originX}" y="${PAD_TOP}" width="${drawW}" height="${drawH}" fill="#FCFBF9"/>`;
+
+      // X-axis ticks + labels every 50 cm
+      for (let cm = 0; cm <= WIDTH_MAX; cm += 50) {
+        const x = originX + cm * wScale;
+        svg += `<line x1="${x}" y1="${baselineY}" x2="${x}" y2="${baselineY + 5}" stroke="${AXIS}" stroke-width="1"/>`;
+        svg += `<text x="${x}" y="${baselineY + 18}" text-anchor="middle" style="font-size:11px" fill="${AXIS}">${cm}</text>`;
+      }
+      svg += `<text x="${originX + drawW + 4}" y="${baselineY + 18}" text-anchor="start" style="font-size:11px" fill="${AXIS}">cm</text>`;
+
+      // Y-axis ticks + labels (0, 50, 100)
+      for (let cm = 0; cm <= 100; cm += 50) {
+        const y = baselineY - cm * hScale;
+        svg += `<line x1="${originX - 5}" y1="${y}" x2="${originX}" y2="${y}" stroke="${AXIS}" stroke-width="1"/>`;
+        svg += `<text x="${originX - 10}" y="${y + 4}" text-anchor="end" style="font-size:11px" fill="${AXIS}">${cm}</text>`;
+      }
+
+      // X-axis solid line, Y-axis dotted line
+      svg += `<line x1="${originX}" y1="${baselineY}" x2="${originX + drawW}" y2="${baselineY}" stroke="${AXIS}" stroke-width="1.5"/>`;
+      svg += `<line x1="${originX}" y1="${PAD_TOP}" x2="${originX}" y2="${baselineY}" stroke="${AXIS}" stroke-width="1.4" stroke-dasharray="2 3"/>`;
+
+      // Dotted guide box around the sofa (top edge + right edge; left = Y axis, bottom = X axis)
+      svg += `<line x1="${originX}" y1="${sofaTop}" x2="${rightX}" y2="${sofaTop}" stroke="${GUIDE}" stroke-width="1.2" stroke-dasharray="4 4"/>`;
+      svg += `<line x1="${rightX}" y1="${sofaTop}" x2="${rightX}" y2="${baselineY}" stroke="${GUIDE}" stroke-width="1.2" stroke-dasharray="4 4"/>`;
+      svg += `<rect x="${rightX - 3}" y="${baselineY - 3}" width="6" height="6" fill="none" stroke="${GUIDE}" stroke-width="1"/>`;
+
+      svgEl.innerHTML = svg;
+    }
+
+    // Product image — anchored bottom-left on the origin, sized W × H
+    const imgEl = $('[data-viz-image]');
+    if (imgEl) {
+      imgEl.style.left = sofaLeft + 'px';
+      imgEl.style.top = sofaTop + 'px';
+      imgEl.style.width = sofaW + 'px';
+      imgEl.style.height = sofaH + 'px';
+      imgEl.style.transition = state.isDragging ? 'none' : 'all 0.15s ease-out';
+
+      if (state.selectedProduct && state.selectedProduct.image) {
+        const filterVal = state.selectedColor && state.selectedProduct.colors?.length && state.selectedColor !== state.selectedProduct.colors[0]?.hex
+          ? `hue-rotate(${getHueRotation(state.selectedProduct.colors[0]?.hex || '#888', state.selectedColor)}deg) saturate(1.1)`
+          : 'none';
+        imgEl.innerHTML = `<img src="${state.selectedProduct.image}" alt="${state.selectedProduct.name}" style="width:100%;height:100%;object-fit:contain;object-position:bottom left;filter:${filterVal};pointer-events:none;user-select:none;" draggable="false">`;
+      } else {
+        const c = state.selectedColor || '#888';
+        imgEl.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:flex-end;"><div style="width:100%;height:80%;background:${c};border-radius:10px;opacity:0.85;box-shadow:0 8px 32px ${c}33;"></div></div>`;
+      }
+    }
+
+    // Hide the old ruler pills + the depth handle (axes now carry the dimensions)
+    ['[data-ruler-width]', '[data-ruler-depth]', '[data-ruler-height]', '[data-handle="depth"]'].forEach(sel => {
+      const el = $(sel); if (el) el.style.display = 'none';
+    });
+
+    // Product badge (sits just above the sofa, top-left)
+    const badge = $('[data-product-badge]');
+    const badgeText = $('[data-product-badge-text]');
+    if (badge && badgeText) {
+      if (state.selectedProduct) {
+        badge.style.display = '';
+        badge.style.left = sofaLeft + 'px';
+        badge.style.top = (sofaTop - 26) + 'px';
+        badge.style.transition = state.isDragging ? 'none' : 'all 0.15s ease-out';
+        badgeText.textContent = state.selectedProduct.name;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    // Drag handles — width on the right edge, height on the top edge, corner top-right
+    const handleW = $('[data-handle="width"]');
+    if (handleW) {
+      handleW.style.display = '';
+      handleW.style.left = (rightX - 14) + 'px';
+      handleW.style.top = (sofaTop + sofaH / 2 - 25) + 'px';
+      handleW.style.height = '50px';
+      handleW.style.transition = state.isDragging ? 'none' : 'all 0.15s ease-out';
+    }
+    const handleH = $('[data-handle="height"]');
+    if (handleH) {
+      handleH.style.display = '';
+      handleH.style.left = (sofaLeft + sofaW / 2 - 30) + 'px';
+      handleH.style.top = (sofaTop - 14) + 'px';
+      handleH.style.height = '';
+      handleH.style.width = '60px';
+      handleH.style.transition = state.isDragging ? 'none' : 'all 0.15s ease-out';
+    }
+    const handleC = $('[data-handle="corner"]');
+    if (handleC) {
+      handleC.style.display = '';
+      handleC.style.left = (rightX - 18) + 'px';
+      handleC.style.top = (sofaTop - 18) + 'px';
+      handleC.style.transition = state.isDragging ? 'none' : 'all 0.15s ease-out';
+    }
+
+    // Drag hint
+    const hint = $('[data-drag-hint]');
+    if (hint) hint.style.display = state.selectedProduct && !state.isDragging ? '' : 'none';
+
+    // Drag tooltip
+    const tooltip = $('[data-drag-tooltip]');
+    if (tooltip) {
+      if (state.isDragging) {
+        tooltip.style.display = '';
+        $('[data-drag-tooltip-w]').textContent = `W: ${state.sofaWidth}cm`;
+        $('[data-drag-tooltip-h]').textContent = `H: ${state.sofaHeight}cm`;
+        $('[data-drag-tooltip-d]').textContent = `D: ${state.sofaDepth}cm`;
+      } else {
+        tooltip.style.display = 'none';
+      }
+    }
+
+    // Info badge
+    const infoEl = $('[data-selected-info]');
+    const infoText = $('[data-selected-info-text]');
+    if (infoEl && infoText && state.selectedProduct) {
+      infoEl.style.display = '';
+      infoText.textContent = `${state.selectedProduct.name} - ${state.selectedProduct.type}`;
+    } else if (infoEl) {
+      infoEl.style.display = 'none';
+    }
+
+    vizEl.style.minHeight = state.isExpanded ? '480px' : '400px';
+  }
+
+  function renderSidePanel() {
+    const card = $('[data-selected-card]');
+    if (!card) return;
+
+    if (state.selectedProduct) {
+      card.style.display = '';
+      const p = state.selectedProduct;
+      $('[data-selected-name]').textContent = p.name;
+      $('[data-selected-type]').textContent = `${p.type || ''} - ${p.material || ''}`;
+      $('[data-selected-dims]').textContent = p.dimensions ? `h${p.dimensions.h} × w${p.dimensions.w} × d${p.dimensions.d} cm` : '';
+      $('[data-selected-price]').textContent = `${CURRENCY}${p.price?.toLocaleString()}`;
+      $('[data-selected-monthly]').textContent = p.monthlyPrice ? `${CURRENCY}${parseFloat(p.monthlyPrice).toFixed(2)} per month` : '';
+      $('[data-selected-cta]').href = p.url || '#';
+
+      // Dimension match
+      const matchEl = $('[data-selected-match]');
+      if (matchEl && p.dimensions) {
+        matchEl.innerHTML = [
+          dimMatchRow('Width', p.dimensions.w, state.sofaWidth, 10),
+          dimMatchRow('Height', p.dimensions.h, state.sofaHeight, 5),
+          dimMatchRow('Depth', p.dimensions.d, state.sofaDepth, 10)
+        ].join('');
+      }
+
+      // Colours
+      const colEl = $('[data-selected-colours]');
+      if (colEl && p.colors) {
+        colEl.innerHTML = '<p class="sofasizer-colours-label">Available Colours</p><div class="sofasizer-colours-row">' +
+          p.colors.map(c =>
+            `<button class="sofasizer-colour-dot ${state.selectedColor === c.hex ? 'active' : ''}" style="background:${c.hex}" data-colour-select="${c.hex}" title="${c.name}"></button>`
+          ).join('') + '</div>';
+        colEl.querySelectorAll('[data-colour-select]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            state.selectedColor = btn.dataset.colourSelect;
+            render();
+          });
+        });
+      }
+    } else {
+      card.style.display = 'none';
+    }
+  }
+
+  function dimMatchRow(label, productVal, resizerVal, threshold) {
+    const diff = Math.abs(productVal - resizerVal);
+    const isExact = diff === 0;
+    const isClose = diff < threshold;
+    const cls = isExact ? 'exact' : isClose ? 'close' : 'far';
+    const text = isExact ? 'Exact' : `${diff}cm ${productVal > resizerVal ? 'larger' : 'smaller'}`;
+    return `<div class="sofasizer-match-row ${cls}"><span>${label} match</span><span>${text}</span></div>`;
+  }
+
+  function addToCart(variantId, btn) {
+    if (!variantId || btn.disabled) return;
+    const original = btn.textContent.trim();
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: variantId, quantity: 1 })
+    })
+      .then(r => { if (!r.ok) throw new Error('add failed'); return r.json(); })
+      .then(() => {
+        btn.textContent = 'Added ✓';
+        btn.classList.add('is-added');
+        // Best-effort: refresh the header cart count bubble.
+        fetch('/cart.js').then(r => r.json()).then(cart => {
+          document.querySelectorAll('.cart-count-bubble span[aria-hidden="true"], [data-cart-count]').forEach(el => {
+            el.textContent = cart.item_count;
+          });
+        }).catch(() => {});
+        setTimeout(() => { btn.textContent = original; btn.disabled = false; btn.classList.remove('is-added'); }, 1800);
+      })
+      .catch(() => {
+        btn.textContent = 'Try again';
+        setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1500);
+      });
+  }
+
+  function renderProductGrid() {
+    const grid = $('[data-products-grid]');
+    const empty = $('[data-products-empty]');
+    const subtitle = $('[data-products-subtitle]');
+
+    if (subtitle) {
+      subtitle.textContent = `${state.filteredProducts.length} products fit your h${state.sofaHeight} × w${state.sofaWidth} × d${state.sofaDepth} cm dimensions`;
+    }
+
+    if (state.filteredProducts.length === 0) {
+      if (grid) grid.innerHTML = '';
+      if (empty) empty.style.display = '';
+      return;
+    }
+
+    if (empty) empty.style.display = 'none';
+
+    if (grid) {
+      grid.innerHTML = state.filteredProducts.map(p => {
+        const isSelected = state.selectedProductId === p.id;
+        const seats = p.seats ? `${p.seats} seats` : '';
+        const colours = (p.colors || []).slice(0, 5).map(c =>
+          `<button class="sofasizer-card-colour ${state.selectedColor === c.hex ? 'active' : ''}" style="background:${c.hex}" data-card-colour="${c.hex}" title="${c.name}"></button>`
+        ).join('');
+
+        return `
+          <div class="sofasizer-product-card ${isSelected ? 'selected' : ''}" data-product-id="${p.id}">
+            ${isSelected ? '<span class="sofasizer-card-badge">In Resizer</span>' : ''}
+            <a class="sofasizer-card-image" href="${p.url}" data-card-open aria-label="${p.name}">
+              <img src="${p.image}" alt="${p.name}" loading="lazy">
+              ${p.category ? `<span class="sofasizer-card-type">${p.category}</span>` : ''}
+              ${seats ? `<span class="sofasizer-card-seats">${seats}</span>` : ''}
+            </a>
+            <div class="sofasizer-card-body">
+              <h3><a href="${p.url}" class="sofasizer-card-title-link" data-card-open>${p.name}</a></h3>
+              <p class="sofasizer-card-material">${p.material || ''}</p>
+              <div class="sofasizer-card-colours">${colours}</div>
+              <div class="sofasizer-card-price">
+                <span class="sofasizer-card-price__value">${CURRENCY}${p.price?.toLocaleString()}</span>
+                ${p.monthlyPrice ? `<span class="sofasizer-card-price__monthly">${CURRENCY}${parseFloat(p.monthlyPrice).toFixed(2)}/mo</span>` : ''}
+              </div>
+              <button type="button" class="sofasizer-card-atc" data-add-cart data-variant="${p.variantId || ''}"${p.available === false ? ' disabled' : ''}>
+                ${p.available === false ? 'Sold Out' : 'Add to Cart'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Click handlers
+      grid.querySelectorAll('[data-product-id]').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('[data-card-colour]')) {
+            state.selectedColor = e.target.closest('[data-card-colour]').dataset.cardColour;
+            render();
+            return;
+          }
+          // Image / title are real links — let them open the product page.
+          if (e.target.closest('[data-card-open]')) return;
+          // Add to cart button
+          const atc = e.target.closest('[data-add-cart]');
+          if (atc) { addToCart(atc.dataset.variant, atc); return; }
+          const id = card.dataset.productId;
+          const product = PRODUCTS.find(p => p.id === id);
+          if (product) {
+            state.selectedProductId = id;
+            state.pinnedProductId = id;
+            if (product.dimensions) {
+              state.sofaHeight = product.dimensions.h || state.sofaHeight;
+              state.sofaWidth = product.dimensions.w || state.sofaWidth;
+              state.sofaDepth = product.dimensions.d || state.sofaDepth;
+            }
+            if (product.colors?.length) state.selectedColor = product.colors[0].hex;
+            syncInputs();
+            render();
+          }
+        });
+      });
+    }
+  }
+
+  function renderFilters() {
+    // Colour swatches from all products
+    const swatchEl = $('[data-colour-swatches]');
+    if (swatchEl) {
+      // De-duplicate by colour NAME (case-insensitive) so the same colour
+      // never appears twice (e.g. two "Grey" with slightly different hex).
+      const allColors = new Map();
+      PRODUCTS.forEach(p => (p.colors || []).forEach(c => {
+        const key = (c.name || '').trim().toLowerCase();
+        if (key && !allColors.has(key)) allColors.set(key, { hex: c.hex, name: (c.name || '').trim() });
+      }));
+      swatchEl.innerHTML = Array.from(allColors.values()).map(({ hex, name }) =>
+        `<button class="sofasizer-swatch ${state.selectedColor === hex ? 'active' : ''}" data-swatch-colour="${hex}" title="${name}" aria-label="${name}">
+          <span class="sofasizer-swatch__dot" style="background:${hex}"></span>
+          <span class="sofasizer-swatch__name">${name}</span>
+        </button>`
+      ).join('');
+      swatchEl.querySelectorAll('[data-swatch-colour]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.selectedColor = btn.dataset.swatchColour;
+          render();
+        });
+      });
+    }
+
+    // Type buttons
+    $$('[data-type]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.type === state.selectedType);
+    });
+
+    // Material buttons — built once from unique custom.material values
+    const matWrap = $('[data-material-buttons]');
+    if (matWrap && !matWrap.dataset.built) {
+      const mats = new Map();
+      PRODUCTS.forEach(p => {
+        const m = (p.material || '').trim();
+        const k = m.toLowerCase();
+        if (k && !mats.has(k)) mats.set(k, m);
+      });
+      let html = '<button class="sofasizer-type-btn" data-material="all">All</button>';
+      mats.forEach((disp, k) => { html += `<button class="sofasizer-type-btn" data-material="${k}">${disp}</button>`; });
+      matWrap.innerHTML = html;
+      matWrap.dataset.built = '1';
+      matWrap.querySelectorAll('[data-material]').forEach(btn => {
+        btn.addEventListener('click', () => { state.selectedMaterial = btn.dataset.material; render(); });
+      });
+    }
+    $$('[data-material]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.material === state.selectedMaterial);
+    });
+
+    // Price slider labels
+    const pminL = $('[data-price-min-label]'), pmaxL = $('[data-price-max-label]');
+    if (pminL) pminL.textContent = CURRENCY + Math.round(state.priceMin).toLocaleString();
+    if (pmaxL) pmaxL.textContent = CURRENCY + Math.round(state.priceMax).toLocaleString();
+
+    // Active filters
+    const filterText = $('[data-filter-size-text]');
+    if (filterText) filterText.textContent = `Size: h${state.sofaHeight} × w${state.sofaWidth} × d${state.sofaDepth} cm`;
+  }
+
+  function renderStats() {
+    const h = $('[data-stats-height]');
+    const w = $('[data-stats-width]');
+    const d = $('[data-stats-depth]');
+    if (h) h.textContent = state.sofaHeight + ' cm';
+    if (w) w.textContent = state.sofaWidth + ' cm';
+    if (d) d.textContent = state.sofaDepth + ' cm';
+
+    const hb = $('[data-stats-height-bar]');
+    const wb = $('[data-stats-width-bar]');
+    const db = $('[data-stats-depth-bar]');
+    if (hb) hb.style.width = Math.min((state.sofaHeight / 120) * 100, 100) + '%';
+    if (wb) wb.style.width = Math.min((state.sofaWidth / 400) * 100, 100) + '%';
+    if (db) db.style.width = Math.min((state.sofaDepth / 200) * 100, 100) + '%';
+
+    // Room fit
+    const fitEl = $('[data-room-fit]');
+    if (fitEl) {
+      fitEl.style.display = state.showRoom ? '' : 'none';
+      if (state.showRoom) {
+        const wClear = state.roomWidth - state.sofaWidth;
+        const dClear = state.roomDepth - state.sofaDepth;
+        const fw = $('[data-fit-width]');
+        const fd = $('[data-fit-depth]');
+        if (fw) { fw.textContent = `${wClear} cm ${wClear >= 60 ? '✓' : '⚠'}`; fw.className = wClear >= 60 ? 'fit-good' : 'fit-warn'; }
+        if (fd) { fd.textContent = `${dClear} cm ${dClear >= 60 ? '✓' : '⚠'}`; fd.className = dClear >= 60 ? 'fit-good' : 'fit-warn'; }
+      }
+    }
+
+    // Match count
+    const mc = $('[data-match-count]');
+    if (mc) mc.textContent = state.filteredProducts.length;
+  }
+
+  function syncInputs() {
+    const hi = $('[data-height-input]');
+    const hr = $('[data-height-range]');
+    const wi = $('[data-width-input]');
+    const wr = $('[data-width-range]');
+    const di = $('[data-depth-input]');
+    const dr = $('[data-depth-range]');
+    if (hi) hi.value = state.sofaHeight;
+    if (hr) hr.value = state.sofaHeight;
+    if (wi) wi.value = state.sofaWidth;
+    if (wr) wr.value = state.sofaWidth;
+    if (di) di.value = state.sofaDepth;
+    if (dr) dr.value = state.sofaDepth;
+  }
+
+  /* ─── DRAG HANDLING ─── */
+  function startDrag(type, clientX, clientY) {
+    state.isDragging = type;
+    state.dragStart = { x: clientX, y: clientY, w: state.sofaWidth, h: state.sofaHeight, d: state.sofaDepth };
+  }
+
+  function handleDragMove(e) {
+    if (!state.isDragging || !state.dragStart) return;
+    e.preventDefault();
+
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const dx = clientX - state.dragStart.x;
+    const dy = clientY - state.dragStart.y;
+
+    // Scales from the elevation frame (set in renderVisualizer); safe fallbacks.
+    const wScale = state.wScale || ((($('[data-visualizer]') || {}).offsetWidth || 560) / 450);
+    const hScale = state.hScale || 3;
+
+    // Snap to 1 cm steps so even a 2 cm change registers (fine, not chunky).
+    const snapStep = (cm) => Math.round(cm);
+    // Width = horizontal drag (right edge); Height = vertical drag (top edge, up = bigger).
+    if (state.isDragging === 'width' || state.isDragging === 'corner') {
+      state.sofaWidth = Math.max(50, Math.min(400, snapStep(state.dragStart.w + dx / wScale)));
+    }
+    if (state.isDragging === 'height' || state.isDragging === 'corner') {
+      state.sofaHeight = Math.max(40, Math.min(120, snapStep(state.dragStart.h - dy / hScale)));
+    }
+
+    state.activeAxis = state.isDragging; // 'width' | 'height' | 'depth' | 'corner'
+    state.pinnedProductId = null; // resizing always follows the closest product
+    syncInputs();
+    render();
+  }
+
+  function endDrag() {
+    state.isDragging = null;
+    state.dragStart = null;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    // Keep the size exactly where the user left it (no snapping back to the
+    // closest product's width). The image/listing already follow the closest match.
+    render();
+  }
+
+  /* ─── EVENT SETUP ─── */
+  function init() {
+    if (PRODUCTS.length > 0) {
+      state.selectedProductId = PRODUCTS[0].id;
+      state.selectedColor = PRODUCTS[0]?.colors?.[0]?.hex || '';
+      if (PRODUCTS[0].dimensions) {
+        state.sofaHeight = PRODUCTS[0].dimensions.h || state.sofaHeight;
+        state.sofaWidth = PRODUCTS[0].dimensions.w || state.sofaWidth;
+        state.sofaDepth = PRODUCTS[0].dimensions.d || state.sofaDepth;
+      }
+    }
+    syncInputs();
+
+    // Tab navigation
+    $$('.sofasizer-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.activeTab = btn.dataset.tab;
+        $$('.sofasizer-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        $$('.sofasizer-tab-content').forEach(tc => {
+          tc.style.display = tc.dataset.tabContent === state.activeTab ? '' : 'none';
+        });
+      });
+    });
+
+    // Type filter
+    $$('[data-type]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.selectedType = btn.dataset.type;
+        render();
+      });
+    });
+
+    // Price min–max slider
+    const pMin = $('[data-price-min]'), pMax = $('[data-price-max]');
+    if (pMin && pMax) {
+      const step = Math.max(1, Math.round((PRICE_CEIL - PRICE_FLOOR) / 100));
+      [pMin, pMax].forEach(el => { el.min = PRICE_FLOOR; el.max = PRICE_CEIL; el.step = step; });
+      pMin.value = PRICE_FLOOR; pMax.value = PRICE_CEIL;
+      const onPrice = () => {
+        let lo = parseInt(pMin.value, 10), hi = parseInt(pMax.value, 10);
+        if (lo > hi) { const t = lo; lo = hi; hi = t; }
+        state.priceMin = lo; state.priceMax = hi;
+        render();
+      };
+      pMin.addEventListener('input', onPrice);
+      pMax.addEventListener('input', onPrice);
+    }
+
+    // Clear all
+    const clearBtn = $('[data-clear-all]');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        state.selectedType = 'all';
+        state.selectedMaterial = 'all';
+        state.priceMin = PRICE_FLOOR;
+        state.priceMax = PRICE_CEIL;
+        var _pmin = $('[data-price-min]'), _pmax = $('[data-price-max]');
+        if (_pmin) _pmin.value = PRICE_FLOOR;
+        if (_pmax) _pmax.value = PRICE_CEIL;
+        state.paletteColor = '';
+        state.selectedColor = PRODUCTS[0]?.colors?.[0]?.hex || '';
+        if (PRODUCTS[0]?.dimensions) {
+          state.sofaHeight = PRODUCTS[0].dimensions.h || state.sofaHeight;
+          state.sofaWidth = PRODUCTS[0].dimensions.w || state.sofaWidth;
+          state.sofaDepth = PRODUCTS[0].dimensions.d || state.sofaDepth;
+        }
+        state.selectedProductId = PRODUCTS[0]?.id || null;
+        state.pinnedProductId = null;
+        state.activeAxis = null;
+        syncInputs();
+        render();
+      });
+    }
+
+    // Dimension inputs
+    ['height', 'width', 'depth'].forEach(dim => {
+      const input = $(`[data-${dim}-input]`);
+      const range = $(`[data-${dim}-range]`);
+      const key = 'sofa' + dim.charAt(0).toUpperCase() + dim.slice(1);
+      const min = dim === 'height' ? 40 : dim === 'width' ? 50 : 60;
+      const max = dim === 'height' ? 120 : dim === 'width' ? 400 : 200;
+
+      if (input) input.addEventListener('input', () => {
+        state[key] = Math.max(min, Math.min(max, parseInt(input.value) || min));
+        if (range) range.value = state[key];
+        state.activeAxis = dim; // 'height' | 'width' | 'depth'
+        state.pinnedProductId = null;
+        render();
+      });
+      if (range) range.addEventListener('input', () => {
+        state[key] = parseInt(range.value);
+        if (input) input.value = state[key];
+        state.activeAxis = dim;
+        state.pinnedProductId = null;
+        render();
+      });
+    });
+
+    // Room toggle
+    const roomToggle = $('[data-room-toggle]');
+    const roomInputs = $('[data-room-inputs]');
+    if (roomToggle && roomInputs) {
+      roomToggle.addEventListener('change', () => {
+        state.showRoom = roomToggle.checked;
+        roomInputs.style.display = state.showRoom ? '' : 'none';
+        render();
+      });
+    }
+
+    // Room dimensions
+    [['roomWidth', 'room-width'], ['roomDepth', 'room-depth']].forEach(([key, sel]) => {
+      const input = $(`[data-${sel}-input]`);
+      const range = $(`[data-${sel}-range]`);
+      if (input) input.addEventListener('input', () => {
+        state[key] = Math.max(200, Math.min(800, parseInt(input.value) || 200));
+        if (range) range.value = state[key];
+        render();
+      });
+      if (range) range.addEventListener('input', () => {
+        state[key] = parseInt(range.value);
+        if (input) input.value = state[key];
+        render();
+      });
+    });
+
+    // Room button
+    const roomBtn = $('[data-toggle-room]');
+    if (roomBtn) {
+      roomBtn.addEventListener('click', () => {
+        state.showRoom = !state.showRoom;
+        if (roomToggle) roomToggle.checked = state.showRoom;
+        if (roomInputs) roomInputs.style.display = state.showRoom ? '' : 'none';
+        roomBtn.classList.toggle('active', state.showRoom);
+        render();
+      });
+    }
+
+    // Expand button
+    const expandBtn = $('[data-expand]');
+    if (expandBtn) {
+      expandBtn.addEventListener('click', () => {
+        state.isExpanded = !state.isExpanded;
+        expandBtn.classList.toggle('active', state.isExpanded);
+        render();
+      });
+    }
+
+    // Drag handles - mouse
+    $$('[data-handle]').forEach(handle => {
+      handle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        startDrag(handle.dataset.handle, e.clientX, e.clientY);
+      });
+      handle.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+        startDrag(handle.dataset.handle, e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: false });
+      handle.addEventListener('mouseenter', () => { state.hoveredHandle = handle.dataset.handle; renderVisualizer(); });
+      handle.addEventListener('mouseleave', () => { state.hoveredHandle = null; renderVisualizer(); });
+    });
+
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('touchmove', handleDragMove, { passive: false });
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+
+    // Resize observer
+    window.addEventListener('resize', () => renderVisualizer());
+
+    render();
+  }
+
+  /* ─── HELPERS ─── */
+  function getHueRotation(fromHex, toHex) {
+    const from = hexToHsl(fromHex);
+    const to = hexToHsl(toHex);
+    if (!from || !to) return 0;
+    return to.h - from.h;
+  }
+
+  function hexToHsl(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) return null;
+    let r = parseInt(result[1], 16) / 255;
+    let g = parseInt(result[2], 16) / 255;
+    let b = parseInt(result[3], 16) / 255;
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    let h = 0;
+    const l = (max + min) / 2;
+    let s = 0;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+        case g: h = ((b - r) / d + 2) / 6; break;
+        case b: h = ((r - g) / d + 4) / 6; break;
+      }
+    }
+    return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+  }
+
+  // Init when DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Sofasizer custom",
+  "tag": "section",
+  "class": "sofasizer-section-wrapper",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Sofasizer"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Find the perfect sofa for your space"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Select the collection of sofas to display. Products must have custom metafields: width, height, depth, category, material, seats, monthly_price, finance_term."
+    },
+    {
+      "type": "text",
+      "id": "currency_symbol",
+      "label": "Currency Symbol",
+      "default": "£"
+    },
+    {
+      "type": "text",
+      "id": "products_heading",
+      "label": "Products Section Heading",
+      "default": "Matching Sofas"
+    },
+    {
+      "type": "header",
+      "content": "Default Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "default_width",
+      "label": "Default Width (cm)",
+      "min": 100,
+      "max": 400,
+      "step": 5,
+      "default": 295
+    },
+    {
+      "type": "range",
+      "id": "default_height",
+      "label": "Default Height (cm)",
+      "min": 50,
+      "max": 120,
+      "step": 1,
+      "default": 89
+    },
+    {
+      "type": "range",
+      "id": "default_depth",
+      "label": "Default Depth (cm)",
+      "min": 60,
+      "max": 200,
+      "step": 5,
+      "default": 105
+    },
+    {
+      "type": "header",
+      "content": "Filter Tolerance"
+    },
+    {
+      "type": "range",
+      "id": "width_tolerance",
+      "label": "Width Tolerance (cm)",
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "default": 30,
+      "info": "How many cm difference from resizer width to still show a product"
+    },
+    {
+      "type": "range",
+      "id": "height_tolerance",
+      "label": "Height Tolerance (cm)",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "default": 20,
+      "info": "How many cm difference from resizer height to still show a product"
+    },
+    {
+      "type": "range",
+      "id": "depth_tolerance",
+      "label": "Depth Tolerance (cm)",
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "default": 30,
+      "info": "How many cm difference from resizer depth to still show a product"
+    },
+    {
+      "type": "header",
+      "content": "Footer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_footer",
+      "label": "Show Footer",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "footer_text",
+      "label": "Footer Text",
+      "default": "Dimensions are approximate. Please verify before purchase."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sofasizer custom"
+    }
+  ]
+}
+{% endschema %}

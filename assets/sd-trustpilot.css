@@ -1,0 +1,290 @@
+/* ============================================================
+   SD Trustpilot — premium social-proof section
+   ============================================================
+   Hero header (badge + heading + stats row) with TP carousel
+   widget below. Soft cream gradient, decorative blobs,
+   responsive 3-stat row that stacks on mobile.
+   ============================================================ */
+
+.sd-tp {
+  position: relative;
+  padding: var(--sd-section-pad-desktop, 8rem) 0;
+  background: linear-gradient(180deg, rgb(var(--sd-clr-cream-rgb)) 0%, rgb(var(--sd-clr-cream-rgb)) 100%);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ── Decorative background blobs ──────────────────────────── */
+.sd-tp__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.sd-tp__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.sd-tp__blob--1 {
+  width: 38rem;
+  height: 38rem;
+  top: -10rem;
+  left: -10rem;
+  background: radial-gradient(circle, rgba(0, 182, 122, 0.4) 0%, transparent 70%);
+}
+
+.sd-tp__blob--2 {
+  width: 44rem;
+  height: 44rem;
+  bottom: -14rem;
+  right: -12rem;
+  background: radial-gradient(circle, rgba(var(--sd-clr-taupe-rgb), 0.55) 0%, transparent 70%);
+}
+
+.sd-tp__container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.sd-tp__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.6rem;
+  max-width: 78rem;
+  margin-bottom: 4.8rem;
+}
+
+.sd-badge.sd-tp__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(0, 182, 122, 0.12);
+  border: 2px solid #00b67a;
+  border-radius: var(--sd-radius-pill, 999px);
+  padding: 0.9rem 2.0rem;
+  font-family: var(--sd-font-body);
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #00854f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.sd-tp__badge-star { color: #00b67a; }
+
+.sd-tp__heading {
+  font-family: var(--sd-font-display, inherit);
+  font-size: var(--sd-text-display-sm, 4rem);
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.sd-tp__subheading {
+  font-family: var(--sd-font-body);
+  font-size: 1.7rem;
+  line-height: 1.55;
+  color: rgba(0, 0, 0, 0.65);
+  margin: 0;
+  max-width: 56rem;
+}
+
+/* ── Stats row ────────────────────────────────────────────── */
+.sd-tp__stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3.2rem;
+  margin-top: 1.6rem;
+  padding: 2.4rem 3.6rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.sd-tp__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 12rem;
+}
+
+.sd-tp__stars {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.sd-tp__star { color: rgba(0, 0, 0, 0.12); line-height: 0; }
+.sd-tp__star--on { color: #00b67a; }
+
+.sd-tp__stat-num {
+  font-family: var(--sd-font-display, inherit);
+  font-size: 3.2rem;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.sd-tp__stat-num span {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.5);
+  margin-left: 0.2rem;
+}
+
+.sd-tp__stat-num--count { font-size: 2.8rem; }
+
+.sd-tp__stat-label {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(0, 0, 0, 0.55);
+  font-weight: 600;
+}
+
+.sd-tp__divider {
+  width: 1px;
+  align-self: stretch;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.15), transparent);
+}
+
+.sd-tp__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+  transition: transform 0.25s ease;
+  line-height: 1;
+}
+
+.sd-tp__logo:hover { transform: scale(1.04); }
+
+.sd-tp__logo-star {
+  flex-shrink: 0;
+  width: 2.8rem;
+  height: 2.8rem;
+}
+
+.sd-tp__logo-text {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #191919;
+  line-height: 1;
+}
+
+/* ── Trustpilot widget wrapper ────────────────────────────── */
+.sd-tp__widget-wrap {
+  width: 100%;
+  background: #fff;
+  border-radius: 2rem;
+  padding: 2.4rem 1.6rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 32px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.sd-tp__widget {
+  width: 100%;
+  min-height: 24rem;
+}
+
+/* ── Tablet ───────────────────────────────────────────────── */
+@media screen and (max-width: 989px) {
+  .sd-tp { padding: 6.4rem 0; }
+
+  .sd-tp__heading { font-size: 3.2rem; }
+  .sd-tp__stats {
+    gap: 2.0rem;
+    padding: 2.0rem 2.4rem;
+  }
+  .sd-tp__stat { min-width: 9rem; }
+  .sd-tp__stat-num { font-size: 2.6rem; }
+  .sd-tp__stat-num--count { font-size: 2.4rem; }
+}
+
+/* ── Mobile — compact: small icons, single-row stats, tight typography ── */
+@media screen and (max-width: 749px) {
+  .sd-tp { padding: 2.4rem 0; }
+
+  .sd-tp__header {
+    gap: 0.6rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .sd-badge.sd-tp__badge {
+    padding: 0.4rem 1.0rem;
+    font-size: 1.0rem;
+    gap: 0.3rem;
+    border-width: 1px;
+  }
+  .sd-badge.sd-tp__badge svg { width: 1.2rem; height: 1.2rem; }
+
+  .sd-tp__heading { font-size: 1.8rem; line-height: 1.15; }
+  .sd-tp__subheading { font-size: 1.2rem; line-height: 1.4; }
+
+  /* Stats: single row, compact */
+  .sd-tp__stats {
+    flex-direction: row;
+    gap: 1.0rem;
+    padding: 1.0rem 1.2rem;
+    width: 100%;
+    max-width: 36rem;
+    margin-top: 0.8rem;
+    border-radius: 1.2rem;
+  }
+
+  .sd-tp__divider {
+    width: 1px;
+    height: auto;
+    align-self: stretch;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.15), transparent);
+  }
+
+  .sd-tp__stat { min-width: 0; flex: 1; gap: 0.2rem; }
+
+  .sd-tp__stars { gap: 0.15rem; margin-bottom: 0.1rem; }
+  .sd-tp__star svg { width: 1.0rem; height: 1.0rem; }
+
+  .sd-tp__stat-num { font-size: 1.6rem; letter-spacing: 0; }
+  .sd-tp__stat-num span { font-size: 0.9rem; }
+  .sd-tp__stat-num--count { font-size: 1.4rem; }
+
+  .sd-tp__stat-label {
+    font-size: 0.85rem;
+    letter-spacing: 0.4px;
+  }
+
+  .sd-tp__logo-star { width: 1.6rem; height: 1.6rem; }
+  .sd-tp__logo-text { font-size: 1.3rem; }
+
+  .sd-tp__widget-wrap {
+    padding: 1.0rem 0.6rem;
+    border-radius: 1.2rem;
+  }
+  .sd-tp__widget { min-height: 16rem; }
+
+  .sd-tp__blob--1 { width: 18rem; height: 18rem; }
+  .sd-tp__blob--2 { width: 20rem; height: 20rem; }
+}

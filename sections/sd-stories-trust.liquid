@@ -1,0 +1,293 @@
+{%- comment -%}
+  Sofa Direct — Stories & Trust (combined Trustpilot + Blog)
+  Editorial spread: reviews testimonial card (left) + magazine-style article grid (right)
+  Uses brand palette: cream / taupe / brown / teal
+{%- endcomment -%}
+
+<link rel="stylesheet" href="{{ 'sd-stories-trust.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-stories-trust.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign eyebrow       = section.settings.eyebrow
+  assign heading       = section.settings.heading
+  assign subheading    = section.settings.subheading
+
+  assign rating_value  = section.settings.rating_value  | default: '4.7'
+  assign review_count  = section.settings.review_count  | default: '5,200+'
+  assign stars_filled  = section.settings.stars_filled  | default: 5
+  assign review_url    = section.settings.review_url    | default: 'https://uk.trustpilot.com/review/sofadirect.com'
+  assign tp_business_id = section.settings.tp_business_id | default: '5bd9bd98486407000195c98b'
+  assign tp_template_id = section.settings.tp_template_id | default: '53aa8912dec7e10d38f59f36'
+  assign tp_locale      = section.settings.tp_locale    | default: 'en-GB'
+  assign show_widget   = section.settings.show_widget
+
+  assign blog          = blogs[section.settings.blog]
+  assign post_count    = section.settings.posts_to_show | default: 3
+  assign blog_cta      = section.settings.blog_cta_label | default: 'View All Articles'
+  assign blog_cta_url  = section.settings.blog_cta_url
+  if blog_cta_url == blank and blog != blank
+    assign blog_cta_url = blog.url
+  endif
+-%}
+
+<section
+  id="sd-st-{{ section.id }}"
+  class="sd-st{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  aria-label="{{ heading | escape | default: 'Stories and reviews' }}"
+>
+  {%- comment -%} Soft ambient background using brand palette {%- endcomment -%}
+  <div class="sd-st__bg" aria-hidden="true">
+    <span class="sd-st__blob sd-st__blob--cream"></span>
+    <span class="sd-st__blob sd-st__blob--taupe"></span>
+    <span class="sd-st__grain"></span>
+  </div>
+
+  <div class="sd-st__container page-width">
+
+    {%- comment -%} ─── Header ─── {%- endcomment -%}
+    <header class="sd-st__header">
+      {%- if eyebrow != blank -%}
+        <span class="sd-st__eyebrow">
+          <svg width="24" height="6" viewBox="0 0 24 6" aria-hidden="true">
+            <path d="M0 3h8M16 3h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="12" cy="3" r="1.6" fill="currentColor"/>
+          </svg>
+          {{ eyebrow }}
+          <svg width="24" height="6" viewBox="0 0 24 6" aria-hidden="true">
+            <path d="M0 3h8M16 3h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="12" cy="3" r="1.6" fill="currentColor"/>
+          </svg>
+        </span>
+      {%- endif -%}
+
+      {%- if heading != blank -%}
+        <h2 class="sd-st__heading">{{ heading }}</h2>
+      {%- endif -%}
+
+      {%- if subheading != blank -%}
+        <p class="sd-st__subheading">{{ subheading }}</p>
+      {%- endif -%}
+    </header>
+
+    {%- comment -%} ─── Editorial spread: trust card + article grid ─── {%- endcomment -%}
+    <div class="sd-st__spread">
+
+      {%- comment -%} ─── LEFT: Trust testimonial card ─── {%- endcomment -%}
+      <aside class="sd-st__trust">
+        <div class="sd-st__trust-inner">
+
+          <span class="sd-st__corner sd-st__corner--tl" aria-hidden="true"></span>
+          <span class="sd-st__corner sd-st__corner--tr" aria-hidden="true"></span>
+          <span class="sd-st__corner sd-st__corner--bl" aria-hidden="true"></span>
+          <span class="sd-st__corner sd-st__corner--br" aria-hidden="true"></span>
+
+          <div class="sd-st__trust-top">
+            <div class="sd-st__stars" role="img" aria-label="{{ stars_filled }} out of 5 stars">
+              {%- for i in (1..5) -%}
+                <span class="sd-st__star {% if forloop.index <= stars_filled %}is-on{% endif %}">
+                  <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </span>
+              {%- endfor -%}
+            </div>
+            <div class="sd-st__rating">
+              <span class="sd-st__rating-num">{{ rating_value }}</span><span class="sd-st__rating-of">/5</span>
+            </div>
+            <p class="sd-st__rating-label">Based on <strong>{{ review_count }}</strong> verified reviews</p>
+          </div>
+
+          <span class="sd-st__hr" aria-hidden="true"></span>
+
+          {%- if section.blocks.size > 0 -%}
+            <ul class="sd-st__quotes">
+              {%- for block in section.blocks limit: 3 -%}
+                {%- if block.type == 'review' -%}
+                  <li class="sd-st__quote" {{ block.shopify_attributes }}>
+                    <svg class="sd-st__quote-mark" width="20" height="16" viewBox="0 0 20 16" aria-hidden="true">
+                      <path fill="currentColor" d="M0 16V8.16C0 3.36 2.72 0 7.84 0L8.8 2.08C5.92 2.88 4.48 4.8 4.48 7.36H7.84V16H0zm11.2 0V8.16C11.2 3.36 13.92 0 19.04 0L20 2.08c-2.88.8-4.32 2.72-4.32 5.28h3.36V16h-7.84z"/>
+                    </svg>
+                    <p class="sd-st__quote-text">{{ block.settings.quote }}</p>
+                    <footer class="sd-st__quote-foot">
+                      <span class="sd-st__quote-author">{{ block.settings.author }}</span>
+                      {%- if block.settings.location != blank -%}
+                        <span class="sd-st__quote-sep">·</span>
+                        <span class="sd-st__quote-loc">{{ block.settings.location }}</span>
+                      {%- endif -%}
+                    </footer>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          <a href="{{ review_url }}" target="_blank" rel="noopener" class="sd-st__trust-cta">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00B67A" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Read all reviews on Trustpilot
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+
+          {%- if show_widget -%}
+            <div class="sd-st__widget-wrap">
+              <div
+                class="trustpilot-widget"
+                data-locale="{{ tp_locale }}"
+                data-template-id="{{ tp_template_id }}"
+                data-businessunit-id="{{ tp_business_id }}"
+                data-style-height="200px"
+                data-style-width="100%"
+                data-theme="light">
+                <a href="{{ review_url }}" target="_blank" rel="noopener">Trustpilot</a>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </aside>
+
+      {%- comment -%} ─── RIGHT: Editorial article grid (1 hero + 2 stacked) ─── {%- endcomment -%}
+      <div class="sd-st__editorial">
+        {%- if blog != blank and blog.articles.size > 0 -%}
+          <span class="sd-st__edit-tag">Editorial</span>
+
+          {%- for article in blog.articles limit: post_count -%}
+            {%- if forloop.first -%}
+              <article class="sd-st-card sd-st-card--hero">
+                <a href="{{ article.url }}" class="sd-st-card__media" aria-label="{{ article.title | escape }}">
+                  {%- if article.image != blank -%}
+                    {{ article.image | image_url: width: 1000 | image_tag:
+                       class: 'sd-st-card__img',
+                       widths: '500,800,1200',
+                       sizes: '(min-width:990px) 55vw, 90vw',
+                       alt: article.image.alt | default: article.title,
+                       loading: 'lazy' }}
+                  {%- else -%}
+                    {{ 'lifestyle-1' | placeholder_svg_tag: 'sd-st-card__img sd-st-card__img--ph' }}
+                  {%- endif -%}
+                  {%- if article.tags.size > 0 -%}
+                    <span class="sd-st-card__tag">{{ article.tags.first }}</span>
+                  {%- endif -%}
+                </a>
+                <div class="sd-st-card__body">
+                  <div class="sd-st-card__meta">
+                    <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%d %b %Y' }}</time>
+                    {%- if article.author != blank -%}
+                      <span>·</span><span>{{ article.author }}</span>
+                    {%- endif -%}
+                  </div>
+                  <h3 class="sd-st-card__title">
+                    <a href="{{ article.url }}">{{ article.title | escape }}</a>
+                  </h3>
+                  <p class="sd-st-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+                  <a href="{{ article.url }}" class="sd-st-card__link">
+                    Read story
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            {%- else -%}
+              <article class="sd-st-card sd-st-card--mini">
+                <a href="{{ article.url }}" class="sd-st-card__media" aria-label="{{ article.title | escape }}">
+                  {%- if article.image != blank -%}
+                    {{ article.image | image_url: width: 400 | image_tag:
+                       class: 'sd-st-card__img',
+                       widths: '200,300,400',
+                       sizes: '(min-width:990px) 200px, 30vw',
+                       alt: article.image.alt | default: article.title,
+                       loading: 'lazy' }}
+                  {%- else -%}
+                    {{ 'lifestyle-2' | placeholder_svg_tag: 'sd-st-card__img sd-st-card__img--ph' }}
+                  {%- endif -%}
+                </a>
+                <div class="sd-st-card__body">
+                  {%- if article.tags.size > 0 -%}
+                    <span class="sd-st-card__mini-tag">{{ article.tags.first }}</span>
+                  {%- endif -%}
+                  <h4 class="sd-st-card__mini-title">
+                    <a href="{{ article.url }}">{{ article.title | escape }}</a>
+                  </h4>
+                  <div class="sd-st-card__meta">
+                    <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%d %b' }}</time>
+                  </div>
+                </div>
+              </article>
+            {%- endif -%}
+          {%- endfor -%}
+
+          {%- if blog_cta != blank and blog_cta_url != blank -%}
+            <a href="{{ blog_cta_url }}" class="sd-st__edit-cta">
+              {{ blog_cta }}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+
+        {%- else -%}
+          <div class="sd-st-card sd-st-card--empty">
+            <p>Select a blog in the section settings to display articles.</p>
+          </div>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{%- if show_widget -%}
+<script src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Stories & Trust",
+  "tag": "section",
+  "class": "sd-stories-trust-section",
+  "settings": [
+    { "type": "header", "content": "Section Header" },
+    { "type": "text",      "id": "eyebrow",      "label": "Eyebrow",      "default": "Editorial · Verified Reviews" },
+    { "type": "text",      "id": "heading",      "label": "Heading",      "default": "Loved by homes. Featured in stories." },
+    { "type": "textarea",  "id": "subheading",   "label": "Subheading",   "default": "Independent reviews from real customers, paired with our latest design stories and sofa guides." },
+
+    { "type": "header",    "content": "Trustpilot" },
+    { "type": "text",      "id": "rating_value",  "label": "Rating",         "default": "4.7" },
+    { "type": "range",     "id": "stars_filled",  "label": "Stars filled",   "min": 0, "max": 5, "step": 1, "default": 5 },
+    { "type": "text",      "id": "review_count",  "label": "Review count",   "default": "5,200+" },
+    { "type": "url",       "id": "review_url",    "label": "Trustpilot URL" },
+    { "type": "checkbox",  "id": "show_widget",   "label": "Show Trustpilot widget",  "default": false },
+    { "type": "text",      "id": "tp_locale",     "label": "Locale",         "default": "en-GB" },
+    { "type": "text",      "id": "tp_template_id","label": "Template ID",    "default": "53aa8912dec7e10d38f59f36" },
+    { "type": "text",      "id": "tp_business_id","label": "Business ID",    "default": "5bd9bd98486407000195c98b" },
+
+    { "type": "header",    "content": "Articles" },
+    { "type": "blog",      "id": "blog",          "label": "Blog" },
+    { "type": "range",     "id": "posts_to_show", "label": "Posts to show",  "min": 2, "max": 5, "step": 1, "default": 3 },
+    { "type": "text",      "id": "blog_cta_label","label": "Blog CTA label", "default": "View All Articles" },
+    { "type": "url",       "id": "blog_cta_url",  "label": "Blog CTA URL" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Quote Review",
+      "limit": 3,
+      "settings": [
+        { "type": "textarea", "id": "quote",    "label": "Review quote",  "default": "The fabric feels gorgeous and the cushions are properly supportive. Delivery team were brilliant." },
+        { "type": "text",     "id": "author",   "label": "Author",        "default": "Emma L." },
+        { "type": "text",     "id": "location", "label": "Location",      "default": "Manchester" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Stories & Trust",
+      "category": "Sofa Direct",
+      "blocks": [
+        { "type": "review", "settings": { "quote": "Absolutely worth every penny. The fabric feels gorgeous and the cushions are properly supportive.",                      "author": "Emma L.",  "location": "Manchester" } },
+        { "type": "review", "settings": { "quote": "Comfier than it looks. Looks even better in person. Five stars from us.",                                                 "author": "James R.", "location": "Bristol"    } },
+        { "type": "review", "settings": { "quote": "Couldn't recommend more. The team kept me updated and the sofa arrived perfectly packaged.",                              "author": "Sophie B.","location": "Edinburgh"  } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,566 @@
+/* ════════════════════════════════════════════════════════════════════
+   SD Instagram — bento-mosaic photo gallery
+   Asymmetric grid: 6 photos + 1 centre CTA tile (IG gradient).
+   No app needed - blocks are manually curated in the Theme Editor.
+   ════════════════════════════════════════════════════════════════════ */
+
+.sd-ig {
+  position: relative;
+  padding: 7.2rem 0;
+  background:
+    radial-gradient(circle at 0% 100%, rgba(228, 121, 178, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 100% 0%, rgba(252, 175, 69, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, rgb(var(--sd-clr-cream-rgb)) 0%, rgb(var(--sd-clr-cream-rgb)) 100%);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sd-ig__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.sd-ig__halo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
+}
+
+.sd-ig__halo--1 {
+  width: 28rem;
+  height: 28rem;
+  top: -8rem;
+  right: 8%;
+  background: radial-gradient(circle, rgba(252, 175, 69, 0.6) 0%, transparent 70%);
+}
+
+.sd-ig__halo--2 {
+  width: 32rem;
+  height: 32rem;
+  bottom: -10rem;
+  left: 12%;
+  background: radial-gradient(circle, rgba(228, 121, 178, 0.5) 0%, transparent 70%);
+}
+
+.sd-ig__halo--3 {
+  width: 24rem;
+  height: 24rem;
+  top: 40%;
+  left: -8rem;
+  background: radial-gradient(circle, rgba(131, 58, 180, 0.30) 0%, transparent 70%);
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.sd-ig__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sd-ig__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.0rem;
+  max-width: 64rem;
+  margin-bottom: 4.0rem;
+}
+
+.sd-ig__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1.4rem;
+  background:
+    linear-gradient(135deg, rgba(252, 175, 69, 0.10) 0%, rgba(228, 121, 178, 0.10) 50%, rgba(131, 58, 180, 0.10) 100%);
+  border: 1px solid rgba(228, 121, 178, 0.35);
+  border-radius: 999px;
+  font-family: var(--sd-font-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #8a3a82;
+}
+
+.sd-ig__eyebrow-icon {
+  color: #c13584;
+}
+
+.sd-ig__heading {
+  font-family: var(--sd-font-display);
+  font-size: clamp(2.4rem, 2.2vw + 1rem, 3.8rem);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  line-height: 1.1;
+  color: rgb(var(--sd-clr-teal-rgb));
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.sd-ig__subheading {
+  font-family: var(--sd-font-body);
+  font-size: 1.45rem;
+  line-height: 1.55;
+  color: rgba(var(--sd-clr-teal-rgb), 0.60);
+  margin: 0;
+  max-width: 54rem;
+}
+
+/* ════════════ BENTO GRID ════════════ */
+.sd-ig__bento {
+  width: 100%;
+  max-width: 110rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, minmax(14rem, 1fr));
+  gap: 1.4rem;
+}
+
+/* Asymmetric tile placements — each tile gets a unique role */
+.sd-ig__tile--1 { grid-column: 1; grid-row: 1 / span 3; }   /* tall left */
+.sd-ig__tile--2 { grid-column: 2; grid-row: 1; }            /* small top */
+.sd-ig__tile--3 { grid-column: 3 / span 2; grid-row: 1; }   /* wide top */
+.sd-ig__tile--4 { grid-column: 2; grid-row: 2 / span 2; }   /* tall mid */
+.sd-ig__tile--5 { grid-column: 4; grid-row: 3; }            /* small bottom right */
+.sd-ig__tile--6 { grid-column: 3 / span 2; grid-row: 3; }   /* wide bottom */
+
+/* CTA tile — sits in the middle gap (col 3, row 2) */
+.sd-ig__cta-tile { grid-column: 3; grid-row: 2; }
+
+/* When only 5 photos render (no tile-6), let CTA span wider */
+.sd-ig__bento:not(:has(.sd-ig__tile--6)) .sd-ig__cta-tile {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+/* ── PHOTO TILE ───────────────────────────────────────────── */
+.sd-ig__tile {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 1.6rem;
+  background: linear-gradient(135deg, #f0e7d6 0%, #d9c9ad 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 4px 14px rgba(var(--sd-clr-teal-rgb), 0.06);
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease;
+}
+
+.sd-ig__tile:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 14px 32px rgba(var(--sd-clr-teal-rgb), 0.14);
+}
+
+.sd-ig__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-ig__tile:hover .sd-ig__img { transform: scale(1.08); }
+
+.sd-ig__img--ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(var(--sd-clr-accent-brown-rgb), 0.45);
+}
+
+.sd-ig__img--ph svg { width: 3.6rem; height: 3.6rem; }
+
+/* Tile overlay with caption & likes — slides up on hover */
+.sd-ig__tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 1.4rem 1.4rem 1.4rem;
+  background: linear-gradient(180deg, transparent 30%, rgba(20, 16, 12, 0.0) 50%, rgba(20, 16, 12, 0.85) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  color: #fff;
+  pointer-events: none;
+}
+
+.sd-ig__tile:hover .sd-ig__tile-overlay { opacity: 1; }
+
+/* IG icon — top-right corner of tile, always visible */
+.sd-ig__tile-corner {
+  position: absolute;
+  top: 1.0rem;
+  right: 1.0rem;
+  display: inline-flex;
+  width: 2.6rem;
+  height: 2.6rem;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 0.7rem;
+  color: #c13584;
+  opacity: 0.85;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.sd-ig__tile:hover .sd-ig__tile-corner {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+.sd-ig__tile-likes {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--sd-font-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+  transform: translateY(8px);
+  opacity: 0;
+  transition: opacity 0.35s ease 0.1s, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+
+.sd-ig__tile-likes svg { color: #ff5a89; flex-shrink: 0; }
+
+.sd-ig__tile-caption {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transform: translateY(8px);
+  opacity: 0;
+  transition: opacity 0.4s ease 0.15s, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+
+.sd-ig__tile:hover .sd-ig__tile-likes,
+.sd-ig__tile:hover .sd-ig__tile-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ════════════ CTA TILE — Instagram gradient ════════════ */
+.sd-ig__cta-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2.0rem 1.4rem;
+  border-radius: 1.6rem;
+  overflow: hidden;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  box-shadow:
+    0 4px 14px rgba(193, 53, 132, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+
+.sd-ig__cta-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    #fcaf45 0%,
+    #fd1d1d 25%,
+    #c13584 55%,
+    #833ab4 85%,
+    #5851db 100%
+  );
+  background-size: 220% 220%;
+  background-position: 0% 50%;
+  animation: sdIgGradient 8s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes sdIgGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-ig__cta-bg { animation: none; }
+}
+
+.sd-ig__cta-tile:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 12px 30px rgba(193, 53, 132, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.sd-ig__cta-icon {
+  display: inline-flex;
+  width: 4.4rem;
+  height: 4.4rem;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 1.0rem;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.sd-ig__cta-icon svg { width: 2.4rem; height: 2.4rem; }
+
+.sd-ig__cta-handle {
+  font-family: var(--sd-font-display);
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.sd-ig__cta-followers {
+  font-family: var(--sd-font-body);
+  font-size: 1.0rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sd-ig__cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  padding: 0.7rem 1.4rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #c13584;
+  border-radius: 999px;
+  font-family: var(--sd-font-body);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  transition: gap 0.25s ease, background 0.3s ease;
+}
+
+.sd-ig__cta-tile:hover .sd-ig__cta-button {
+  background: #fff;
+  gap: 0.7rem;
+}
+
+.sd-ig__cta-button svg { transition: transform 0.25s ease; }
+.sd-ig__cta-tile:hover .sd-ig__cta-button svg { transform: translateX(2px); }
+
+/* ════════════════════════════════════════════════════════════
+   API MODE — fully automatic, loading & error states
+   ════════════════════════════════════════════════════════════ */
+
+.sd-ig__auto { width: 100%; max-width: 110rem; }
+
+.sd-ig__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 4.0rem 2.0rem;
+  font-family: var(--sd-font-body);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: rgba(var(--sd-clr-teal-rgb), 0.55);
+}
+
+.sd-ig__spinner {
+  width: 2.0rem;
+  height: 2.0rem;
+  border: 2px solid rgba(193, 53, 132, 0.20);
+  border-top-color: #c13584;
+  border-radius: 50%;
+  animation: sdIgSpin 0.9s linear infinite;
+}
+
+@keyframes sdIgSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-ig__spinner { animation: none; }
+}
+
+.sd-ig__error {
+  padding: 3.2rem 2.0rem;
+  text-align: center;
+  font-family: var(--sd-font-body);
+  font-size: 1.3rem;
+  color: rgba(var(--sd-clr-teal-rgb), 0.55);
+}
+
+/* When JS injects tiles, the .sd-ig__auto .sd-ig__bento reuses the
+   same bento grid styles defined above — no extra CSS needed. */
+
+/* ════════════════════════════════════════════════════════════
+   EMBED MODE — paste URLs (native Instagram embeds)
+   When user pastes IG URLs, render embeds in a responsive grid
+   alongside the gradient CTA tile.
+   ════════════════════════════════════════════════════════════ */
+
+.sd-ig__embeds {
+  width: 100%;
+  max-width: 110rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.0rem;
+  align-items: start;
+}
+
+.sd-ig__embed {
+  border-radius: 1.4rem;
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 6px 18px rgba(var(--sd-clr-teal-rgb), 0.08);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+  background: #fff;
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.18);
+}
+
+.sd-ig__embed:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 14px 28px rgba(var(--sd-clr-teal-rgb), 0.12);
+}
+
+/* Instagram's blockquote → iframe — override IG defaults to fit */
+.sd-ig__embed .instagram-media {
+  box-shadow: none !important;
+  margin: 0 !important;
+  border-radius: 1.4rem !important;
+  border: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.sd-ig__cta-tile--standalone {
+  min-height: 38rem;
+}
+
+@media screen and (max-width: 989px) {
+  .sd-ig__embeds {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.4rem;
+  }
+  .sd-ig__cta-tile--standalone { min-height: 30rem; }
+}
+
+@media screen and (max-width: 599px) {
+  .sd-ig__embeds {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}
+
+/* ── Hashtag flourish ─────────────────────────────────────── */
+.sd-ig__hashtag {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.6rem;
+  margin-top: 4.0rem;
+}
+
+.sd-ig__hashtag-line {
+  width: 4.4rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(193, 53, 132, 0.45) 50%, transparent 100%);
+}
+
+.sd-ig__hashtag-text {
+  font-family: var(--sd-font-display);
+  font-size: 1.7rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, #fcaf45 0%, #c13584 60%, #833ab4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media screen and (max-width: 989px) {
+  .sd-ig { padding: 5.6rem 0; }
+
+  .sd-ig__bento {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, minmax(12rem, 1fr));
+    gap: 1.0rem;
+  }
+
+  /* Re-layout for 3-col tablet */
+  .sd-ig__tile--1 { grid-column: 1; grid-row: 1 / span 2; }
+  .sd-ig__tile--2 { grid-column: 2; grid-row: 1; }
+  .sd-ig__tile--3 { grid-column: 3; grid-row: 1; }
+  .sd-ig__cta-tile { grid-column: 2 / span 2; grid-row: 2; }
+  .sd-ig__tile--4 { grid-column: 1; grid-row: 3; }
+  .sd-ig__tile--5 { grid-column: 2; grid-row: 3; }
+  .sd-ig__tile--6 { grid-column: 3; grid-row: 3; }
+}
+
+@media screen and (max-width: 749px) {
+  .sd-ig { padding: 4.0rem 0; }
+  .sd-ig__header { margin-bottom: 2.8rem; }
+  .sd-ig__heading { font-size: 2.0rem; }
+  .sd-ig__subheading { font-size: 1.3rem; }
+
+  .sd-ig__bento {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, minmax(14rem, 14rem));
+    gap: 0.8rem;
+  }
+
+  .sd-ig__tile--1, .sd-ig__tile--2, .sd-ig__tile--3,
+  .sd-ig__tile--4, .sd-ig__tile--5, .sd-ig__tile--6 {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .sd-ig__cta-tile {
+    grid-column: 1 / span 2;
+    grid-row: auto;
+    flex-direction: row;
+    justify-content: center;
+    padding: 1.4rem 1.6rem;
+  }
+  .sd-ig__cta-icon { margin-bottom: 0; }
+  .sd-ig__cta-followers { display: none; }
+
+  .sd-ig__hashtag {
+    margin-top: 2.8rem;
+    gap: 1.0rem;
+  }
+  .sd-ig__hashtag-line { width: 2.4rem; }
+  .sd-ig__hashtag-text { font-size: 1.4rem; }
+}

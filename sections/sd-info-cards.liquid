@@ -1,0 +1,109 @@
+<link rel="stylesheet" href="{{ 'sd-info.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-info.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign bg_class = ''
+  if section.settings.bg == 'cream'
+    assign bg_class = ' sd-info-cards--cream'
+  endif
+-%}
+
+<section class="sd-info-cards{{ bg_class }}">
+  <div class="sd-info-cards__inner">
+    {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
+      <div class="sd-info-cards__header">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="sd-info-cards__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="sd-info-cards__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="sd-info-cards__grid">
+      {%- for block in section.blocks -%}
+        <article class="sd-info-card" {{ block.shopify_attributes }}>
+          <div class="sd-info-card__icon" aria-hidden="true">
+            {%- if block.settings.number != blank -%}
+              {{ block.settings.number }}
+            {%- else -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l9 4v6c0 5-3.5 9.2-9 10-5.5-.8-9-5-9-10V6l9-4z"/>
+              </svg>
+            {%- endif -%}
+          </div>
+          {%- if block.settings.title != blank -%}
+            <h3 class="sd-info-card__title">{{ block.settings.title }}</h3>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <p class="sd-info-card__text">{{ block.settings.text }}</p>
+          {%- endif -%}
+
+          {%- if block.settings.sub1 != blank -%}
+            <p class="sd-info-card__subheading">{{ block.settings.sub1 }}</p>
+            {%- if block.settings.list1 != blank -%}
+              <ul class="sd-info-card__list">
+                {%- assign items = block.settings.list1 | newline_to_br | split: '<br />' -%}
+                {%- for item in items -%}
+                  {%- assign clean = item | strip -%}
+                  {%- if clean != blank -%}<li>{{ clean }}</li>{%- endif -%}
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          {%- endif -%}
+
+          {%- if block.settings.sub2 != blank -%}
+            <p class="sd-info-card__subheading">{{ block.settings.sub2 }}</p>
+            {%- if block.settings.list2 != blank -%}
+              <ul class="sd-info-card__list {% if block.settings.list2_cross %}sd-info-card__list--cross{% endif %}">
+                {%- assign items = block.settings.list2 | newline_to_br | split: '<br />' -%}
+                {%- for item in items -%}
+                  {%- assign clean = item | strip -%}
+                  {%- if clean != blank -%}<li>{{ clean }}</li>{%- endif -%}
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Info Cards",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    {
+      "type": "select", "id": "bg", "label": "Background",
+      "options": [
+        { "value": "white", "label": "White" },
+        { "value": "cream", "label": "Cream" }
+      ],
+      "default": "white"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        { "type": "text", "id": "number", "label": "Number/initial (e.g. 01)" },
+        { "type": "text", "id": "title", "label": "Card title" },
+        { "type": "textarea", "id": "text", "label": "Intro text" },
+        { "type": "text", "id": "sub1", "label": "Sublist 1 heading" },
+        { "type": "textarea", "id": "list1", "label": "Sublist 1 items (one per line)" },
+        { "type": "text", "id": "sub2", "label": "Sublist 2 heading" },
+        { "type": "textarea", "id": "list2", "label": "Sublist 2 items (one per line)" },
+        { "type": "checkbox", "id": "list2_cross", "label": "Sublist 2 uses warning bullets", "default": false }
+      ]
+    }
+  ],
+  "presets": [ { "name": "SD Info Cards" } ]
+}
+{% endschema %}

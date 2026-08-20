@@ -1,0 +1,869 @@
+/* ════════════════════════════════════════════════════════════════════
+   ✨ LOUNGE LUX — Mega-menu visual overhaul (skin overrides only)
+   Loaded AFTER sd-mega-menu.css so it wins the cascade.
+   Layout/structure untouched — only colors, typography, transitions.
+
+   Palette
+     Charcoal Ink    rgb(var(--sd-clr-teal-rgb)) / rgb(var(--sd-clr-teal-rgb))
+     Cream Linen     rgb(var(--sd-clr-cream-rgb)) / rgb(var(--sd-clr-cream-rgb)) / rgb(var(--sd-clr-cream-rgb))
+     Soft Brown      rgb(var(--sd-clr-accent-brown-rgb)) / rgb(var(--sd-clr-accent-brown-rgb))
+     Gold Accent     rgb(var(--sd-clr-accent-brown-rgb)) → rgb(var(--sd-clr-accent-brown-rgb))
+     TP Green        #00b67a
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── PANEL: glass + warm paper + gold top accent ── */
+.sd-megamenu__panel {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(var(--sd-clr-accent-brown-rgb), 0.10) 0%, transparent 45%),
+    radial-gradient(circle at 85% 100%, rgba(var(--sd-clr-accent-brown-rgb), 0.07) 0%, transparent 50%),
+    linear-gradient(180deg, rgb(var(--sd-clr-cream-rgb)) 0%, rgb(var(--sd-clr-cream-rgb)) 100%) !important;
+  border-top: 0 !important;
+  box-shadow:
+    0 24px 60px -10px rgba(var(--sd-clr-teal-rgb), 0.18),
+    0 8px 24px -6px rgba(var(--sd-clr-teal-rgb), 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  border-radius: 0 0 1.6rem 1.6rem !important;
+}
+
+.sd-megamenu__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(var(--sd-clr-accent-brown-rgb), 0) 8%,
+    rgba(var(--sd-clr-accent-brown-rgb), 0.6) 50%,
+    rgba(var(--sd-clr-accent-brown-rgb), 0) 92%,
+    transparent 100%);
+  pointer-events: none;
+}
+
+.mega-menu[open] .sd-megamenu__panel {
+  animation: sdMegaFadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes sdMegaFadeIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PANEL WIDTH: wider, more breathing room ── */
+.sd-megamenu__inner {
+  max-width: 168rem !important;
+  padding: 3.6rem 5.6rem 3.2rem !important;
+}
+
+/* Columns now use minmax so content has room to breathe and won't
+   crowd when titles or sub-menu link lists get long. */
+.sd-megamenu__grid {
+  gap: 3.2rem !important;
+}
+
+/* 5 nav + 1 featured — featured stays compact, nav cols get auto width */
+.sd-megamenu__grid:not(.sd-megamenu__grid--cols5) {
+  grid-template-columns:
+    minmax(16rem, 1fr)
+    minmax(16rem, 1fr)
+    minmax(16rem, 1fr)
+    minmax(16rem, 1fr)
+    minmax(16rem, 1fr)
+    minmax(26rem, 1.3fr) !important;
+}
+
+/* 5 nav columns (no featured) — equal flexible */
+.sd-megamenu__grid.sd-megamenu__grid--cols5 {
+  grid-template-columns: repeat(5, minmax(18rem, 1fr)) !important;
+}
+
+/* On narrower laptops, drop to slimmer columns */
+@media screen and (max-width: 1399px) {
+  .sd-megamenu__inner {
+    padding: 3.2rem 3.6rem 2.8rem !important;
+  }
+  .sd-megamenu__grid:not(.sd-megamenu__grid--cols5) {
+    grid-template-columns:
+      minmax(14rem, 1fr)
+      minmax(14rem, 1fr)
+      minmax(14rem, 1fr)
+      minmax(14rem, 1fr)
+      minmax(14rem, 1fr)
+      minmax(22rem, 1.2fr) !important;
+    gap: 2.0rem !important;
+  }
+  .sd-megamenu__grid.sd-megamenu__grid--cols5 {
+    grid-template-columns: repeat(5, minmax(16rem, 1fr)) !important;
+    gap: 2.4rem !important;
+  }
+}
+
+/* ── COLUMN HEADINGS — gold underline that grows on hover ── */
+.sd-megamenu__col-title {
+  position: relative;
+  margin-bottom: 1.6rem !important;
+  padding-bottom: 1.0rem !important;
+}
+
+.sd-megamenu__col-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 2.4rem;
+  height: 2px;
+  background: linear-gradient(90deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  border-radius: 2px;
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-megamenu__col-group:hover .sd-megamenu__col-title::after {
+  width: 5.6rem;
+}
+
+.sd-megamenu__col-title-link {
+  font-family: var(--sd-font-display), Georgia, serif !important;
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  color: rgb(var(--sd-clr-teal-rgb)) !important;
+  transition: color 0.25s ease !important;
+  background: none !important;
+}
+
+.sd-megamenu__col-title-link:hover {
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  background: none !important;
+}
+
+/* Column thumbnail — bigger, framed, with gold ring on hover */
+.sd-megamenu__col-thumb {
+  position: relative !important;
+  display: inline-flex !important;
+  width: 5.2rem !important;
+  height: 5.2rem !important;
+  border-radius: 1.0rem !important;
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.35) !important;
+  background: #fff !important;
+  box-shadow:
+    0 4px 12px rgba(var(--sd-clr-teal-rgb), 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  overflow: hidden !important;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease !important;
+  flex-shrink: 0;
+}
+
+.sd-megamenu__col-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    rgba(var(--sd-clr-accent-brown-rgb), 0) 0%,
+    rgba(var(--sd-clr-accent-brown-rgb), 0.15) 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.sd-megamenu__col-thumb img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.sd-megamenu__col-title-link:hover .sd-megamenu__col-thumb {
+  transform: scale(1.1) rotate(-3deg) !important;
+  border-color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  box-shadow:
+    0 0 0 2px rgba(var(--sd-clr-accent-brown-rgb), 0.35),
+    0 10px 26px rgba(var(--sd-clr-teal-rgb), 0.2) !important;
+}
+
+.sd-megamenu__col-title-link:hover .sd-megamenu__col-thumb::after { opacity: 1; }
+.sd-megamenu__col-title-link:hover .sd-megamenu__col-thumb img {
+  transform: scale(1.15);
+}
+
+/* Title + thumb layout — better spacing */
+.sd-megamenu__col-title-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 1.2rem !important;
+}
+
+/* ── LINKS — slide right + gold marker on hover ── */
+.sd-megamenu__link:not(.sd-megamenu__link--swatch-only) {
+  position: relative;
+  padding: 0.5rem 0 !important;
+  font-family: var(--sd-font-body), inherit !important;
+  font-size: 1.35rem !important;
+  font-weight: 500 !important;
+  color: rgba(var(--sd-clr-teal-rgb), 0.78) !important;
+  letter-spacing: 0.1px !important;
+  transition:
+    padding-left 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.25s ease !important;
+  background: none !important;
+}
+
+.sd-megamenu__link:not(.sd-megamenu__link--swatch-only)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 6px;
+  background: linear-gradient(90deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  border-radius: 2px;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+.sd-megamenu__link:not(.sd-megamenu__link--swatch-only):hover,
+.sd-megamenu__link:not(.sd-megamenu__link--swatch-only):focus-visible {
+  padding-left: 1.6rem !important;
+  color: rgb(var(--sd-clr-teal-rgb)) !important;
+  background: none !important;
+}
+
+.sd-megamenu__link:not(.sd-megamenu__link--swatch-only):hover::before,
+.sd-megamenu__link:not(.sd-megamenu__link--swatch-only):focus-visible::before {
+  width: 1.0rem;
+  opacity: 1;
+}
+
+.sd-megamenu__link[aria-current="page"] {
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  font-weight: 700 !important;
+  padding-left: 1.6rem !important;
+}
+
+.sd-megamenu__link[aria-current="page"]::before {
+  width: 1.0rem;
+  opacity: 1;
+}
+
+/* ── SWATCH PILLS — gold ring + lift on hover ── */
+.sd-megamenu__swatch {
+  border-radius: 50% !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(var(--sd-clr-teal-rgb), 0.12) !important;
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease !important;
+}
+
+.sd-megamenu__link--swatch-only:hover .sd-megamenu__swatch,
+.sd-megamenu__link--swatch-only:focus-visible .sd-megamenu__swatch {
+  transform: scale(1.18) translateY(-2px);
+  box-shadow:
+    0 0 0 2px rgb(var(--sd-clr-accent-brown-rgb)),
+    0 6px 14px rgba(var(--sd-clr-teal-rgb), 0.22) !important;
+}
+
+/* ── "+ N more" button ── */
+.sd-nav__show-more-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1.0rem !important;
+  background: rgba(var(--sd-clr-accent-brown-rgb), 0.12) !important;
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.35) !important;
+  border-radius: 999px !important;
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+  text-transform: uppercase !important;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease !important;
+}
+
+.sd-nav__show-more-btn:hover {
+  background: rgba(var(--sd-clr-accent-brown-rgb), 0.22) !important;
+  transform: translateY(-1px);
+}
+
+/* ════════════════════════════════════════════════════════════
+   PROMO CARD v2 — Full-bleed cinematic poster
+   Image fills the whole card. Text + CTA float over the image
+   on a "gold-foil framed" glass panel at the bottom.
+   ════════════════════════════════════════════════════════════ */
+.sd-megamenu__promo-card {
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 1.8rem !important;
+  background: rgb(var(--sd-clr-teal-rgb)) !important;
+  aspect-ratio: 4 / 5 !important;
+  display: block !important;
+  box-shadow:
+    0 14px 36px -10px rgba(var(--sd-clr-teal-rgb), 0.32),
+    0 4px 12px rgba(0, 0, 0, 0.10),
+    inset 0 0 0 1px rgba(var(--sd-clr-accent-brown-rgb), 0.25) !important;
+  isolation: isolate;
+}
+
+/* Gold corner ornaments — top-left & bottom-right */
+.sd-megamenu__promo-card::before,
+.sd-megamenu__promo-card::after {
+  content: "";
+  position: absolute;
+  width: 3.2rem;
+  height: 3.2rem;
+  border: 2px solid rgb(var(--sd-clr-accent-brown-rgb));
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.75;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.sd-megamenu__promo-card::before {
+  top: 1.2rem;
+  left: 1.2rem;
+  border-right: 0;
+  border-bottom: 0;
+  border-top-left-radius: 0.6rem;
+}
+
+.sd-megamenu__promo-card::after {
+  bottom: 1.2rem;
+  right: 1.2rem;
+  border-left: 0;
+  border-top: 0;
+  border-bottom-right-radius: 0.6rem;
+}
+
+.sd-megamenu__promo-card:hover::before { transform: translate(-2px, -2px); opacity: 1; }
+.sd-megamenu__promo-card:hover::after  { transform: translate(2px, 2px); opacity: 1; }
+
+/* Image — fills the entire card */
+.sd-megamenu__promo-img-wrap {
+  position: absolute !important;
+  inset: 0 !important;
+  aspect-ratio: auto !important;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.sd-megamenu__promo-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.sd-megamenu__promo-card:hover .sd-megamenu__promo-img {
+  transform: scale(1.06);
+}
+
+/* Stronger gradient + warm tint for legibility */
+.sd-megamenu__promo-img-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background:
+    linear-gradient(180deg,
+      rgba(0, 0, 0, 0.10) 0%,
+      rgba(0, 0, 0, 0.10) 35%,
+      rgba(10, 8, 4, 0.55) 65%,
+      rgba(10, 8, 4, 0.85) 100%) !important;
+  z-index: 1 !important;
+  pointer-events: none;
+}
+
+/* Body — floats at bottom over the image */
+.sd-megamenu__promo-body {
+  position: absolute !important;
+  left: 1.6rem !important;
+  right: 1.6rem !important;
+  bottom: 1.6rem !important;
+  z-index: 2 !important;
+  padding: 1.8rem !important;
+  color: rgb(var(--sd-clr-cream-rgb)) !important;
+  background: linear-gradient(180deg,
+    rgba(26, 22, 16, 0.55) 0%,
+    rgba(26, 22, 16, 0.85) 100%) !important;
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.30) !important;
+  border-radius: 1.2rem !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
+}
+
+/* Small "Featured" eyebrow above title */
+.sd-megamenu__promo-body::before {
+  content: "Featured Range";
+  display: block;
+  font-family: var(--sd-font-body), inherit;
+  font-size: 1.0rem;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+  margin-bottom: 0.6rem;
+}
+
+.sd-megamenu__promo-title {
+  font-family: var(--sd-font-display), Georgia, serif !important;
+  font-size: 2.0rem !important;
+  font-weight: 800 !important;
+  color: rgb(var(--sd-clr-cream-rgb)) !important;
+  letter-spacing: 0.4px !important;
+  margin: 0 0 0.5rem !important;
+  text-transform: uppercase !important;
+  line-height: 1.15 !important;
+}
+
+.sd-megamenu__promo-desc {
+  font-size: 1.25rem !important;
+  line-height: 1.5 !important;
+  color: rgba(var(--sd-clr-cream-rgb), 0.78) !important;
+  margin: 0 0 1.2rem !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* CTA — outlined gold pill that fills on hover */
+.sd-megamenu__promo-cta {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent !important;
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  border: 2px solid rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  padding: 0.8rem 1.6rem !important;
+  border-radius: 999px !important;
+  font-family: var(--sd-font-body), inherit !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  transition:
+    background 0.35s ease,
+    color 0.35s ease,
+    transform 0.3s ease,
+    gap 0.3s ease !important;
+}
+
+.sd-megamenu__promo-cta::after {
+  content: "\2192";
+  font-size: 1.3rem;
+  line-height: 0.9;
+  transition: transform 0.3s ease;
+}
+
+.sd-megamenu__promo-cta:hover {
+  background: linear-gradient(135deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%) !important;
+  color: rgb(var(--sd-clr-teal-rgb)) !important;
+  transform: translateY(-2px);
+  gap: 1.0rem;
+  box-shadow: 0 8px 22px rgba(var(--sd-clr-accent-brown-rgb), 0.45);
+}
+
+.sd-megamenu__promo-cta:hover::after { transform: translateX(2px); }
+
+/* ── INFO CARD — pale paper + gold corner blot ── */
+.sd-megamenu__info-card {
+  position: relative;
+  margin-top: 1.6rem !important;
+  padding: 1.8rem !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.30) !important;
+  border-radius: 1.4rem !important;
+  box-shadow: 0 4px 14px rgba(var(--sd-clr-teal-rgb), 0.06) !important;
+  overflow: hidden;
+}
+
+.sd-megamenu__info-card::before {
+  content: "";
+  position: absolute;
+  top: -2.4rem;
+  right: -2.4rem;
+  width: 6rem;
+  height: 6rem;
+  background: linear-gradient(135deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  opacity: 0.15;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.sd-megamenu__info-title {
+  font-family: var(--sd-font-display), Georgia, serif !important;
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: rgb(var(--sd-clr-teal-rgb)) !important;
+  margin: 0 0 0.4rem !important;
+}
+
+.sd-megamenu__info-desc {
+  font-size: 1.25rem !important;
+  line-height: 1.5 !important;
+  color: rgba(var(--sd-clr-teal-rgb), 0.6) !important;
+  margin: 0 0 1.0rem !important;
+}
+
+.sd-megamenu__info-cta {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  text-decoration: none !important;
+  transition: gap 0.25s ease, color 0.25s ease !important;
+}
+
+.sd-megamenu__info-cta::after {
+  content: "\2192";
+  transition: transform 0.25s ease;
+}
+
+.sd-megamenu__info-cta:hover {
+  color: rgb(var(--sd-clr-teal-rgb)) !important;
+  gap: 0.8rem;
+}
+
+.sd-megamenu__info-cta:hover::after {
+  transform: translateX(2px);
+}
+
+/* ── FEATURED PRODUCTS heading ── */
+.sd-megamenu__featured-heading {
+  font-family: var(--sd-font-display), Georgia, serif !important;
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: rgb(var(--sd-clr-teal-rgb)) !important;
+  margin-bottom: 1.2rem !important;
+  padding-bottom: 0.8rem !important;
+  border-bottom: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.25) !important;
+  position: relative;
+}
+
+.sd-megamenu__featured-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 3.2rem;
+  height: 2px;
+  background: linear-gradient(90deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+}
+
+/* ── BOTTOM BAR — gradient pills + ornament ── */
+.sd-megamenu__bottom {
+  position: relative;
+  margin-top: 3.2rem !important;
+  padding-top: 2.4rem !important;
+  border-top: 0 !important;
+}
+
+.sd-megamenu__bottom::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(var(--sd-clr-accent-brown-rgb), 0.3) 30%,
+    rgba(var(--sd-clr-accent-brown-rgb), 0.3) 70%,
+    transparent 100%);
+}
+
+.sd-megamenu__bottom-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem !important;
+}
+
+.sd-megamenu__bottom-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.5rem !important;
+  padding: 0.7rem 1.4rem !important;
+  background: rgba(var(--sd-clr-accent-brown-rgb), 0.10) !important;
+  border: 1px solid rgba(var(--sd-clr-accent-brown-rgb), 0.30) !important;
+  border-radius: 999px !important;
+  font-family: var(--sd-font-body), inherit !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.6px !important;
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  text-decoration: none !important;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.sd-megamenu__bottom-link::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  flex-shrink: 0;
+}
+
+.sd-megamenu__bottom-link:hover {
+  background: linear-gradient(135deg, rgb(var(--sd-clr-teal-rgb)) 0%, rgb(var(--sd-clr-teal-rgb)) 100%) !important;
+  border-color: rgb(var(--sd-clr-teal-rgb)) !important;
+  color: rgb(var(--sd-clr-cream-rgb)) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+.sd-megamenu__bottom-link:hover::before {
+  background: rgb(var(--sd-clr-accent-brown-rgb));
+}
+
+.sd-megamenu__bottom-view-all {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.6rem !important;
+  font-family: var(--sd-font-display), Georgia, serif !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  color: rgb(var(--sd-clr-teal-rgb)) !important;
+  text-decoration: none !important;
+  padding-bottom: 0.3rem !important;
+  border-bottom: 2px solid rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  transition: gap 0.25s ease, color 0.25s ease !important;
+}
+
+.sd-megamenu__bottom-view-all:hover {
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+  gap: 1.0rem;
+}
+
+/* ════════════════════════════════════════════════════════════
+   TOP-LEVEL NAV — "Atelier" couture-style
+   • Tight uppercase items separated by tiny gold diamond dividers
+   • Hover: subtle cream pill + gold corner brackets + arrow caret
+   • Open state: pill stays + caret rotates + gold underline tab
+   ════════════════════════════════════════════════════════════ */
+
+/* Tighten the row, balance vertical rhythm */
+.header__inline-menu {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Diamond dot separator between items */
+.header__inline-menu > li + li::before {
+  content: "";
+  display: inline-block;
+  width: 0.4rem;
+  height: 0.4rem;
+  margin: 0 0.6rem;
+  background: linear-gradient(135deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  transform: rotate(45deg);
+  opacity: 0.55;
+  border-radius: 1px;
+}
+
+/* The clickable summary / link itself */
+.header__inline-menu > li > details > summary,
+.header__inline-menu > li > a.header__menu-item {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 1.0rem 1.4rem !important;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease !important;
+  list-style: none !important;
+}
+
+/* Hide the default browser arrow from <summary> */
+.header__inline-menu > li > details > summary::-webkit-details-marker,
+.header__inline-menu > li > details > summary::marker {
+  display: none !important;
+  content: "" !important;
+}
+
+/* Soft pill background on hover */
+.header__inline-menu > li > details > summary:hover,
+.header__inline-menu > li > a.header__menu-item:hover,
+.sd-megamenu[open] > summary {
+  background-color: rgba(var(--sd-clr-accent-brown-rgb), 0.10);
+}
+
+/* Text styling — Atelier couture small caps */
+.header__inline-menu .header__menu-item {
+  position: relative !important;
+  font-family: var(--sd-font-body), inherit !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: rgb(var(--sd-clr-teal-rgb)) !important;
+  line-height: 1 !important;
+  transition: color 0.3s ease, transform 0.3s ease !important;
+}
+
+/* Decorative corner brackets — appear on hover & when open */
+.header__inline-menu .header__menu-item::before,
+.header__inline-menu .header__menu-item::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border: 1.5px solid rgb(var(--sd-clr-accent-brown-rgb));
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.header__inline-menu .header__menu-item::before {
+  top: -3px;
+  left: -3px;
+  border-right: 0;
+  border-bottom: 0;
+  transform: translate(4px, 4px);
+}
+
+.header__inline-menu .header__menu-item::after {
+  bottom: -3px;
+  right: -3px;
+  border-left: 0;
+  border-top: 0;
+  transform: translate(-4px, -4px);
+}
+
+.header__inline-menu > li > details > summary:hover .header__menu-item::before,
+.header__inline-menu > li > a.header__menu-item:hover::before,
+.sd-megamenu[open] > summary .header__menu-item::before {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.header__inline-menu > li > details > summary:hover .header__menu-item::after,
+.header__inline-menu > li > a.header__menu-item:hover::after,
+.sd-megamenu[open] > summary .header__menu-item::after {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Hover color shift */
+.header__inline-menu > li > details > summary:hover .header__menu-item,
+.header__inline-menu > li > a.header__menu-item:hover,
+.sd-megamenu[open] > summary .header__menu-item {
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+}
+
+/* Active page (e.g. user is on Sofas page) */
+.header__inline-menu .header__active-menu-item,
+.header__inline-menu [aria-current="page"] .header__menu-item {
+  color: rgb(var(--sd-clr-accent-brown-rgb)) !important;
+}
+
+.header__inline-menu .header__active-menu-item::before,
+.header__inline-menu [aria-current="page"] .header__menu-item::before {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Caret — refined small triangle */
+.header__inline-menu .header__menu-item .icon-caret,
+.header__inline-menu > li > details > summary svg {
+  width: 0.85rem !important;
+  height: 0.85rem !important;
+  margin-left: 0.4rem !important;
+  opacity: 0.55;
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+.header__inline-menu > li > details > summary:hover svg {
+  opacity: 1;
+}
+
+.sd-megamenu[open] > summary svg,
+.sd-megamenu[open] > summary .icon-caret {
+  transform: rotate(180deg);
+  opacity: 1;
+  color: rgb(var(--sd-clr-accent-brown-rgb));
+}
+
+/* Gold underline tab — only when mega menu is open */
+.sd-megamenu[open] > summary::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  width: calc(100% - 2.4rem);
+  height: 2px;
+  background: linear-gradient(90deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  border-radius: 2px 2px 0 0;
+  animation: sdNavTabIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes sdNavTabIn {
+  from { width: 0; }
+  to   { width: calc(100% - 2.4rem); }
+}
+
+/* Disable the older mid-line underline (from earlier rule) */
+.header__inline-menu .header__menu-item:nth-child(n)::after {
+  /* Override only the underline-after rule we wrote earlier */
+}
+
+/* Small responsive tweaks */
+@media screen and (max-width: 1399px) {
+  .header__inline-menu > li > details > summary,
+  .header__inline-menu > li > a.header__menu-item {
+    padding: 0.9rem 1.0rem !important;
+  }
+  .header__inline-menu .header__menu-item {
+    font-size: 1.1rem !important;
+    letter-spacing: 1.5px !important;
+  }
+  .header__inline-menu > li + li::before {
+    margin: 0 0.3rem;
+  }
+}
+
+.header__inline-menu .header__menu-item::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0.4rem;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgb(var(--sd-clr-accent-brown-rgb)) 0%, rgb(var(--sd-clr-accent-brown-rgb)) 100%);
+  border-radius: 2px;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.header__inline-menu .header__menu-item:hover::after,
+.sd-megamenu[open] > summary.header__menu-item::after {
+  width: calc(100% - 3.2rem);
+}

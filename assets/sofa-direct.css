@@ -1,0 +1,252 @@
+/* ============================================================
+   Sofa Direct — Brand CSS
+   Brand colours from Figma design (node 149:3)
+   ============================================================ */
+
+:root {
+  /* Brand palette */
+  --color-sd-tan:        #C0B09F;
+  --color-sd-brown:      #A58C70;
+  --color-sd-teal:       #2F4858;
+  --color-sd-cream:      #FFFAEA;
+  --color-sd-light-grey: #F3F3F3;
+  --color-sd-black:      #121212;
+  --color-sd-white:      #FFFFFF;
+
+  /* Announcement bar */
+  --sd-announcement-bg:         #C0B09F;
+  --sd-announcement-accent-bg:  #A58C70;
+  --sd-announcement-text:       #FFFFFF;
+
+  /* Typography */
+  --font-body-family:    'Montserrat', sans-serif;
+  --font-heading-family: 'Montserrat', sans-serif;
+  --font-body-weight:    400;
+  --font-heading-weight: 700;
+}
+
+/* ── Global font override ─────────────────────────────────── */
+body,
+.shopify-section {
+  font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+/* ── Announcement bar ─────────────────────────────────────── */
+.shopify-section-announcement-bar .announcement-bar {
+  background-color: var(--color-sd-tan);
+}
+
+.announcement-bar__message {
+  color: var(--color-sd-white);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.header-wrapper {
+  background-color: var(--color-sd-white);
+}
+
+.header__heading-link .header__heading-logo {
+  max-width: 140px;
+}
+
+.header__menu-item span,
+.header__menu-item a {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 1.4rem;
+  text-transform: capitalize;
+  color: var(--color-sd-black);
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.button,
+.btn {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: capitalize;
+  border-radius: 999px;
+}
+
+.button--primary,
+.button:not(.button--secondary) {
+  background-color: var(--color-sd-black);
+  color: var(--color-sd-white);
+  border-color: var(--color-sd-black);
+}
+
+.button--primary:hover,
+.button:not(.button--secondary):hover {
+  background-color: var(--color-sd-teal);
+  border-color: var(--color-sd-teal);
+}
+
+.button--secondary {
+  background-color: transparent;
+  color: var(--color-sd-black);
+  border: 2px solid var(--color-sd-black);
+  border-radius: 999px;
+}
+
+.button--secondary:hover {
+  background-color: var(--color-sd-tan);
+  border-color: var(--color-sd-tan);
+}
+
+/* ── Product cards ────────────────────────────────────────── */
+.card-wrapper .card {
+  border-radius: 2rem;
+  overflow: hidden;
+}
+
+.card__information {
+  padding: 1.6rem;
+}
+
+.card__heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 2.4rem;
+}
+
+.price--on-sale .price-item--sale {
+  color: var(--color-sd-teal);
+  font-weight: 700;
+}
+
+/* ── Hero / Banner sections ───────────────────────────────── */
+.banner__heading {
+  /* Bebas Neue removed from Google Fonts request (saved 1 font file).
+     Fall through to Bayon (already loaded for footer logo) then
+     Montserrat 700 for the same display-impact look. */
+  font-family: 'Bayon', 'Montserrat', sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* ── Section headings ─────────────────────────────────────── */
+.section-header h2,
+.rich-text__heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Pill / badge tags ────────────────────────────────────── */
+.badge {
+  border-radius: 999px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+/* ── Footer ───────────────────────────────────────────────── */
+.footer {
+  background-color: var(--color-sd-white);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.footer__heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 1.8rem;
+}
+
+.footer-block__details-content a {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 1.8rem;
+  color: rgba(0,0,0,0.55);
+}
+
+/* Footer brand name — Bayon matching Figma */
+.footer .footer__heading.h2,
+.footer-block--logo .h2,
+.footer-block--logo .footer__heading {
+  font-family: 'Bayon', Impact, sans-serif;
+  font-size: 4.0rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #000;
+}
+
+/* Footer description text */
+.footer-block--logo p,
+.footer-block--logo .rte p {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 1.8rem;
+  color: rgba(0,0,0,0.8);
+  line-height: 1.58;
+}
+
+/* Footer copyright bar */
+.footer__copyright {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.8rem;
+  color: rgba(0,0,0,0.8);
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.footer-block__details-content a:hover {
+  color: var(--color-sd-brown);
+}
+
+/* ── Navigation pills / tabs ──────────────────────────────── */
+.tab-list .tab-item,
+.filter-and-sort__pill {
+  border-radius: 999px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+/* ── Price ────────────────────────────────────────────────── */
+.price {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+/* ── Buy now / Add to cart ────────────────────────────────── */
+.product-form__submit {
+  background-color: var(--color-sd-teal);
+  color: var(--color-sd-white);
+  border-radius: 999px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.product-form__submit:hover {
+  background-color: var(--color-sd-black);
+}
+
+/* ── Announcement / promo pill ────────────────────────────── */
+.sd-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.4rem;
+  border: 2px solid var(--color-sd-black);
+  border-radius: 999px;
+  background-color: rgba(192, 176, 159, 0.5);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 1.6rem;
+  text-transform: capitalize;
+  color: var(--color-sd-black);
+}
+
+/* Collection Top-Filter Dropdown — styles live in
+   sections/main-collection-top-filter.liquid */

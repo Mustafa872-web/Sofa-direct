@@ -1,0 +1,213 @@
+<link rel="stylesheet" href="{{ 'sd-article-main.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-article-main.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign share_url = request.origin | append: article.url
+  assign share_url_encoded = share_url | url_encode
+  assign share_title_encoded = article.title | url_encode
+  assign words_count = article.content | strip_html | split: ' ' | size
+  assign read_time = words_count | divided_by: 200
+  if read_time < 1
+    assign read_time = 1
+  endif
+-%}
+
+<article class="sd-article" id="SDArticle-{{ section.id }}">
+  <header class="sd-article__hero page-width">
+    {%- if article.image -%}
+      <figure class="sd-article__hero-media">
+        {{
+          article.image
+          | image_url: width: 2200
+          | image_tag:
+            class: 'sd-article__hero-image',
+            widths: '700,1100,1500,2200',
+            sizes: '(min-width: 1200px) 1000px, 100vw',
+            alt: article.image.alt | default: article.title,
+            loading: 'eager',
+            fetchpriority: 'high'
+        }}
+      </figure>
+    {%- endif -%}
+
+    <div class="sd-article__intro">
+      <a href="{{ blog.url }}" class="sd-article__back-link">Back to {{ blog.title | escape }}</a>
+      <h1 class="sd-article__title">{{ article.title | escape }}</h1>
+
+      <p class="sd-article__meta">
+        <span>{{ article.published_at | date: '%d %b %Y' }}</span>
+        <span aria-hidden="true">/</span>
+        <span>{{ read_time }} min read</span>
+        {%- if article.tags.size > 0 -%}
+          <span aria-hidden="true">/</span>
+          <span>{{ article.tags.first }}</span>
+        {%- endif -%}
+      </p>
+    </div>
+  </header>
+
+  <div class="sd-article__main page-width">
+    {%- if section.settings.show_toc -%}
+      <aside class="sd-article__toc" data-toc-container>
+        <h2 class="sd-article__toc-title">Table of contents</h2>
+        <ol class="sd-article__toc-list" data-toc-list></ol>
+      </aside>
+    {%- endif -%}
+
+    <div class="sd-article__content-wrap">
+      <div class="sd-article__content rte" data-article-content>
+        {{ article.content }}
+      </div>
+
+      <div class="sd-article__share">
+        <span class="sd-article__share-label">{{ section.settings.share_label }}</span>
+        <div class="sd-article__share-links">
+          <a
+            href="https://twitter.com/intent/tweet?url={{ share_url_encoded }}&text={{ share_title_encoded }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            X
+          </a>
+          <a
+            href="https://www.facebook.com/sharer/sharer.php?u={{ share_url_encoded }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Facebook
+          </a>
+          <a
+            href="mailto:?subject={{ share_title_encoded }}&body={{ share_url_encoded }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Email
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- if section.settings.show_related -%}
+    <section class="sd-article__related page-width">
+      <div class="sd-article__related-head">
+        <h2 class="sd-article__related-title">Related stories</h2>
+        <a href="{{ blog.url }}" class="sd-article__related-link">View all posts</a>
+      </div>
+
+      <div class="sd-article__related-grid">
+        {%- assign related_shown = 0 -%}
+        {%- for related_article in blog.articles -%}
+          {%- if related_article.id != article.id and related_shown < section.settings.related_posts_count -%}
+            {%- assign related_shown = related_shown | plus: 1 -%}
+            <article class="sd-article-card">
+              <a href="{{ related_article.url }}" class="sd-article-card__media">
+                {%- if related_article.image -%}
+                  {{
+                    related_article.image
+                    | image_url: width: 900
+                    | image_tag:
+                      class: 'sd-article-card__image',
+                      widths: '300,480,700,900',
+                      sizes: '(min-width: 1200px) 30vw, (min-width: 750px) 48vw, 100vw',
+                      alt: related_article.image.alt | default: related_article.title,
+                      loading: 'lazy'
+                  }}
+                {%- else -%}
+                  {{ 'blog-apparel-1' | placeholder_svg_tag: 'sd-article-card__image' }}
+                {%- endif -%}
+              </a>
+              <div class="sd-article-card__body">
+                <p class="sd-article-card__meta">{{ related_article.published_at | date: '%d %b %Y' }}</p>
+                <h3 class="sd-article-card__title"><a href="{{ related_article.url }}">{{ related_article.title | escape }}</a></h3>
+                <a href="{{ related_article.url }}" class="sd-article-card__cta">Read more -></a>
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+  {%- endif -%}
+</article>
+
+<script>
+  (function () {
+    var root = document.getElementById('SDArticle-{{ section.id }}');
+    if (!root) return;
+
+    var tocList = root.querySelector('[data-toc-list]');
+    var tocContainer = root.querySelector('[data-toc-container]');
+    var content = root.querySelector('[data-article-content]');
+    if (!tocList || !tocContainer || !content) return;
+
+    var headings = content.querySelectorAll('h2, h3');
+    if (headings.length < 2) {
+      tocContainer.style.display = 'none';
+      root.classList.add('sd-article--no-toc');
+      return;
+    }
+
+    headings.forEach(function (heading, index) {
+      if (!heading.id) {
+        var clean = heading.textContent
+          .toLowerCase()
+          .replace(/[^a-z0-9\\s-]/g, '')
+          .trim()
+          .replace(/\\s+/g, '-');
+        heading.id = (clean || 'section') + '-' + index;
+      }
+
+      var item = document.createElement('li');
+      item.className = 'sd-article__toc-item sd-article__toc-item--' + heading.tagName.toLowerCase();
+
+      var link = document.createElement('a');
+      link.href = '#' + heading.id;
+      link.textContent = heading.textContent;
+
+      item.appendChild(link);
+      tocList.appendChild(item);
+    });
+  })();
+</script>
+
+{%- comment -%}
+  Article JSON-LD intentionally removed here — it is emitted once, theme-wide,
+  by snippets/sd-seo.liquid (in <head>) to avoid duplicate Article structured data.
+{%- endcomment -%}
+
+{% schema %}
+{
+  "name": "SD Main Article",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_toc",
+      "label": "Show table of contents",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "share_label",
+      "label": "Share label",
+      "default": "Share this article"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related",
+      "label": "Show related posts",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "related_posts_count",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Related posts count",
+      "default": 3
+    }
+  ]
+}
+{% endschema %}

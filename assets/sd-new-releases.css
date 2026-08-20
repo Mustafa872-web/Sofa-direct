@@ -1,0 +1,322 @@
+/* ============================================================
+   SD New Releases — pixel-exact Figma grid
+   ============================================================
+   Canvas: 1920px wide, full-bleed (no side margins)
+   Gap between all cells: ~16px (var(--nr-gap))
+
+   TOP ROW:    Left 41% | Right 59%
+   BOTTOM ROW: Left 61% | Right 39%
+
+   ALL 4 CELLS: hover reveals dark overlay + centred pill link.
+   MOBILE (≤ 749px): section hidden.
+   ============================================================ */
+
+/* ── MOBILE LAYOUT ───────────────────────────────────────── */
+@media screen and (max-width: 749px) {
+
+  /* Section hidden on mobile per design */
+  .sd-nr { display: none !important; }
+
+  /* Rows stack vertically */
+  .sd-nr__row {
+    flex-direction: column;
+    gap: 1.0rem;
+  }
+
+  .sd-nr__row + .sd-nr__row { margin-top: 1.0rem; }
+
+  /* All cells go full-width */
+  .sd-nr__cell--top-left,
+  .sd-nr__cell--bottom-left,
+  .sd-nr__cell--bottom-right {
+    flex: none;
+    width: 100%;
+  }
+
+  .sd-nr__cell--top-left   { aspect-ratio: 4 / 3; }
+  .sd-nr__cell--bottom-left { aspect-ratio: 16 / 9; }
+  .sd-nr__cell--bottom-right { aspect-ratio: 4 / 3; }
+
+  /* top-right: header text + image stacked */
+  .sd-nr__cell--top-right {
+    flex: none;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .sd-nr__header {
+    padding: 2.0rem 2.0rem 1.6rem;
+    gap: 1.0rem;
+  }
+
+  .sd-nr__heading { font-size: 2.8rem; }
+  .sd-nr__badge   { font-size: 1.3rem; padding: 0.5rem 1.6rem; }
+
+  .sd-nr__img-wrap {
+    min-height: 52vw;
+  }
+
+  /* On touch devices there's no hover — always show the CTA pill */
+  .sd-nr__hover-overlay { display: none !important; }
+
+  .sd-nr__hover-btn {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    transition: none;
+    font-size: 1.4rem;
+    padding: 0.8rem 2.0rem;
+  }
+}
+
+/* ── Section shell ───────────────────────────────────────── */
+.sd-nr {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ── Rows ────────────────────────────────────────────────── */
+.sd-nr__row {
+  display: flex;
+  gap: var(--nr-gap, 16px);
+}
+
+.sd-nr__row + .sd-nr__row {
+  margin-top: var(--nr-gap, 16px);
+}
+
+/* ── Base cell ───────────────────────────────────────────── */
+.sd-nr__cell {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* ── Image ───────────────────────────────────────────────── */
+.sd-nr__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Placeholder */
+.sd-nr__img--ph { background: #ebebeb; }
+.sd-nr__img--ph svg { width: 100%; height: 100%; opacity: 0.35; }
+
+/* Zoom image on any cell hover */
+.sd-nr__cell:hover .sd-nr__img {
+  transform: scale(1.04);
+}
+
+/* ══════════════════════════════════════════════════════════
+   HOVER SYSTEM — identical on ALL 4 cells
+   ══════════════════════════════════════════════════════════
+   1. .sd-nr__hover-overlay  → slides UP from bottom (curtain)
+   2. .sd-nr__hover-btn      → fades + rises to centre
+                                (delayed slightly so overlay
+                                 is visible first)
+   ============================================================ */
+
+/* Dark curtain — parked below the cell by default */
+.sd-nr__hover-overlay {
+  display: block !important;            /* override Shopify's a:empty/div:empty rule */
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52);
+  transform: translateY(100%);          /* starts fully below */
+  pointer-events: none;
+  z-index: 1;
+  transition: transform 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Slide curtain UP to cover image on hover */
+.sd-nr__cell:hover .sd-nr__hover-overlay,
+.sd-nr__img-wrap:hover .sd-nr__hover-overlay {
+  transform: translateY(0);
+}
+
+/* Pill button — hidden + sits below centre */
+.sd-nr__hover-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 20%);      /* starts below centre */
+  z-index: 2;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 1.0rem;
+  background: #fff;
+  border-radius: var(--sd-radius-pill);
+  padding: 1.2rem 3.2rem;
+  font-family: var(--sd-font-body);
+  font-weight: 700;
+  font-size: 2.0rem;
+  color: #000;
+  text-decoration: none;
+  text-transform: capitalize;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  /* Delay 0.18s → button appears AFTER curtain starts sliding up */
+  transition:
+    opacity  0.32s ease 0.18s,
+    transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s;
+}
+
+.sd-nr__hover-btn svg {
+  width: 2.0rem;
+  height: 2.0rem;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+/* Arrow nudges right on hover */
+.sd-nr__hover-btn:hover svg {
+  transform: translateX(4px);
+}
+
+/* Reveal button on cell/img-wrap hover */
+.sd-nr__cell:hover .sd-nr__hover-btn,
+.sd-nr__img-wrap:hover .sd-nr__hover-btn {
+  opacity: 1;
+  transform: translate(-50%, -50%);     /* snaps to true centre */
+  pointer-events: auto;
+}
+
+/* Keyboard focus — reveal immediately, no delay */
+.sd-nr__hover-btn:focus-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  transition: none;
+}
+
+/* ══ TOP ROW ═══════════════════════════════════════════════ */
+.sd-nr__cell--top-left {
+  flex: var(--nr-top-left, 41);
+  aspect-ratio: 791 / 847;           /* drives row height */
+}
+
+.sd-nr__cell--top-right {
+  flex: var(--nr-top-right, 59);
+  display: flex;
+  flex-direction: column;
+  gap: var(--nr-gap, 16px);
+}
+
+/* Header: badge + heading above the right image */
+.sd-nr__header {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  padding: 6.4rem 4.8rem 6.4rem;
+  flex-shrink: 0;
+}
+
+/* Below 1500px: tighter header padding so badge + heading sit
+   closer to the image on smaller laptops/desktops. */
+@media screen and (max-width: 1499px) {
+  .sd-nr__header {
+    padding: 3.5rem 4rem 2rem;
+  }
+}
+
+/* Badge */
+.sd-nr__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1.5px solid #000;
+  border-radius: var(--sd-radius-pill);
+  padding: 0.8rem 2.4rem;
+  font-family: var(--sd-font-body);
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: #000;
+  text-transform: capitalize;
+  white-space: nowrap;
+  align-self: flex-start;
+  line-height: 1.2;
+}
+
+/* Heading */
+.sd-nr__heading {
+  font-family: var(--sd-font-display);
+  font-size: var(--sd-text-display-sm);
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* Right image wrapper — fills remaining height */
+.sd-nr__img-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.sd-nr__img-wrap .sd-nr__img {
+  position: absolute;
+  inset: 0;
+}
+
+/* Hover system inside img-wrap */
+.sd-nr__img-wrap:hover .sd-nr__img {
+  transform: scale(1.04);
+}
+
+.sd-nr__img-wrap:hover .sd-nr__hover-overlay {
+  transform: translateY(0);
+}
+
+.sd-nr__img-wrap:hover .sd-nr__hover-btn {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+/* ══ BOTTOM ROW ════════════════════════════════════════════ */
+.sd-nr__cell--bottom-left {
+  flex: var(--nr-bot-left, 61);
+  aspect-ratio: 1161 / 648;
+}
+
+.sd-nr__cell--bottom-right {
+  flex: var(--nr-bot-right, 39);
+}
+
+/* Bottom-right: same z-index as all other cells — no stacking difference */
+
+/* ══ TABLET  750px – 989px ════════════════════════════════ */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .sd-nr__header {
+    padding: 3.2rem 3.2rem 0;
+    gap: 1.6rem;
+  }
+
+  .sd-nr__heading { font-size: 2.8rem; }
+  .sd-nr__badge   { font-size: 1.4rem; padding: 0.6rem 1.8rem; }
+
+  .sd-nr__hover-btn {
+    font-size: 1.5rem;
+    padding: 0.8rem 2.0rem;
+  }
+
+  .sd-nr__hover-btn svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+}

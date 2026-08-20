@@ -1,0 +1,136 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-info-hero",
+      "settings": {
+        "badge_text": "Style Your Living",
+        "heading": "Make Your Room Feel Like Home",
+        "body_text": "Simple styling ideas to help your sofa sit beautifully in its space — from colour pairings to lighting and layout."
+      },
+      "blocks": {
+        "c1": { "type": "chip", "settings": { "icon": true, "text": "Colour Pairings" } },
+        "c2": { "type": "chip", "settings": { "icon": true, "text": "Layout Tips" } },
+        "c3": { "type": "chip", "settings": { "icon": true, "text": "Texture & Light" } }
+      },
+      "block_order": ["c1", "c2", "c3"]
+    },
+    "intro": {
+      "type": "sd-info-intro",
+      "settings": {
+        "eyebrow": "Start With A Feeling",
+        "heading": "Design Around How You Want To Live",
+        "body": "<p>Great rooms aren't decorated — they're lived in. Think about how you relax, gather, host or unwind — and build the space around those moments.</p>"
+      }
+    },
+    "principles": {
+      "type": "sd-info-cards",
+      "settings": {
+        "eyebrow": "Four Styling Principles",
+        "heading": "The Essentials",
+        "bg": "cream"
+      },
+      "blocks": {
+        "p1": {
+          "type": "card",
+          "settings": {
+            "number": "01",
+            "title": "Anchor With Your Sofa",
+            "text": "Your sofa is the anchor of the room — choose it first, then design around it.",
+            "sub1": "Try",
+            "list1": "Neutral sofa + colourful accents\nStatement sofa + quiet palette\nLeather for warmth, fabric for softness"
+          }
+        },
+        "p2": {
+          "type": "card",
+          "settings": {
+            "number": "02",
+            "title": "Layer Textures",
+            "text": "Mix soft and structured, rough and smooth — depth makes a room feel complete.",
+            "sub1": "Ideas",
+            "list1": "Linen throws over leather sofas\nVelvet cushions on chenille\nWool rugs under wooden floors"
+          }
+        },
+        "p3": {
+          "type": "card",
+          "settings": {
+            "number": "03",
+            "title": "Get The Light Right",
+            "text": "Three sources per room: overhead, task and ambient. Never rely on one alone.",
+            "sub1": "Checklist",
+            "list1": "Ceiling pendant or spots\nFloor or table lamp beside the sofa\nDimmable warm bulbs (2700K)"
+          }
+        },
+        "p4": {
+          "type": "card",
+          "settings": {
+            "number": "04",
+            "title": "Leave Breathing Room",
+            "text": "Allow 45 cm walkways and 30 cm between sofa and coffee table.",
+            "sub1": "Rules of thumb",
+            "list1": "45 cm minimum walkways\n30 cm sofa-to-coffee-table gap\n60 cm between facing sofas"
+          }
+        }
+      },
+      "block_order": ["p1", "p2", "p3", "p4"]
+    },
+    "palettes": {
+      "type": "sd-info-cards",
+      "settings": {
+        "eyebrow": "Three Easy Palettes",
+        "heading": "Pick A Mood"
+      },
+      "blocks": {
+        "pa1": {
+          "type": "card",
+          "settings": {
+            "title": "Warm Neutrals",
+            "text": "Cream, taupe, caramel and warm wood — timeless and welcoming.",
+            "sub1": "Pairs well with",
+            "list1": "Tan leather sofas\nLinen curtains\nBrass accents"
+          }
+        },
+        "pa2": {
+          "type": "card",
+          "settings": {
+            "title": "Deep & Dramatic",
+            "text": "Forest green, navy and charcoal — refined and grown-up.",
+            "sub1": "Pairs well with",
+            "list1": "Chesterfield leather sofas\nDark timber floors\nSoft cream walls"
+          }
+        },
+        "pa3": {
+          "type": "card",
+          "settings": {
+            "title": "Light & Airy",
+            "text": "Off-white, pale grey and soft blush — perfect for smaller rooms.",
+            "sub1": "Pairs well with",
+            "list1": "Light fabric sofas\nSheer curtains\nNatural rattan accents"
+          }
+        }
+      },
+      "block_order": ["pa1", "pa2", "pa3"]
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "settings": {
+        "heading": "Need help styling your space?",
+        "body": "Visit our showroom and our team will pair your sofa with fabrics, rugs and finishes that match your vision."
+      },
+      "blocks": {
+        "btn1": { "type": "button", "settings": { "label": "Shop All Sofas", "link": "/collections/all" } },
+        "btn2": { "type": "button", "settings": { "label": "Visit Our Showroom", "link": "/pages/our-showroom", "outline": true } }
+      },
+      "block_order": ["btn1", "btn2"]
+    }
+  },
+  "order": ["hero", "intro", "principles", "palettes", "cta"]
+}

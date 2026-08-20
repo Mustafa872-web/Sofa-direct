@@ -1,0 +1,30 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-collection-top-filter",
+      "settings": {
+        "products_per_page": 12,
+        "show_promo": true,
+        "promo_position": 4,
+        "promo_eyebrow": "Limited Time Offer",
+        "promo_heading": "SPEND & SAVE",
+        "promo_subheading": "SAVE UP TO £500",
+        "promo_body": "On selected sofas and corner groups this season. Luxury comfort at unbeatable prices.",
+        "promo_cta_label": "Shop Now",
+        "card_cta_label": "More details",
+        "show_finance_text": false,
+        "finance_text": "From £29/month with 0% finance"
+      }
+    }
+  },
+  "order": ["main"]
+}

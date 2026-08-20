@@ -1,0 +1,118 @@
+{%- comment -%}
+  Meta (Facebook / Instagram) Pixel + standard ecommerce events.
+  Rendered in the <head> via layout/theme.liquid.
+
+  Events fired here (theme-side):
+    PageView         - every page (base code)
+    ViewContent      - product pages
+    Search           - search results page
+    AddToCart        - any add to cart (PDP, add-ons, quick-add) via fetch/XHR intercept
+    InitiateCheckout - checkout button / cart checkout
+
+  NOTE: Purchase cannot run from theme code on the Shopify thank-you page.
+  Add it via Settings > Customer events (custom pixel) or the Order status
+  page additional script. See the companion order-status snippet.
+{%- endcomment -%}
+
+{%- assign meta_pixel_id = '910441633139975' -%}
+
+{%- if meta_pixel_id != blank -%}
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '{{ meta_pixel_id }}');
+    fbq('track', 'PageView');
+
+    {%- if request.page_type == 'product' and product -%}
+      {%- assign view_variant = product.selected_or_first_available_variant -%}
+      fbq('track', 'ViewContent', {
+        content_type: 'product',
+        content_ids: [{{ view_variant.id | json }}],
+        content_name: {{ product.title | json }},
+        content_category: {{ product.type | json }},
+        value: {{ view_variant.price | divided_by: 100.0 }},
+        currency: {{ cart.currency.iso_code | json }}
+      });
+    {%- endif -%}
+
+    {%- if request.page_type == 'search' and search.terms != blank -%}
+      fbq('track', 'Search', { search_string: {{ search.terms | json }} });
+    {%- endif -%}
+
+    (function () {
+      var addUrl = {{ routes.cart_add_url | json }};
+      var currency = {{ cart.currency.iso_code | json }};
+
+      function fireAddToCart(data) {
+        try {
+          var items = (data && data.items) ? data.items : [data];
+          items.forEach(function (it) {
+            if (!it) return;
+            var price = (it.final_line_price || it.final_price || it.price || 0) / 100;
+            fbq('track', 'AddToCart', {
+              content_type: 'product',
+              content_ids: [it.id || it.variant_id],
+              content_name: it.product_title || it.title,
+              value: price,
+              currency: currency
+            });
+          });
+        } catch (e) {}
+      }
+
+      // Catch fetch-based add to cart (used by the product form, add-ons, quick-add).
+      var origFetch = window.fetch;
+      if (origFetch) {
+        window.fetch = function () {
+          var url = (arguments[0] && arguments[0].url) ? arguments[0].url : arguments[0];
+          var promise = origFetch.apply(this, arguments);
+          if (typeof url === 'string' && url.indexOf(addUrl) !== -1) {
+            promise.then(function (res) {
+              res.clone().json().then(fireAddToCart).catch(function () {});
+            }).catch(function () {});
+          }
+          return promise;
+        };
+      }
+
+      // Catch XHR-based add to cart (older flows).
+      var origOpen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function (method, url) {
+        this.__sdUrl = url;
+        return origOpen.apply(this, arguments);
+      };
+      var origSend = XMLHttpRequest.prototype.send;
+      XMLHttpRequest.prototype.send = function () {
+        var xhr = this;
+        if (xhr.__sdUrl && String(xhr.__sdUrl).indexOf(addUrl) !== -1) {
+          xhr.addEventListener('load', function () {
+            try { fireAddToCart(JSON.parse(xhr.responseText)); } catch (e) {}
+          });
+        }
+        return origSend.apply(this, arguments);
+      };
+
+      // InitiateCheckout on any checkout trigger.
+      document.addEventListener('click', function (e) {
+        var t = e.target.closest && e.target.closest('[name="checkout"], button[name="checkout"], a[href$="/checkout"], a[href*="/checkout"]');
+        if (!t) return;
+        fbq('track', 'InitiateCheckout', {
+          value: {{ cart.total_price | divided_by: 100.0 }},
+          currency: currency,
+          num_items: {{ cart.item_count | default: 0 }}
+        });
+      }, true);
+    })();
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id={{ meta_pixel_id }}&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
+{%- endif -%}

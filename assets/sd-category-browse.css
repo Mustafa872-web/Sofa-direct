@@ -1,0 +1,1034 @@
+/* ============================================================
+   SD Category Browse — pixel-exact Figma match
+   ============================================================
+   Canvas: 1920px, page-width container
+   Heading: Recoleta Alt Black 72px uppercase
+   Tabs:    Montserrat Regular 24px, inactive opacity 50%
+            Active: accent-brown text + 6px underline
+   Card image: aspect 692/389.25
+   Card info:  min-h 180px, pl-32 pr-16 py-32, border L/R/B
+               rounded-b 32px, gap 22px
+   CTA pill:   bg #2F4858, Montserrat Bold 18px, px-16 py-8
+   ============================================================ */
+
+/* Match Shop-the-Look hotspot section width */
+.sd-catbrowse > .page-width { max-width: 170rem; }
+
+/* ── Section ─────────────────────────────────────────────── */
+.sd-catbrowse {
+  padding: 6.4rem 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 250, 234, 0.6), transparent 70%),
+    #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle decorative blob behind the intro */
+.sd-catbrowse::before {
+  content: '';
+  position: absolute;
+  top: -8rem;
+  right: -8rem;
+  width: 28rem;
+  height: 28rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192, 176, 159, 0.18), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sd-catbrowse > .page-width {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Intro group (eyebrow + heading) ─────────────────────── */
+.sd-catbrowse__intro {
+  text-align: center;
+  margin: 0 0 4.0rem;
+}
+
+/* ── Eyebrow ─────────────────────────────────────────────── */
+.sd-catbrowse__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin: 0 0 1.6rem;
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sd-clr-accent-brown, #a58c70);
+}
+
+.sd-catbrowse__eyebrow-dash {
+  display: inline-block;
+  width: 2.8rem;
+  height: 1px;
+  background: var(--sd-clr-accent-brown, #a58c70);
+  opacity: 0.6;
+}
+
+/* ── Heading ─────────────────────────────────────────────── */
+.sd-catbrowse__heading {
+  font-family: var(--sd-font-display);
+  font-size: var(--sd-text-display);   /* 7.2rem / 72px */
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  line-height: 1.0;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.sd-catbrowse__heading br { display: block; }
+
+.sd-catbrowse__heading-line {
+  display: inline-block;
+}
+
+/* Accent line (last line of heading) — brand teal with subtle underline flourish */
+.sd-catbrowse__heading-line--accent {
+  color: var(--sd-clr-teal, #2f4858);
+  position: relative;
+  padding-bottom: 0.4rem;
+}
+
+.sd-catbrowse__heading-line--accent::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -0.6rem;
+  transform: translateX(-50%);
+  width: 6.4rem;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--sd-clr-accent-brown, #a58c70) 0%,
+    var(--sd-clr-taupe, #c0b09f) 100%
+  );
+}
+
+/* ── Tabs row (tabs + view-all link) ─────────────────────── */
+.sd-catbrowse__tabs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.4rem;
+  margin-bottom: 3.2rem;
+}
+
+/* ── Tabs bar ─ pill-chip style ──────────────────────────── */
+.sd-catbrowse__tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem;
+  background: rgba(192, 176, 159, 0.12);
+  border-radius: 99rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sd-catbrowse__tabs::-webkit-scrollbar { display: none; }
+
+/* ── Tab button — pill chip ──────────────────────────────── */
+.sd-catbrowse__tab {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.0rem 2.4rem;
+  background: transparent;
+  border: none;
+  border-radius: 99rem;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--sd-clr-teal, #2f4858);
+  text-transform: capitalize;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.22s ease,
+    color 0.22s ease,
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease;
+}
+
+.sd-catbrowse__tab:hover:not(.sd-catbrowse__tab--active) {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--sd-clr-accent-brown, #a58c70);
+}
+
+.sd-catbrowse__tab--active {
+  background: var(--sd-clr-teal, #2f4858);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(47, 72, 88, 0.22);
+  transform: translateY(-1px);
+}
+
+/* ── View-all link (right of tabs) ───────────────────────── */
+.sd-catbrowse__view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-shrink: 0;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--sd-clr-teal, #2f4858);
+  text-decoration: none;
+  padding: 0.6rem 0;
+  transition: gap 0.22s cubic-bezier(0.22, 1, 0.36, 1), color 0.22s ease;
+}
+
+.sd-catbrowse__view-all svg {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-catbrowse__view-all:hover {
+  gap: 1.4rem;
+  color: var(--sd-clr-accent-brown, #a58c70);
+}
+
+.sd-catbrowse__view-all:hover svg {
+  transform: translateX(2px);
+}
+
+/* ── Panel ───────────────────────────────────────────────── */
+.sd-catbrowse__panel--hidden { display: none; }
+
+/* ── Carousel wrapper — positions arrow relative to grid ── */
+.sd-catbrowse__carousel-wrap {
+  position: relative;
+}
+
+/* ── Arrow — hidden on desktop, shown on mobile ── */
+.sd-catbrowse__arrow {
+  display: none;
+}
+
+/* ── 3-col grid ──────────────────────────────────────────── */
+.sd-catbrowse__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.4rem;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+.sd-catbrowse__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--sd-radius-card);
+  background: #fff;
+  border: 1px solid rgba(165, 140, 112, 0.16);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.32s ease;
+}
+
+.sd-catbrowse__card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(165, 140, 112, 0.28);
+  box-shadow:
+    0 2px 4px rgba(47, 72, 88, 0.04),
+    0 22px 44px rgba(47, 72, 88, 0.12),
+    0 0 0 1px rgba(165, 140, 112, 0.06);
+}
+
+/* Sale badge — gold ribbon with left notch, top-left corner */
+.sd-catbrowse__card-badge {
+  position: absolute;
+  top: 1.6rem;
+  left: -0.6rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.0rem 0.5rem 1.2rem;
+  background: linear-gradient(135deg, #d4b876 0%, #c9a85c 60%, #a98841 100%);
+  color: #3a2a0a;
+  font-family: var(--sd-font-body);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  /* left-side notch arrow + rounded right */
+  clip-path: polygon(
+    0.4rem 0%,
+    100% 0%,
+    100% 100%,
+    0.4rem 100%,
+    0 50%
+  );
+  box-shadow: 0 5px 12px rgba(201, 168, 92, 0.32);
+  overflow: hidden;
+}
+
+/* Ribbon fold-back triangle */
+.sd-catbrowse__card-badge::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -0.55rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: #7a5f1f;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+/* Shimmer sweep on card hover */
+.sd-catbrowse__card-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 70%
+  );
+  transform: translateX(-110%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.sd-catbrowse__card:hover .sd-catbrowse__card-badge::before {
+  transform: translateX(110%);
+}
+
+/* Image wrap — soft diagonal cream→tan gradient + subtle inner ring */
+.sd-catbrowse__card-image-wrap {
+  position: relative;
+  aspect-ratio: 692 / 389.25;
+  overflow: hidden;
+  border-radius: var(--sd-radius-card) var(--sd-radius-card) 0 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 250, 234, 0.7) 0%,
+    rgba(192, 176, 159, 0.18) 100%
+  );
+  display: block;
+  box-shadow: inset 0 -1px 0 rgba(165, 140, 112, 0.10);
+}
+
+/* Subtle gradient overlay on hover — reveals from bottom */
+.sd-catbrowse__card-image-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(47, 72, 88, 0.22), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.32s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sd-catbrowse__card:hover .sd-catbrowse__card-image-wrap::after {
+  opacity: 1;
+}
+
+.sd-catbrowse__card-image-wrap a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sd-catbrowse__card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sd-catbrowse__card:hover .sd-catbrowse__card-img {
+  transform: scale(1.06);
+}
+
+/* ── Info bar — refined elegant layout ─────────────────── */
+.sd-catbrowse__card-info {
+  background: #fff;
+  border: 1px solid var(--sd-clr-card-border);
+  border-top: none;
+  border-radius: 0 0 var(--sd-radius-card) var(--sd-radius-card);
+  min-height: 18.0rem;
+  padding: 2.8rem 2.8rem 2.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  flex: 1;
+  position: relative;
+}
+
+/* Decorative divider between text group and CTA row */
+.sd-catbrowse__card-info::before {
+  content: '';
+  position: absolute;
+  left: 2.8rem;
+  right: 2.8rem;
+  bottom: 8.8rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(165, 140, 112, 0.35) 20%,
+    rgba(165, 140, 112, 0.35) 80%,
+    transparent 100%
+  );
+}
+
+/* Text group */
+.sd-catbrowse__card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.sd-catbrowse__card-title,
+.sd-catbrowse__card-title a {
+  font-family: var(--sd-font-display);
+  font-size: 2.1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--sd-clr-teal, #2f4858);
+  text-transform: capitalize;
+  text-decoration: none;
+  margin: 0;
+  display: block;
+  letter-spacing: -0.005em;
+  transition: color 0.22s ease;
+}
+
+.sd-catbrowse__card-title a:hover {
+  color: var(--sd-clr-accent-brown);
+}
+
+.sd-catbrowse__card-subtitle {
+  font-family: Montserrat, sans-serif;
+  font-size: 1.4rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--sd-clr-accent-brown, #a58c70);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin: 0;
+}
+
+/* CTA row sits below the divider — price on left, button on right */
+.sd-catbrowse__card-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  width: 100%;
+  background: var(--sd-clr-teal);
+  border-radius: var(--sd-radius-pill);
+  padding: 1.0rem 1.6rem 1.0rem 2.0rem;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  text-transform: capitalize;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  position: relative;
+}
+
+.sd-catbrowse__card-cta > span:first-child {
+  font-family: var(--sd-font-display, 'Recoleta Alt', 'Recoleta', Georgia, serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+
+/* Strikethrough RRP shown next to sale price inside the CTA */
+.sd-catbrowse__card-rrp {
+  font-family: var(--sd-font-body);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  letter-spacing: 0;
+}
+
+.sd-catbrowse__card-cta > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding-left: 1.2rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.sd-catbrowse__card-cta > span:last-child::after {
+  content: '→';
+  font-family: Montserrat, sans-serif;
+  font-size: 1.6rem;
+  line-height: 1;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-catbrowse__card-cta:hover {
+  background: #1f3340;
+  box-shadow: 0 8px 20px rgba(47, 72, 88, 0.28);
+  transform: translateY(-1px);
+}
+
+.sd-catbrowse__card-cta:hover > span:last-child::after {
+  transform: translateX(4px);
+}
+
+/* ============================================================
+   TRUSTPILOT TRUST CARD
+   ============================================================ */
+.sd-catbrowse__trustpilot {
+  margin: 5.6rem auto 0;
+  max-width: 1080px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  align-items: center;
+  gap: 4.0rem;
+  padding: 3.2rem 4.0rem;
+  background:
+    linear-gradient(135deg, rgba(255, 250, 234, 0.85), rgba(255, 255, 255, 0.6)),
+    #fff;
+  border: 1px solid rgba(165, 140, 112, 0.18);
+  border-radius: 2.4rem;
+  box-shadow: 0 12px 32px rgba(47, 72, 88, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.sd-catbrowse__trustpilot::before {
+  content: '';
+  position: absolute;
+  left: -6rem;
+  top: -6rem;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 182, 122, 0.10), transparent 70%);
+  pointer-events: none;
+}
+
+.sd-catbrowse__tp-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  position: relative;
+  z-index: 1;
+}
+
+.sd-catbrowse__tp-heading {
+  font-family: var(--sd-font-display, 'Recoleta Alt', Georgia, serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--sd-clr-teal, #2f4858);
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.sd-catbrowse__tp-sub {
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: rgba(47, 72, 88, 0.72);
+  margin: 0;
+  max-width: 44ch;
+}
+
+/* ── USP row (Free Delivery / Warranty / Finance) ──────── */
+.sd-catbrowse__tp-usps {
+  list-style: none;
+  margin: 1.2rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem 2.0rem;
+}
+
+.sd-catbrowse__tp-usp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--sd-clr-teal, #2f4858);
+  letter-spacing: 0.02em;
+}
+
+.sd-catbrowse__tp-usp-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  background: rgba(165, 140, 112, 0.12);
+  color: var(--sd-clr-accent-brown, #a58c70);
+  flex-shrink: 0;
+}
+
+.sd-catbrowse__tp-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.0rem;
+  position: relative;
+  z-index: 1;
+}
+
+.sd-catbrowse__tp-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* Trustpilot brand green for filled stars */
+.sd-catbrowse__tp-star {
+  width: 3.2rem;
+  height: 3.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.08);
+  color: #fff;
+  border-radius: 0.4rem;
+}
+
+.sd-catbrowse__tp-star--full {
+  background: #00B67A;
+}
+
+.sd-catbrowse__tp-star svg {
+  width: 2.0rem;
+  height: 2.0rem;
+}
+
+.sd-catbrowse__tp-meta {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.4rem;
+  color: rgba(47, 72, 88, 0.75);
+}
+
+.sd-catbrowse__tp-label {
+  font-family: var(--sd-font-display, 'Recoleta Alt', Georgia, serif);
+  font-size: 2.0rem;
+  font-weight: 700;
+  color: var(--sd-clr-teal, #2f4858);
+  letter-spacing: 0.005em;
+}
+
+.sd-catbrowse__tp-rating strong {
+  font-family: Montserrat, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--sd-clr-teal, #2f4858);
+}
+
+.sd-catbrowse__tp-count {
+  font-size: 1.3rem;
+}
+
+.sd-catbrowse__tp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--sd-clr-accent-brown, #a58c70);
+  text-decoration: none;
+  padding: 0.4rem 0;
+  transition: color 0.22s ease, gap 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-catbrowse__tp-link svg {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-catbrowse__tp-link:hover {
+  color: var(--sd-clr-teal, #2f4858);
+  gap: 1.0rem;
+}
+
+.sd-catbrowse__tp-link:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* ============================================================
+   SCROLL-TRIGGERED ANIMATIONS
+   JS adds .is-visible to .sd-catbrowse when it enters viewport
+   ============================================================ */
+
+/* ── Hidden states ── */
+.sd-catbrowse__eyebrow {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity  0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-catbrowse__heading {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity  0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-catbrowse__tabs-row {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity  0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sd-catbrowse__card {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity  0.60s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Visible states ── */
+.sd-catbrowse.is-visible .sd-catbrowse__eyebrow {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+.sd-catbrowse.is-visible .sd-catbrowse__heading {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.10s;
+}
+
+.sd-catbrowse.is-visible .sd-catbrowse__tabs-row {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.26s;
+}
+
+/* Cards stagger left → right */
+.sd-catbrowse.is-visible .sd-catbrowse__card { opacity: 1; transform: translateY(0); }
+.sd-catbrowse.is-visible .sd-catbrowse__card:nth-child(1) { transition-delay: 0.32s; }
+.sd-catbrowse.is-visible .sd-catbrowse__card:nth-child(2) { transition-delay: 0.44s; }
+.sd-catbrowse.is-visible .sd-catbrowse__card:nth-child(3) { transition-delay: 0.56s; }
+
+/* Trustpilot card entrance — fades in last */
+.sd-catbrowse__trustpilot {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity  0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sd-catbrowse.is-visible .sd-catbrowse__trustpilot {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.7s;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .sd-catbrowse__eyebrow,
+  .sd-catbrowse__heading,
+  .sd-catbrowse__tabs-row,
+  .sd-catbrowse__card,
+  .sd-catbrowse__trustpilot {
+    transform: none !important;
+    transition-property: opacity !important;
+    transition-duration: 0.4s !important;
+  }
+  .sd-catbrowse__card:hover,
+  .sd-catbrowse__card-cta:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* ── Tablet  750px – 989px ── */
+@media screen and (min-width: 750px) and (max-width: 1199px) {
+  .sd-catbrowse__intro { margin-bottom: 3.2rem; }
+  .sd-catbrowse__heading { font-size: 4.8rem; }
+
+  .sd-catbrowse__tab {
+    font-size: 1.4rem;
+    padding: 0.8rem 1.8rem;
+  }
+
+  .sd-catbrowse__view-all { font-size: 1.4rem; }
+
+  .sd-catbrowse__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.6rem;
+  }
+
+  .sd-catbrowse__card-title,
+  .sd-catbrowse__card-title a { font-size: 2.2rem; }
+  .sd-catbrowse__card-subtitle { font-size: 1.2rem; }
+  .sd-catbrowse__card-cta     { font-size: 1.4rem; }
+
+  .sd-catbrowse__card-info {
+    min-height: auto;
+    padding: 2.4rem 2.0rem;
+  }
+  .sd-catbrowse__card-info::before {
+    left: 2.0rem;
+    right: 2.0rem;
+  }
+
+  .sd-catbrowse__trustpilot {
+    grid-template-columns: 1fr;
+    gap: 2.0rem;
+    padding: 2.8rem 2.4rem;
+    text-align: center;
+  }
+  .sd-catbrowse__tp-sub { margin-left: auto; margin-right: auto; }
+  .sd-catbrowse__tp-right { align-items: center; }
+  .sd-catbrowse__tp-usps { justify-content: center; }
+}
+
+/* ── Mobile  ≤ 749px — Figma exact ── */
+@media screen and (max-width: 749px) {
+  .sd-catbrowse {
+    padding: var(--sd-section-pad-mobile) 0;
+  }
+
+  .sd-catbrowse::before { display: none; }
+
+  .sd-catbrowse__intro {
+    text-align: center;
+    margin-bottom: 1.6rem;
+  }
+
+  .sd-catbrowse__eyebrow {
+    font-size: 1.0rem;
+    letter-spacing: 0.24em;
+    margin-bottom: 0.8rem;
+  }
+
+  .sd-catbrowse__eyebrow-dash { width: 1.6rem; }
+
+  .sd-catbrowse__heading {
+    font-size: 2.8rem;
+    line-height: 1.0;
+    letter-spacing: 0;
+  }
+
+  .sd-catbrowse__heading-line--accent::after {
+    width: 4.0rem;
+    height: 2px;
+    bottom: -0.4rem;
+  }
+
+  .sd-catbrowse__tabs-row {
+    margin-bottom: 1.6rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.2rem;
+  }
+
+  .sd-catbrowse__tabs {
+    width: 100%;
+    border-radius: 99rem;
+    padding: 0.4rem;
+  }
+
+  .sd-catbrowse__tab {
+    font-size: 1.2rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  /* Hide view-all on small screens — tabs take precedence */
+  .sd-catbrowse__view-all { display: none; }
+
+  /* Figma: horizontal carousel, single card visible */
+  .sd-catbrowse__grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 1.6rem;
+    padding-bottom: 0.4rem;
+  }
+
+  .sd-catbrowse__grid::-webkit-scrollbar { display: none; }
+
+  .sd-catbrowse__card {
+    flex: 0 0 calc(100% - 4.0rem);
+    scroll-snap-align: start;
+  }
+
+  /* Figma: image has no top border-radius on mobile */
+  .sd-catbrowse__card-image-wrap {
+    border-radius: 0;
+  }
+
+  /* Figma: h-135px, pl-24 pr-12 py-24, rounded-b 22px */
+  .sd-catbrowse__card-info {
+    min-height: auto;
+    padding: 2.4rem 1.2rem 2.4rem 2.4rem;
+    gap: 1.664rem;
+    border-radius: 0 0 2.2rem 2.2rem;
+  }
+
+  /* Figma: title 18px bold */
+  .sd-catbrowse__card-title,
+  .sd-catbrowse__card-title a {
+    font-size: 1.8rem;
+    line-height: 1.8rem;
+  }
+
+  /* Figma: subtitle 13.5px */
+  .sd-catbrowse__card-subtitle { font-size: 1.35rem; }
+
+  /* Figma: teal pill, 13.5px bold, px-12 py-6, price + "Buy Now" */
+  .sd-catbrowse__card-cta {
+    font-size: 1.35rem;
+    padding: 0.6rem 1.2rem;
+    gap: 1.2rem;
+  }
+
+  /* ── Next arrow — Figma: 54px circle, bottom-right of card image ── */
+  .sd-catbrowse__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5.4rem;
+    height: 5.4rem;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid #000;
+    color: #000;
+    cursor: pointer;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .sd-catbrowse__arrow:hover {
+    background: #f5f5f5;
+  }
+
+  .sd-catbrowse__arrow svg {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  /* ── Trustpilot trust card — compact mobile layout ── */
+  .sd-catbrowse__trustpilot {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 1.6rem 1.6rem;
+    border-radius: 1.4rem;
+    text-align: left;
+  }
+
+  .sd-catbrowse__tp-left { gap: 0.8rem; }
+
+  .sd-catbrowse__tp-heading {
+    font-size: 1.6rem;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  /* Long blurb hidden on mobile — info is already conveyed by stars + USPs */
+  .sd-catbrowse__tp-sub { display: none; }
+
+  /* USPs in a single compact row */
+  .sd-catbrowse__tp-usps {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.8rem 1.2rem;
+    margin: 0.4rem 0 0;
+    padding: 0;
+  }
+
+  .sd-catbrowse__tp-usp {
+    font-size: 1.05rem;
+    line-height: 1.2;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+  }
+
+  .sd-catbrowse__tp-usp-icon {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+  .sd-catbrowse__tp-usp-icon svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  /* Right column — compact stars/rating row */
+  .sd-catbrowse__tp-right {
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .sd-catbrowse__tp-stars { gap: 0.15rem; }
+  .sd-catbrowse__tp-star svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .sd-catbrowse__tp-meta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.6rem;
+  }
+
+  .sd-catbrowse__tp-label { font-size: 1.3rem; }
+  .sd-catbrowse__tp-rating { font-size: 1.2rem; }
+  .sd-catbrowse__tp-rating strong { font-size: 1.4rem; }
+  .sd-catbrowse__tp-count { font-size: 1.05rem; width: 100%; }
+
+  /* "Read all reviews" link hidden on mobile to save space */
+  .sd-catbrowse__tp-link { display: none; }
+}

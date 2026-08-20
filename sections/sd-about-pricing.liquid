@@ -1,0 +1,121 @@
+<link rel="stylesheet" href="{{ 'sd-about-pricing.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-about-pricing.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign heading = section.settings.heading | default: 'Direct Pricing. No Unnecessary Extras.'
+-%}
+
+<section class="sd-about-pricing" aria-label="{{ heading | strip_html | escape }}">
+
+  <div class="sd-about-pricing__image-col{% if section.settings.mobile_image != blank %} sd-about-pricing__image-col--has-mobile-image{% endif %}">
+    {%- if section.settings.image != blank -%}
+      {{
+        section.settings.image
+        | image_url: width: 960
+        | image_tag:
+          class: 'sd-about-pricing__img sd-about-pricing__img--desktop',
+          widths: '480,720,960',
+          sizes: '(min-width: 990px) 50vw, 100vw',
+          alt: heading,
+          loading: 'lazy'
+      }}
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'sd-about-pricing__img sd-about-pricing__img--desktop' }}
+    {%- endif -%}
+
+    {%- if section.settings.mobile_image != blank -%}
+      {{
+        section.settings.mobile_image
+        | image_url: width: 900
+        | image_tag:
+          class: 'sd-about-pricing__img sd-about-pricing__img--mobile',
+          widths: '375,550,750,900',
+          sizes: '100vw',
+          alt: heading,
+          loading: 'lazy'
+      }}
+    {%- endif -%}
+  </div>
+
+  <div class="sd-about-pricing__text-col">
+    <h2 class="sd-about-pricing__heading">{{ heading | newline_to_br }}</h2>
+
+    {%- if section.settings.body_text != blank -%}
+      <p class="sd-about-pricing__body">{{ section.settings.body_text }}</p>
+    {%- endif -%}
+
+    <div class="sd-about-pricing__features">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'feature' -%}
+          <div class="sd-about-pricing__feature" {{ block.shopify_attributes }}>
+            <div class="sd-about-pricing__feature-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16.667 5L7.5 14.167 3.333 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="sd-about-pricing__feature-text">{{ block.settings.text }}</span>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+</section>
+
+{% schema %}
+{
+  "name": "SD About Pricing",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Image (mobile)"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading (use Enter for line break)",
+      "default": "Direct Pricing.\nNo Unnecessary\nExtras."
+    },
+    {
+      "type": "textarea",
+      "id": "body_text",
+      "label": "Body text",
+      "default": "We don't believe in inflated prices or complicated sales tactics. What you see is honest pricing, clear options and straightforward service."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature text",
+          "default": "Quality materials"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "SD About Pricing",
+      "blocks": [
+        { "type": "feature", "settings": { "text": "Quality materials" } },
+        { "type": "feature", "settings": { "text": "Comfortable seating" } },
+        { "type": "feature", "settings": { "text": "Reliable UK delivery" } },
+        { "type": "feature", "settings": { "text": "Flexible finance options" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

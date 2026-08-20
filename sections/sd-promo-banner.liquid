@@ -1,0 +1,74 @@
+{{ 'sd-promo-banner.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign heading = section.settings.heading | default: 'Spring Sale - Upto 50% Off'
+  assign btn_label = section.settings.btn_label | default: 'Explore Comfy Ranges'
+  assign btn_url = section.settings.btn_url
+-%}
+
+<div class="sd-promo"
+     style="--sd-pr-left:{{ section.settings.left_bg }};--sd-pr-btn:{{ section.settings.btn_bg }};--sd-pr-border:{{ section.settings.border_color }};--sd-pr-border-w:{{ section.settings.border_width }}px;">
+  {%- liquid
+    if section.settings.bg_image != blank
+      assign promo_img = section.settings.bg_image | image_url: width: 1600
+    else
+      assign promo_img = 'https://sofa-direct.co.uk/cdn/shop/files/Rectangle_16.png'
+    endif
+  -%}
+  <div class="sd-promo__media" aria-hidden="true" style="--sd-pr-img:url('{{ promo_img }}');"></div>
+
+  <div class="sd-promo__content">
+    <h2 class="sd-promo__heading">{{ heading }}</h2>
+    {%- if btn_label != blank -%}
+      <a class="sd-promo__btn" href="{{ btn_url | default: '#' }}">
+        <span>{{ btn_label }}</span>
+        <svg class="sd-promo__btn-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- comment -%} Mobile-only full-width call bar — sits below the promo banner {%- endcomment -%}
+{%- liquid
+  assign call_label = section.settings.call_text | default: 'Call 02476 - 581 - 053 For Help | 08:00 AM - 6:00 PM'
+  assign call_phone = section.settings.call_phone | default: '02476 581 053'
+-%}
+{%- if section.settings.show_call_bar and call_label != blank -%}
+  <a
+    class="sd-promo__callbar"
+    style="--sd-pr-call-bg:{{ section.settings.call_bg | default: '#A48C70' }};--sd-pr-call-color:{{ section.settings.call_color | default: '#FFFFFF' }};"
+    href="tel:{{ call_phone | remove: ' ' | remove: '-' | remove: '(' | remove: ')' }}"
+  >
+    {{ call_label }}
+  </a>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "SD Promo Banner",
+  "class": "sd-promo-banner-section",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Spring Sale - Upto 50% Off" },
+    { "type": "text", "id": "btn_label", "label": "Button label", "default": "Explore Comfy Ranges" },
+    { "type": "url", "id": "btn_url", "label": "Button link" },
+    { "type": "image_picker", "id": "bg_image", "label": "Right-side background image" },
+    { "type": "header", "content": "Mobile call bar (below banner, mobile only)" },
+    { "type": "checkbox", "id": "show_call_bar", "label": "Show call bar on mobile", "default": true },
+    { "type": "text", "id": "call_text", "label": "Call line text", "default": "Call 02476 - 581 - 053 For Help | 08:00 AM - 6:00 PM" },
+    { "type": "text", "id": "call_phone", "label": "Phone (tel: link)", "default": "02476 581 053" },
+    { "type": "color", "id": "call_bg", "label": "Call bar background", "default": "#A48C70" },
+    { "type": "color", "id": "call_color", "label": "Call bar text colour", "default": "#FFFFFF" },
+    { "type": "header", "content": "Colours" },
+    { "type": "color", "id": "left_bg", "label": "Left background", "default": "#2F4858" },
+    { "type": "color", "id": "btn_bg", "label": "Button background", "default": "#A48C70" },
+    { "type": "color", "id": "border_color", "label": "Border colour", "default": "#E0A93E" },
+    { "type": "range", "id": "border_width", "label": "Border width", "min": 0, "max": 6, "step": 1, "unit": "px", "default": 2 }
+  ],
+  "presets": [
+    { "name": "SD Promo Banner" }
+  ]
+}
+{% endschema %}

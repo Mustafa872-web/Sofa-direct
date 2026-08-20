@@ -1,0 +1,299 @@
+<link rel="stylesheet" href="{{ 'sd-shop-the-look.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-shop-the-look.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign section_width = section.settings.section_width | default: 'container'
+-%}
+
+<section
+  id="sd-stl-{{ section.id }}"
+  class="sd-stl sd-stl--{{ section_width }}"
+  aria-label="Shop the look"
+>
+
+  {%- comment -%} ── Backdrop for closing cards on outside tap ── {%- endcomment -%}
+  <div class="sd-stl__backdrop" data-stl-backdrop aria-hidden="true"></div>
+
+  {%- comment -%} ── Image ── {%- endcomment -%}
+  <div class="sd-stl__img-wrap">
+    {%- if section.settings.image != blank -%}
+      {%- assign img_alt = section.settings.image.alt | default: 'Shop the look' | escape -%}
+      {{
+        section.settings.image
+        | image_url: width: 1920
+        | image_tag:
+          class: 'sd-stl__img',
+          widths: '440,750,990,1200,1500,1920',
+          sizes: '100vw',
+          alt: img_alt,
+          loading: 'lazy',
+          fetchpriority: 'low'
+      }}
+    {%- else -%}
+      {{ 'collection-1' | placeholder_svg_tag: 'sd-stl__img sd-stl__placeholder' }}
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Hotspots — outside img-wrap so overflow:hidden doesn't clip ── {%- endcomment -%}
+  <div class="sd-stl__hotspots">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'hotspot' -%}
+        {%- assign x = block.settings.pos_x | default: 50 -%}
+        {%- assign y = block.settings.pos_y | default: 50 -%}
+        {%- assign flip = false -%}
+        {%- if x > 55 -%}{%- assign flip = true -%}{%- endif -%}
+
+        <div
+          class="sd-stl__hotspot{% if flip %} sd-stl__hotspot--flip{% endif %}"
+          style="left: {{ x }}%; top: {{ y }}%;"
+          data-stl-hotspot
+          {{ block.shopify_attributes }}
+        >
+          {%- comment -%} Pulse ring ── {%- endcomment -%}
+          <span class="sd-stl__pulse" aria-hidden="true"></span>
+
+          {%- comment -%} Marker button ── {%- endcomment -%}
+          <button
+            class="sd-stl__marker"
+            type="button"
+            aria-expanded="false"
+            aria-label="View {{ block.settings.product_name | escape }}"
+            data-stl-toggle
+          >
+            <span class="sd-stl__marker-icon" aria-hidden="true"></span>
+          </button>
+
+          {%- comment -%} Product card ── {%- endcomment -%}
+          <div class="sd-stl__card" role="tooltip" data-stl-card>
+            {%- if block.settings.product_name != blank -%}
+              <span class="sd-stl__pill">{{ block.settings.product_name }}</span>
+            {%- endif -%}
+
+            {%- if block.settings.product_price != blank -%}
+              <span class="sd-stl__pill">{{ block.settings.product_price }}</span>
+            {%- endif -%}
+
+            {%- if block.settings.product_desc != blank -%}
+              <p class="sd-stl__card-body">{{ block.settings.product_desc }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.product_url != blank -%}
+              <div class="sd-stl__card-cta">
+                <a href="{{ block.settings.product_url }}" class="sd-stl__card-link">
+                  View Details
+                </a>
+                <svg class="sd-stl__card-arrow" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="10.5" cy="10.5" r="10" fill="white"/>
+                  <path d="M8 6L13 10.5L8 15" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            {%- endif -%}
+          </div>
+
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+</section>
+
+<script>
+(function () {
+  var section = document.getElementById('sd-stl-{{ section.id }}');
+  if (!section) return;
+
+  /* ── Scroll reveal ── */
+  function activate() { section.classList.add('is-visible'); }
+
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { activate(); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    obs.observe(section);
+  } else {
+    activate();
+  }
+
+  /* ── Hotspot toggle logic ── */
+  var hotspots = section.querySelectorAll('[data-stl-hotspot]');
+  var backdrop = section.querySelector('[data-stl-backdrop]');
+
+  function closeAll() {
+    hotspots.forEach(function (h) {
+      h.classList.remove('is-active');
+      var btn = h.querySelector('[data-stl-toggle]');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+    section.classList.remove('has-active-hotspot');
+  }
+
+  function openHotspot(hotspot) {
+    var wasActive = hotspot.classList.contains('is-active');
+    closeAll();
+    if (!wasActive) {
+      hotspot.classList.add('is-active');
+      var btn = hotspot.querySelector('[data-stl-toggle]');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+      section.classList.add('has-active-hotspot');
+    }
+  }
+
+  hotspots.forEach(function (h) {
+    var btn = h.querySelector('[data-stl-toggle]');
+    if (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openHotspot(h);
+      });
+    }
+  });
+
+  if (backdrop) {
+    backdrop.addEventListener('click', closeAll);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAll();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Shop The Look",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "container",
+          "label": "Container (1700px)"
+        }
+      ],
+      "default": "container"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Hotspot",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Position"
+        },
+        {
+          "type": "range",
+          "id": "pos_x",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50,
+          "unit": "%",
+          "label": "Horizontal position (left → right)"
+        },
+        {
+          "type": "range",
+          "id": "pos_y",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "default": 50,
+          "unit": "%",
+          "label": "Vertical position (top → bottom)"
+        },
+        {
+          "type": "header",
+          "content": "Product Info"
+        },
+        {
+          "type": "text",
+          "id": "product_name",
+          "label": "Product name",
+          "default": "Annecy 3 Seater Sofa"
+        },
+        {
+          "type": "text",
+          "id": "product_price",
+          "label": "Price label",
+          "default": "Price £899"
+        },
+        {
+          "type": "textarea",
+          "id": "product_desc",
+          "label": "Short description",
+          "default": "Spacious, Family-Ready Comfort With A Premium Look — Designed For Lounging, Hosting And Daily Relaxation."
+        },
+        {
+          "type": "url",
+          "id": "product_url",
+          "label": "Product link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Shop The Look",
+      "settings": {
+        "section_width": "container"
+      },
+      "blocks": [
+        {
+          "type": "hotspot",
+          "settings": {
+            "pos_x": 18,
+            "pos_y": 54,
+            "product_name": "Annecy 3 Seater Sofa",
+            "product_price": "Price £899",
+            "product_desc": "Spacious, Family-Ready Comfort With A Premium Look — Designed For Lounging, Hosting And Daily Relaxation."
+          }
+        },
+        {
+          "type": "hotspot",
+          "settings": {
+            "pos_x": 48,
+            "pos_y": 48,
+            "product_name": "Annecy 2 Seater Sofa",
+            "product_price": "Price £749",
+            "product_desc": "Compact Yet Comfortable — Perfect For Smaller Spaces Without Compromising On Style."
+          }
+        },
+        {
+          "type": "hotspot",
+          "settings": {
+            "pos_x": 82,
+            "pos_y": 76,
+            "product_name": "Annecy Recliner Chair",
+            "product_price": "Price £599",
+            "product_desc": "Kick Back In Style — Power Reclining, Plush Cushioning And A Sleek Silhouette."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

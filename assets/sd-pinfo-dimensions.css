@@ -1,0 +1,299 @@
+/* ============================================================
+   SD Product Info — Dimensions tab
+   Collapsible "Dimensions" widget with mini sofa diagram +
+   spec list, sitting in the product info column.
+   Brand palette: cream / taupe / brown / teal + gold accent.
+   ============================================================ */
+
+.sd-pindim {
+  --pd-cream: var(--color-sd-cream, #FFFAEA);
+  --pd-taupe: var(--color-sd-tan,   #C0B09F);
+  --pd-brown: var(--color-sd-brown, #A58C70);
+  --pd-teal:  var(--color-sd-teal,  #2F4858);
+  --pd-gold:  #E8A53A;
+  --pd-line:  rgba(165, 140, 112, 0.30);
+
+  position: relative;
+  margin: 0 0 2rem;
+  padding: 0;
+  background:
+    linear-gradient(180deg, #fffdf3 0%, var(--pd-cream) 60%, rgba(192, 176, 159, 0.18) 100%);
+  border: 1px solid var(--pd-line);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 18px 36px -22px rgba(47, 72, 88, 0.32);
+  overflow: hidden;
+}
+
+/* ── Bar (clickable tab) ───────────────────────────────── */
+.sd-pindim__bar {
+  appearance: none;
+  display: flex; width: 100%;
+  align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1rem 1.4rem;
+  background: var(--pd-teal);
+  color: #fff; border: 0; cursor: pointer;
+  text-align: left; font-family: inherit;
+  position: relative; z-index: 2;
+  transition: filter 0.25s ease;
+}
+.sd-pindim__bar:hover { filter: brightness(1.08); }
+.sd-pindim__bar:focus-visible { outline: 2px solid var(--pd-gold); outline-offset: -2px; }
+
+.sd-pindim__bar-l { display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex: 1; }
+
+.sd-pindim__bar-ico {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(232, 165, 58, 0.18) 0%, rgba(165, 140, 112, 0.12) 100%);
+  border: 1px solid rgba(232, 165, 58, 0.35);
+  color: var(--pd-gold);
+  flex-shrink: 0;
+}
+
+.sd-pindim__bar-txt { display: flex; flex-direction: column; min-width: 0; }
+.sd-pindim__bar-title {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem; font-weight: 700; letter-spacing: 0.02em; line-height: 1.15;
+}
+.sd-pindim__bar-sub {
+  font-size: 1rem; font-weight: 500;
+  color: rgba(255, 255, 255, 0.72); letter-spacing: 0.02em; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.sd-pindim__bar-toggle {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff; font-family: var(--sd-font-body, inherit);
+  font-size: 1.1rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 0.45rem 0.85rem; border-radius: 999px; flex-shrink: 0;
+}
+.sd-pindim__bar:hover .sd-pindim__bar-toggle { background: rgba(255, 255, 255, 0.24); }
+.sd-pindim__bar-chev { transition: transform 0.3s ease; }
+.sd-pindim.is-collapsed .sd-pindim__bar-chev { transform: rotate(-90deg); }
+
+/* ── Panel collapse ────────────────────────────────────── */
+.sd-pindim__panel {
+  position: relative;
+  max-height: 1800px; opacity: 1; overflow: hidden;
+  padding: 1.8rem 1.8rem 1.6rem;
+  transition: max-height 0.45s ease, opacity 0.3s ease, padding 0.4s ease;
+}
+.sd-pindim.is-collapsed .sd-pindim__panel {
+  max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; pointer-events: none;
+}
+
+.sd-pindim__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(165, 140, 112, 0.04) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(165, 140, 112, 0.03) 0 2px, transparent 2px 6px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.sd-pindim__head { position: relative; z-index: 1; margin-bottom: 1.4rem; }
+
+.sd-pindim__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(165, 140, 112, 0.14);
+  border: 1px solid rgba(165, 140, 112, 0.32);
+  color: var(--pd-brown);
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.05rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  margin-bottom: 0.7rem;
+}
+
+.sd-pindim__title {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 2rem; font-weight: 600;
+  color: var(--pd-teal);
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.01em; line-height: 1.15;
+}
+
+.sd-pindim__sub {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.2rem;
+  color: rgba(47, 72, 88, 0.7);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── Sofa silhouette diagram ───────────────────────────── */
+.sd-pindim__diagram {
+  position: relative; z-index: 1;
+  background: #fff;
+  border: 1px solid var(--pd-line);
+  border-radius: 14px;
+  padding: 1.6rem 1.4rem 1.3rem;
+  margin-bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sd-pindim__sofa {
+  position: relative;
+  width: 75%;
+  max-width: 280px;
+  aspect-ratio: 16 / 9;
+}
+
+/* Stylised sofa silhouette built from layered blocks */
+.sd-pindim__sofa-base {
+  position: absolute;
+  left: 6%; right: 6%; bottom: 12%;
+  height: 36%;
+  background: linear-gradient(180deg, var(--pd-taupe) 0%, var(--pd-brown) 100%);
+  border-radius: 6px 6px 12px 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    0 6px 14px -8px rgba(47, 72, 88, 0.35);
+}
+.sd-pindim__sofa-back {
+  position: absolute;
+  left: 6%; right: 6%; top: 16%;
+  height: 38%;
+  background: linear-gradient(180deg, var(--pd-teal) 0%, #1f3340 100%);
+  border-radius: 14px 14px 4px 4px;
+}
+.sd-pindim__sofa-arm {
+  position: absolute;
+  top: 18%; bottom: 14%;
+  width: 11%;
+  background: linear-gradient(180deg, var(--pd-teal) 0%, #243843 100%);
+  border-radius: 6px;
+}
+.sd-pindim__sofa-arm--l { left: 0; }
+.sd-pindim__sofa-arm--r { right: 0; }
+.sd-pindim__sofa-cushion {
+  position: absolute;
+  bottom: 36%;
+  width: 38%; height: 18%;
+  background: linear-gradient(180deg, #fff 0%, rgba(232, 165, 58, 0.18) 100%);
+  border: 1px solid rgba(232, 165, 58, 0.45);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px -6px rgba(47, 72, 88, 0.32);
+}
+.sd-pindim__sofa-cushion--l { left: 12%; }
+.sd-pindim__sofa-cushion--r { right: 12%; }
+
+/* Dimension marker pills (W / D / H) */
+.sd-pindim__mark {
+  position: absolute;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pd-gold) 0%, #c78a1e 100%);
+  color: #2c1c00;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1rem; font-weight: 800;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 4px 10px -3px rgba(232, 165, 58, 0.55);
+  z-index: 2;
+}
+.sd-pindim__mark--w { left: 50%; bottom: -10px; transform: translateX(-50%); }
+.sd-pindim__mark--d { right: -10px; top: 50%; transform: translateY(-50%); }
+.sd-pindim__mark--h { left: -10px; top: 50%; transform: translateY(-50%); }
+
+/* ── Specs list (key/value rows) ───────────────────────── */
+.sd-pindim__specs {
+  position: relative; z-index: 1;
+  list-style: none; margin: 0 0 1.0rem; padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 1.4rem;
+  background: #fff;
+  border: 1px solid var(--pd-line);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+}
+.sd-pindim__specs li {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed rgba(165, 140, 112, 0.20);
+}
+.sd-pindim__specs li:last-child { border-bottom: 0; }
+
+.sd-pindim__k {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.05rem; font-weight: 600;
+  color: rgba(47, 72, 88, 0.72);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.sd-pindim__v {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--pd-teal);
+  letter-spacing: -0.005em;
+}
+
+/* ── Theme editor rich-text notes ──────────────────────── */
+.sd-pindim__notes {
+  position: relative; z-index: 1;
+  margin-bottom: 1.0rem;
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px dashed rgba(165, 140, 112, 0.32);
+  border-radius: 12px;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  color: rgba(47, 72, 88, 0.78);
+  line-height: 1.55;
+}
+.sd-pindim__notes p:first-child { margin-top: 0; }
+.sd-pindim__notes p:last-child  { margin-bottom: 0; }
+
+/* ── Measure guide link ────────────────────────────────── */
+.sd-pindim__guide {
+  position: relative; z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 1.1rem;
+  background: rgba(47, 72, 88, 0.06);
+  border: 1px solid rgba(47, 72, 88, 0.18);
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--pd-teal);
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem; font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: background 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+}
+.sd-pindim__guide:hover {
+  background: rgba(47, 72, 88, 0.12);
+  border-color: rgba(47, 72, 88, 0.35);
+  transform: translateY(-1px);
+}
+.sd-pindim__guide svg:last-child { transition: transform 0.22s ease; }
+.sd-pindim__guide:hover svg:last-child { transform: translateX(3px); }
+
+/* ── Responsive ────────────────────────────────────────── */
+@media screen and (max-width: 480px) {
+  .sd-pindim__bar { padding: 0.9rem 1.1rem; }
+  .sd-pindim__bar-title { font-size: 1.2rem; }
+  .sd-pindim__bar-sub { font-size: 0.95rem; }
+  .sd-pindim__bar-toggle-label { display: none; }
+  .sd-pindim__bar-toggle { padding: 0.45rem 0.6rem; }
+  .sd-pindim__panel { padding: 1.4rem 1.2rem 1.2rem; }
+  .sd-pindim__title { font-size: 1.7rem; }
+  .sd-pindim__specs { grid-template-columns: 1fr; gap: 0; padding: 0.6rem 1rem; }
+  .sd-pindim__v { font-size: 1.2rem; }
+  .sd-pindim__sofa { width: 88%; }
+}

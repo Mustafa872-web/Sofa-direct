@@ -1,0 +1,67 @@
+<link rel="stylesheet" href="{{ 'sd-ideas.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-ideas.css' | asset_url | stylesheet_tag }}</noscript>
+
+<section class="sd-ideas-grid">
+  <div class="sd-ideas-grid__inner">
+    {%- if section.settings.heading != blank or section.settings.sub != blank -%}
+      <div class="sd-ideas-grid__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="sd-ideas-grid__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.sub != blank -%}
+          <p class="sd-ideas-grid__sub">{{ section.settings.sub }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="sd-ideas-grid__items">
+      {%- for block in section.blocks -%}
+        <a class="sd-ideas-card" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+          <div class="sd-ideas-card__media">
+            {%- if block.settings.image != blank -%}
+              <img src="{{ block.settings.image | image_url: width: 700 }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="700" height="500">
+            {%- endif -%}
+          </div>
+          <div class="sd-ideas-card__body">
+            {%- if block.settings.tag != blank -%}
+              <p class="sd-ideas-card__tag">{{ block.settings.tag }}</p>
+            {%- endif -%}
+            <h3 class="sd-ideas-card__title">{{ block.settings.title }}</h3>
+            {%- if block.settings.text != blank -%}
+              <p class="sd-ideas-card__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+            <span class="sd-ideas-card__more">
+              {{ block.settings.link_label | default: 'Read more' }}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </span>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Ideas Grid",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Latest Guides" },
+    { "type": "text", "id": "sub", "label": "Subtitle", "default": "Fresh tips from our design team" }
+  ],
+  "blocks": [
+    {
+      "type": "article",
+      "name": "Article Card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "tag", "label": "Tag" },
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "text", "label": "Excerpt" },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Read more" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Ideas Grid" } ]
+}
+{% endschema %}

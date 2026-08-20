@@ -1,0 +1,211 @@
+/* ============================================================
+   SD About CTA Banner
+   Desktop: overlay content on image
+   Tablet/Mobile: stacked content panel + image
+   ============================================================ */
+
+.sd-about-cta {
+  position: relative;
+  width: 100%;
+  height: 78.0rem;
+  overflow: hidden;
+}
+
+.sd-about-cta__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sd-about-cta__image--mobile {
+  display: none;
+}
+
+.sd-about-cta__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 34.37%, rgba(0, 0, 0, 0.64) 100%);
+}
+
+.sd-about-cta__content {
+  position: absolute;
+  bottom: 8.0rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4rem;
+  text-align: center;
+  z-index: 2;
+  width: 90%;
+  max-width: 90.0rem;
+}
+
+.sd-about-cta__heading {
+  font-family: var(--sd-font-display);
+  font-size: 6.4rem;
+  font-weight: 900;
+  line-height: normal;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.sd-about-cta__text {
+  font-family: Montserrat, sans-serif;
+  font-size: 2.0rem;
+  font-weight: 500;
+  line-height: 1.38;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  max-width: 87.1rem;
+}
+
+.sd-about-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.0rem;
+  background: #fff;
+  border-radius: 999px;
+  padding: 1.2rem 3.2rem;
+  font-family: Montserrat, sans-serif;
+  font-size: 2.0rem;
+  font-weight: 700;
+  line-height: normal;
+  color: #000;
+  text-transform: capitalize;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sd-about-cta__btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.sd-about-cta__btn svg {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+/* Tablet and smaller: stacked content then image */
+@media screen and (max-width: 989px) {
+  .sd-about-cta {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    background: #f3f3f3;
+  }
+
+  .sd-about-cta__image {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: clamp(28.0rem, 58vw, 44.0rem);
+    object-position: center;
+    order: 2;
+  }
+
+  .sd-about-cta__overlay {
+    display: none;
+  }
+
+  .sd-about-cta__content {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    order: 1;
+    padding: 6.4rem 3.2rem 4.8rem;
+    gap: 2.0rem;
+  }
+
+  .sd-about-cta__heading {
+    color: #000;
+    font-size: clamp(3.6rem, 6.8vw, 5.4rem);
+    line-height: 0.95;
+    white-space: normal;
+  }
+
+  .sd-about-cta__text {
+    color: rgba(0, 0, 0, 0.82);
+    font-size: clamp(1.9rem, 2.5vw, 2.3rem);
+    line-height: 1.4;
+    max-width: 70.0rem;
+  }
+
+  .sd-about-cta__btn {
+    background: transparent;
+    border: 0.2rem solid rgba(0, 0, 0, 0.2);
+    font-size: clamp(1.9rem, 2.4vw, 2.2rem);
+    padding: 1.2rem 3.0rem;
+    white-space: nowrap;
+  }
+
+  .sd-about-cta__btn svg {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+}
+
+/* Mobile */
+@media screen and (max-width: 749px) {
+  .sd-about-cta--has-mobile-image .sd-about-cta__image--desktop {
+    display: none;
+  }
+
+  .sd-about-cta--has-mobile-image .sd-about-cta__image--mobile {
+    display: block;
+  }
+
+  .sd-about-cta__image {
+    height: 26.0rem;
+  }
+
+  .sd-about-cta__content {
+    padding: 3.2rem 1.6rem 2.8rem;
+    gap: 1.4rem;
+  }
+
+  .sd-about-cta__heading {
+    font-family: "FONTSPRING DEMO - Recoleta Alt Black", var(--sd-font-display), serif;
+    font-size: 2.4rem;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+    text-transform: uppercase;
+  }
+
+  .sd-about-cta__text {
+    font-family: Montserrat, sans-serif;
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    max-width: 34.0rem;
+    color: rgba(0, 0, 0, 0.85);
+  }
+
+  .sd-about-cta__btn {
+    font-family: Montserrat, sans-serif;
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: capitalize;
+    padding: 0.9rem 1.8rem;
+    gap: 0.8rem;
+    border-width: 0.16rem;
+  }
+
+  .sd-about-cta__btn svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}

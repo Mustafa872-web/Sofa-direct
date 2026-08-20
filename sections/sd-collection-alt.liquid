@@ -1,0 +1,3508 @@
+{%- liquid
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign products_per_page = section.settings.products_per_page
+  assign show_promo = section.settings.show_promo
+  assign promo_position = section.settings.promo_position | plus: 0
+
+  assign total_active = 0
+  for filter in collection.filters
+    assign total_active = total_active | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      if filter.min_value.value or filter.max_value.value
+        assign total_active = total_active | plus: 1
+      endif
+    endif
+  endfor
+
+  assign banner_img = collection.metafields.custom.banner_image.value
+  assign banner_static_text = collection.metafields.custom.collection_title.value | default: collection.metafields.custom.banner_static_text.value | default: collection.metafields.custom.banner_heading.value
+  assign banner_sub = collection.metafields.custom.banner_subheading.value
+  assign banner_cta_lbl = collection.metafields.custom.banner_cta_label.value
+  assign banner_cta_url = collection.metafields.custom.banner_cta_url.value
+  assign banner_link = collection.metafields.custom.banner_link.value
+  assign intro_description = collection.description
+  assign intro_title = collection.metafields.custom.collection_title.value | default: collection.title
+  if banner_static_text == blank
+    assign banner_static_text = collection.title
+  endif
+  assign has_banner_content = false
+  if banner_static_text != blank or banner_sub != blank or banner_cta_lbl != blank
+    assign has_banner_content = true
+  endif
+  assign promo_blocks = section.blocks | where: 'type', 'promo_banner'
+  assign promo_blocks_count = promo_blocks.size
+  assign promo_meta_field = collection.metafields.custom.promo_banners
+  assign promo_metas = promo_meta_field.value
+  if promo_metas == blank
+    assign promo_metas = promo_meta_field.references
+  endif
+  assign promo_single_ref_field = collection.metafields.custom.promo_banner
+  assign promo_single_ref = promo_single_ref_field.value
+  if promo_single_ref == blank
+    assign promo_single_ref = promo_single_ref_field.reference
+  endif
+  assign promo_meta_count = promo_metas.size | plus: 0
+  assign promo_single_img = promo_single_ref.image.value
+  if promo_single_img == blank
+    assign promo_single_img = promo_single_ref.image
+  endif
+  if promo_single_img == blank
+    assign promo_single_img = collection.metafields.custom.promo_banner_image.value | default: collection.metafields.custom.promo_banner_image | default: collection.metafields.custom.promo_image.value | default: collection.metafields.custom.promo_image | default: collection.metafields.custom.banner_image.value | default: collection.metafields.custom.banner_image | default: collection.metafields.custom.collection_promo_image.value | default: collection.metafields.custom.collection_promo_image
+  endif
+  assign promo_single_eyebrow = promo_single_ref.eyebrow.value | default: promo_single_ref.eyebrow | default: collection.metafields.custom.promo_eyebrow.value | default: collection.metafields.custom.promo_eyebrow
+  assign promo_single_heading = promo_single_ref.heading.value | default: promo_single_ref.heading | default: promo_single_ref.title.value | default: promo_single_ref.title | default: collection.metafields.custom.promo_heading.value | default: collection.metafields.custom.promo_heading
+  assign promo_single_sub = promo_single_ref.subheading.value | default: promo_single_ref.subheading | default: promo_single_ref.subtitle.value | default: promo_single_ref.subtitle | default: collection.metafields.custom.promo_subheading.value | default: collection.metafields.custom.promo_subheading
+  assign promo_single_text = promo_single_ref.body_text.value | default: promo_single_ref.body_text | default: promo_single_ref.body.value | default: promo_single_ref.body | default: promo_single_ref.description.value | default: promo_single_ref.description | default: collection.metafields.custom.promo_body.value | default: collection.metafields.custom.promo_body
+  assign promo_single_cta_label = promo_single_ref.cta_label.value | default: promo_single_ref.cta_label | default: promo_single_ref.button_label.value | default: promo_single_ref.button_label | default: collection.metafields.custom.promo_cta_label.value | default: collection.metafields.custom.promo_cta_label | default: section.settings.promo_cta_label
+  assign promo_single_link_raw = promo_single_ref.link.value.url | default: promo_single_ref.link.value | default: promo_single_ref.link.url | default: promo_single_ref.link | default: promo_single_ref.cta_url.value.url | default: promo_single_ref.cta_url.value | default: promo_single_ref.cta_url | default: promo_single_ref.button_link.value.url | default: promo_single_ref.button_link.value | default: promo_single_ref.button_link | default: collection.metafields.custom.promo_banner_link.value.url | default: collection.metafields.custom.promo_banner_link.value | default: collection.metafields.custom.promo_banner_link.url | default: collection.metafields.custom.promo_banner_link | default: collection.metafields.custom.promo_link.value.url | default: collection.metafields.custom.promo_link.value | default: collection.metafields.custom.promo_link.url | default: collection.metafields.custom.promo_link | default: collection.metafields.custom.banner_link.value.url | default: collection.metafields.custom.banner_link.value | default: collection.metafields.custom.banner_link.url | default: collection.metafields.custom.banner_link | default: collection.metafields.custom.promo_cta_url.value.url | default: collection.metafields.custom.promo_cta_url.value | default: collection.metafields.custom.promo_cta_url
+  assign promo_single_bg = promo_single_ref.bg_color.value | default: promo_single_ref.bg_color | default: promo_single_ref.background_color.value | default: promo_single_ref.background_color | default: collection.metafields.custom.promo_bg_color.value | default: collection.metafields.custom.promo_bg_color | default: '#111521'
+  assign has_collection_promo = false
+  if promo_single_img != blank or promo_single_link_raw != blank or promo_single_heading != blank or promo_single_text != blank
+    assign has_collection_promo = true
+  endif
+  if promo_meta_count > 0
+    assign promo_source = 'meta'
+  elsif has_collection_promo
+    assign promo_source = 'collection_meta'
+  elsif promo_blocks_count > 0
+    assign promo_source = 'blocks'
+  else
+    assign promo_source = 'none'
+  endif
+  assign child_cat_field = collection.metafields.custom.child_category
+  assign child_cat_type = child_cat_field.type
+  assign child_cats = child_cat_field.value
+  assign color_coll_field = collection.metafields.custom.color_collection
+  assign color_coll_type = color_coll_field.type
+  assign color_collection_refs = color_coll_field.references
+  assign color_collections = color_coll_field.value
+  assign color_collection_refs_size = color_collection_refs.size | plus: 0
+  assign color_collections_size = color_collections.size | plus: 0
+  if color_collection_refs_size == 0
+    assign color_collection_refs = color_collections
+  elsif color_collections_size > color_collection_refs_size
+    assign color_collection_refs = color_collections
+  endif
+  assign range_coll_field = collection.metafields.custom.range_collection
+  assign range_coll_type = range_coll_field.type
+  assign range_collection_refs = range_coll_field.references
+  assign range_collections = range_coll_field.value
+  assign range_collection_refs_size = range_collection_refs.size | plus: 0
+  assign range_collections_size = range_collections.size | plus: 0
+  if range_collection_refs_size == 0
+    assign range_collection_refs = range_collections
+  elsif range_collections_size > range_collection_refs_size
+    assign range_collection_refs = range_collections
+  endif
+-%}
+
+<script src="{{ 'product-form.js' | asset_url }}" defer></script>
+<style>
+  /* ================================================================
+     SD COLLECTION ALT â€” full layout
+  ================================================================ */
+
+  /* â”€â”€ Reset & base â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  .sda-page {
+    background: #fff;
+    min-height: 70vh;
+    font-family: inherit;
+    --sda-accent: rgb(var(--color-button));
+    --sda-accent-text: rgb(var(--color-button-text));
+    --sda-accent-soft: rgba(var(--color-button), 0.16);
+    --sda-accent-hover: rgba(var(--color-button), 0.88);
+  }
+  .sda-qa-form { margin: 0; padding: 0; }
+  .sda-qa-form .loading__spinner { display: none; }
+  .sda-card__quick-add[aria-disabled='true'] { opacity: .45; cursor: not-allowed; }
+
+  .sda-wrap {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ================================================================
+     BANNER
+  ================================================================ */
+  .sda-banner {
+    position: relative;
+    width: 100%;
+    height: 680px;
+    min-height: 680px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    background: #111521;
+  }
+  .sda-banner__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transform: scale(1.03);
+    opacity: .64;
+    filter: saturate(1.08) contrast(1.04);
+  }
+  .sda-banner__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(85% 110% at 10% 15%, rgba(255, 210, 140, .16) 0%, transparent 55%),
+      linear-gradient(100deg, rgba(8, 12, 22, .82) 5%, rgba(8, 12, 22, .42) 52%, rgba(8, 12, 22, .62) 100%);
+    pointer-events: none;
+  }
+  .sda-banner__cover-link {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: block;
+  }
+  .sda-banner__content {
+    position: relative;
+    z-index: 3;
+    padding: clamp(42px, 7vw, 86px) 20px clamp(32px, 5vw, 68px);
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .sda-banner__breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    font-size: 16px;
+    line-height: 1;
+    margin-bottom: 12px;
+    background: rgba(255,255,255,.9);
+    border: 1px solid #111;
+    border-radius: 999px;
+    padding: 8px 16px;
+  }
+  .sda-banner__breadcrumb a { color: #111; text-decoration: none; }
+  .sda-banner__title {
+    color: #fff;
+    font-family: var(--sd-font-display);
+    font-size: 80px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: 64px;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: #fff;
+    margin: 0 0 10px;
+    max-width: 640px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  .sda-banner__desc {
+    font-size: 14px;
+    color: rgba(255,255,255,.75);
+    margin: 0 0 18px;
+    max-width: 520px;
+    line-height: 1.55;
+  }
+  .sda-banner__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 22px;
+    background: var(--sda-accent);
+    color: var(--sda-accent-text);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: background .2s;
+  }
+  .sda-banner__cta:hover { background: var(--sda-accent-hover); }
+
+  /* ================================================================
+     Intro Text (below top banner)
+  ================================================================ */
+  .sda-top-intro {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 20px 20px;
+    text-align: center;
+  }
+  .sda-top-intro__desc {
+    color: #000;
+    text-align: center;
+    font-family: Montserrat, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 29.25px;
+    margin: 22px auto 0;
+    max-width: 1100px;
+    letter-spacing: 0;
+  }
+  p.sda-top-intro__title {
+    color: #000;
+    text-align: center;
+    font-family: Montserrat, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 29.25px;
+    margin: 20px auto 30px;
+    max-width: 1100px;
+    letter-spacing: 0;
+  }
+
+  /* ================================================================
+     STICKY FILTER BAR â€” Figma exact (node 612-251)
+  ================================================================ */
+  .sda-filter-bar {
+    position: sticky;
+    top: 129px;
+    z-index: 5;
+    background: #fff;
+    width: 100%;
+    transition: box-shadow .2s;
+  }
+  .sda-filter-bar--shadow { box-shadow: 0 3px 12px rgba(0,0,0,.08); }
+  /* JS-toggled state — keep sticky behavior (not fixed) so it pins under header
+     without removing it from flow. */
+  .sda-filter-bar.sda-filter-bar--fixed {
+    position: sticky;
+    top: 129px;
+    left: 0;
+    right: 0;
+    z-index: 800;
+  }
+
+  .sda-filter-bar__wrap {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* "Filter by:" text â€” outside the pill */
+  .sda-fb-label {
+    flex-shrink: 0;
+    font-size: 13.5px;
+    font-weight: 400;
+    color: #111;
+    white-space: nowrap;
+  }
+
+  /* â”€â”€ Big pill/capsule container â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  .sda-fb-pill {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    background: #F3F3F3;
+    border-radius: 41px;
+    border: 1px solid rgba(0,0,0,0.2);
+    height: 56px;
+    padding: 0 20px;
+    /* positioning context + allow filter panel to escape below */
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Filter buttons row inside pill */
+  .sda-fb-filters {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: clip;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .sda-fb-filters::-webkit-scrollbar { display: none; }
+
+  /* Sort side */
+  .sda-fb-sort {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 14px;
+    border-left: 1px solid rgba(0,0,0,0.15);
+    margin-left: 4px;
+  }
+  .sda-fb-sort-lbl {
+    font-size: 12.5px;
+    color: #555;
+    white-space: nowrap;
+  }
+
+  /* ── Filter / Sort buttons — premium pill style ─────────── */
+  .sda-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 13px;
+    color: #2F4858;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: all .22s ease;
+    user-select: none;
+    position: relative;
+  }
+  .sda-btn:hover {
+    background: rgba(165, 140, 112, 0.12);
+    color: #1c2e38;
+  }
+  .sda-btn.sda-btn--active {
+    font-weight: 700;
+    color: #1c2e38;
+  }
+  .sda-btn.sda-btn--open {
+    background: linear-gradient(135deg, #2F4858 0%, #1c2e38 100%);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(47, 72, 88, 0.28);
+  }
+  .sda-btn.sda-btn--open .sda-btn__chevron { color: #E8A53A; opacity: 1; }
+
+  .sda-btn__chevron {
+    flex-shrink: 0;
+    opacity: 0.55;
+    transition: transform .22s ease, opacity .18s, color .18s;
+  }
+  .sda-btn.sda-btn--open .sda-btn__chevron { transform: rotate(180deg); }
+  .sda-btn.sda-btn--active .sda-btn__chevron { opacity: 0.85; }
+
+  .sda-btn__count {
+    background: #E8A53A;
+    color: #1c2e38;
+    border-radius: 999px;
+    padding: 1px 7px;
+    font-size: 10.5px;
+    font-weight: 800;
+    line-height: 1.5;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+
+  .sda-clear-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--sda-accent);
+    border: 1px solid var(--sda-accent);
+    border-radius: 20px;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background .18s, color .18s;
+    cursor: pointer;
+    margin-left: 6px;
+  }
+  .sda-clear-btn:hover { background: var(--sda-accent); color: var(--sda-accent-text); }
+
+  /* ================================================================
+     DROPDOWN PANELS — premium look (fixed, JS positioned)
+  ================================================================ */
+  .sda-panel {
+    position: fixed;
+    z-index: 9999;
+    background: #fff;
+    border: 1px solid rgba(47, 72, 88, 0.10);
+    border-radius: 14px;
+    box-shadow:
+      0 20px 50px -12px rgba(47, 72, 88, 0.30),
+      0 6px 14px -6px rgba(0,0,0,0.08);
+    min-width: 260px;
+    max-width: 340px;
+    display: none;
+    overflow: hidden;
+    animation: sda-panel-in .22s cubic-bezier(.2,.9,.3,1.1);
+  }
+  @keyframes sda-panel-in {
+    from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .sda-panel.sda-panel--open { display: block; }
+
+  .sda-panel__list {
+    list-style: none;
+    margin: 0;
+    padding: 10px 20px;
+    max-height: 320px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #c0b09f transparent;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .sda-panel__list::-webkit-scrollbar { width: 6px; }
+  .sda-panel__list::-webkit-scrollbar-thumb { background: #c0b09f; border-radius: 999px; }
+  .sda-panel__list::-webkit-scrollbar-track { background: transparent; }
+  .sda-panel__item { margin: 0; }
+  .sda-panel__item--disabled { opacity: .4; pointer-events: none; }
+
+  .sda-panel__check-label {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 18px;
+    font-size: 13.5px;
+    color: #2F4858;
+    cursor: pointer;
+    transition: background .15s ease, color .15s;
+    user-select: none;
+    font-weight: 500;
+  }
+  .sda-panel__check-label:hover {
+    background: linear-gradient(90deg, rgba(165, 140, 112, 0.10) 0%, transparent 100%);
+    color: #1c2e38;
+  }
+
+  .sda-panel__check-label input[type='checkbox'].sda-panel__checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .sda-panel__box {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    border: 1.8px solid #c0b09f;
+    border-radius: 5px;
+    position: relative;
+    transition: all .18s ease;
+    background: #fff;
+  }
+  .sda-panel__check-label:hover .sda-panel__box { border-color: #A58C70; }
+  .sda-panel__checkbox:checked ~ .sda-panel__box {
+    background: linear-gradient(135deg, #2F4858 0%, #1c2e38 100%);
+    border-color: #2F4858;
+    box-shadow: 0 2px 6px rgba(47, 72, 88, 0.25);
+  }
+  .sda-panel__checkbox:checked ~ .sda-panel__box::after {
+    content: '';
+    position: absolute;
+    left: 4px; top: 1px;
+    width: 5px; height: 10px;
+    border: 2.2px solid #fff;
+    border-top: none; border-left: none;
+    transform: rotate(44deg);
+  }
+  .sda-panel__checkbox:checked ~ .sda-panel__value { font-weight: 700; color: #1c2e38; }
+  .sda-panel__value { flex: 1; }
+  /* ─── Color swatch filter ─── */
+  .sda-panel__list--swatch {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 10px;
+    padding: 8px 4px 14px;
+  }
+  .sda-panel__item--swatch { margin: 0; }
+  .sda-panel__check-label--swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 4px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background .15s ease;
+  }
+  .sda-panel__check-label--swatch:hover { background: rgba(165,140,112,.08); }
+  .sda-panel__check-label--swatch .sda-panel__qty { font-size: 10px; color: rgba(47,72,88,.6); }
+  .sda-panel__check-label--swatch .sda-panel__value {
+    font-size: 11px;
+    text-align: center;
+    flex: none;
+    color: var(--color-sd-teal, #2F4858);
+    letter-spacing: .02em;
+  }
+  .sda-panel__swatch {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: #ddd;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.08);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .sda-panel__check-label--swatch:hover .sda-panel__swatch { transform: scale(1.08); }
+  .sda-panel__checkbox:checked ~ .sda-panel__swatch {
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.08), 0 0 0 2px var(--color-sd-brown, #A58C70), 0 1px 3px rgba(0,0,0,.12);
+  }
+  .sda-panel__item--swatch.sda-panel__item--disabled .sda-panel__check-label--swatch {
+    opacity: .35; cursor: not-allowed;
+  }
+  .sda-panel__qty   { font-size: 12px; color: #aaa; }
+
+  .sda-panel__footer {
+    padding: 10px 18px 12px;
+    border-top: 1px solid rgba(165, 140, 112, 0.18);
+    background: rgba(255, 250, 234, 0.5);
+  }
+  .sda-panel__clear {
+    font-size: 12.5px;
+    color: var(--sda-accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity .15s;
+  }
+  .sda-panel__clear:hover { text-decoration: underline; opacity: 0.85; }
+
+  /* Price range */
+  .sda-panel__price { padding: 14px 16px 10px; }
+  .sda-panel__price-hint { font-size: 11.5px; color: #888; margin: 0 0 10px; }
+  .sda-panel__price-row { display: flex; align-items: flex-end; gap: 8px; }
+  .sda-price-field { flex: 1; }
+  .sda-price-field label { display: block; font-size: 11px; color: #888; margin-bottom: 4px; }
+  .sda-price-field__inner {
+    display: flex; align-items: center;
+    border: 1px solid #ccc; border-radius: 4px; overflow: hidden;
+  }
+  .sda-price-field__inner:focus-within { border-color: #333; }
+  .sda-price-field__sym {
+    padding: 0 7px; font-size: 12.5px; color: #666;
+    background: #f8f8f8; border-right: 1px solid #ddd; line-height: 34px;
+  }
+  .sda-price-field__input {
+    width: 100%; padding: 7px 8px; border: none; font-size: 13px;
+    outline: none; background: transparent; font-family: inherit;
+  }
+  .sda-price-sep { font-size: 15px; color: #bbb; padding-bottom: 7px; }
+
+  /* Sort panel */
+  .sda-sort-option {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px; cursor: pointer; font-size: 13.5px;
+    color: #222; transition: background .1s;
+  }
+  .sda-sort-option:hover { background: #f5f5f5; }
+  .sda-sort-option input { display: none; }
+  .sda-sort-tick { width: 14px; height: 14px; flex-shrink: 0; color: var(--sda-accent); opacity: 0; }
+  .sda-sort-option--active .sda-sort-tick { opacity: 1; }
+  .sda-sort-option--active .sda-sort-lbl { font-weight: 600; }
+
+  /* ================================================================
+     ACTIVE FILTER PILLS
+  ================================================================ */
+  .sda-active-bar {
+    width: 100%; max-width: 1440px; margin: 0 auto;
+    padding: 8px 20px; display: flex; flex-wrap: wrap;
+    gap: 6px; align-items: center; min-height: 2px;
+  }
+  .sda-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; background: #e8e8e8; border-radius: 20px;
+    font-size: 12px; color: #222; text-decoration: none;
+    transition: background .15s; white-space: nowrap;
+  }
+  .sda-pill:hover { background: #d8d8d8; }
+  .sda-pill__x { font-size: 14px; color: #777; line-height: 1; }
+  .sda-clear-all {
+    font-size: 12px; color: var(--sda-accent); text-decoration: none;
+    margin-left: 4px; font-weight: 500;
+  }
+  .sda-clear-all:hover { text-decoration: underline; }
+
+  /* ================================================================
+     RESULTS BAR
+  ================================================================ */
+  .sda-results-bar {
+    width: 100%; max-width: 1440px; margin: 0 auto;
+    padding: 12px 20px 6px; display: flex;
+    align-items: center; justify-content: center;
+  }
+  .sda-results-count {
+    font-size: 13.5px; color: #666;
+  }
+  .sda-results-count strong { color: #111; font-weight: 700; }
+
+  /* ================================================================
+     PRODUCT GRID
+  ================================================================ */
+  #SdaGridWrap {
+    width: 100%; max-width: 1440px; margin: 0 auto;
+    padding: 12px 20px 60px; transition: opacity .25s;
+  }
+  #SdaGridWrap.sda-loading { opacity: .35; pointer-events: none; }
+
+  .sda-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.desktop_columns | default: 4 }}, 1fr);
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  /* ================================================================
+     CHILD CATEGORY STRIP (Figma 609-9)
+  ================================================================ */
+  .sda-cat-strip {
+    background: #fff;
+    border-bottom: 1px solid #efefef;
+  }
+  .sda-cat-strip__wrap {
+    max-width: 1440px; margin: 0 auto;
+    padding: 16px 20px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+  }
+  .sda-cat-strip__heading {
+    flex-shrink: 0;
+    font-size: 13px; font-weight: 700; color: #111;
+    white-space: nowrap;
+    letter-spacing: .01em;
+    text-align: center;
+  }
+  .sda-cat-strip__scroll {
+    display: flex; align-items: center; gap: 8px;
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto; overflow-y: visible;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    padding: 2px 0;
+  }
+  .sda-cat-strip__scroll::-webkit-scrollbar { display: none; }
+  .sda-cat-strip__scroll--range {
+    justify-content: center !important;
+  }
+  .sda-cat-strip__slider {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sda-style-nav {
+    display: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #222;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .sda-style-nav:disabled {
+    opacity: .35;
+    cursor: default;
+  }
+  .sda-cat-chip {
+    display: inline-flex; align-items: center;
+    padding: 7px 18px;
+    border: 1.5px solid #ddd;
+    border-radius: 30px;
+    font-size: 13px; color: #333;
+    text-decoration: none; white-space: nowrap;
+    background: #fff;
+    transition: border-color .18s, background .18s, color .18s, box-shadow .18s;
+  }
+  .sda-cat-chip:hover {
+    border-color: var(--sda-accent);
+    background: var(--sda-accent);
+    color: var(--sda-accent-text);
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+  }
+  .sda-cat-chip--active {
+    border-color: var(--sda-accent);
+    background: var(--sda-accent);
+    color: var(--sda-accent-text);
+  }
+  @media (max-width: 749px) {
+    .sda-cat-strip__wrap { padding: 12px 12px 14px; gap: 8px; }
+    .sda-cat-strip__heading { font-size: 12px; }
+    .sda-cat-chip { padding: 6px 14px; font-size: 12px; }
+    .sda-cat-strip--style .sda-cat-strip__wrap { align-items: stretch; }
+  }
+
+  /* "Shop by Style": render as a wrapped grid of chips, no slider, no nav arrows.
+     Collapsed by default to ~2 rows; "Show More" expands. */
+  .sda-cat-strip--style .sda-cat-strip__slider { display: block; position: relative; }
+  .sda-cat-strip--style .sda-style-nav { display: none !important; }
+  .sda-cat-strip--style .sda-cat-strip__scroll--style {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px 12px;
+    width: 100%;
+    overflow: hidden;
+    scroll-snap-type: none;
+    padding: 4px 0;
+    max-height: 95px;          /* ≈ 2 rows of chips */
+    position: relative;
+    transition: max-height 0.25s ease;
+  }
+  .sda-cat-strip--style .sda-cat-strip__scroll--style .sda-cat-chip {
+    flex: 0 0 auto;
+    scroll-snap-align: none;
+  }
+  .sda-cat-strip--style.is-expanded .sda-cat-strip__scroll--style {
+    max-height: 2000px;        /* large enough for any chip count */
+  }
+  .sda-cat-strip--style__more {
+    display: none;
+    align-self: flex-start;
+    margin: 8px 0 0;
+    padding: 6px 14px;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    background: #fff;
+    color: #333;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color .18s, background .18s, color .18s;
+  }
+  .sda-cat-strip--style__more:hover {
+    border-color: var(--sda-accent);
+    background: var(--sda-accent);
+    color: var(--sda-accent-text);
+  }
+  .sda-cat-strip--style.is-overflowing .sda-cat-strip--style__more { display: inline-flex; }
+  @media (max-width: 749px) {
+    .sda-cat-strip--style .sda-cat-strip__scroll--style { gap: 8px; max-height: 80px; }
+  }
+
+  /* ── Product card ────────────────────────────────────────────── */
+  .sda-card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    transition: box-shadow .2s, transform .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.07);
+  }
+  .sda-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,.12);
+    transform: translateY(-2px);
+  }
+
+  /* image area */
+  .sda-card__media {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    overflow: hidden;
+    background: #f5f5f5;
+    border-radius: 14px 14px 0 0;
+  }
+  .sda-card__slider { position: absolute; inset: 0; }
+  .sda-card__slide { position: absolute; inset: 0; opacity: 0; transition: opacity .35s; }
+  .sda-card__slide.on { opacity: 1; }
+  .sda-card__img-link {
+    position: absolute; inset: 0;
+    display: block; text-decoration: none;
+  }
+  .sda-card__img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center;
+    display: block;
+  }
+  .sda-card__img--ph { width: 100%; height: 100%; }
+
+  /* save + delivery badges (separate grid) */
+  .sda-card__meta-grid {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    display: grid;
+    gap: 6px;
+    max-width: calc(100% - 58px);
+    pointer-events: none;
+  }
+  .sda-card__save-badge,
+  .sda-card__delivery-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    padding: 5px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    backdrop-filter: blur(3px);
+  }
+  .sda-card__save-badge {
+    background: rgba(255, 243, 246, .96);
+    color: #d3225a;
+    border: 1px solid rgba(211, 34, 90, .22);
+  }
+  .sda-card__delivery-badge {
+    background: rgba(22, 160, 255, .94);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, .35);
+  }
+  .sda-card__delivery-badge svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  /* badge */
+  .sda-card__badge {
+    position: absolute; top: 12px; right: 52px; z-index: 3;
+    font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 6px; pointer-events: none;
+    background: #e8f5e9; color: #2e7d32;
+  }
+  .sda-card__badge--sale { background: #fce4ec; color: #c62828; }
+  .sda-card__badge--new { background: #e3f2fd; color: #1565c0; }
+  .sda-card__badge--best { background: #fff8e1; color: #e65100; }
+
+  /* wishlist */
+  .sda-card__wish {
+    position: absolute; top: 10px; right: 10px; z-index: 4;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(255,255,255,.92); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #555; transition: color .15s, background .15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  }
+  .sda-card__wish:hover, .sda-card__wish.active { color: #e53935; background: #fff; }
+
+  /* image count */
+  .sda-card__img-count {
+    position: absolute; bottom: 10px; right: 10px; z-index: 3;
+    background: rgba(0,0,0,.55); color: #fff;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 20px; pointer-events: none;
+  }
+
+  /* colour dot (single variant) */
+  .sda-card__swatch {
+    position: absolute; bottom: 10px; left: 12px; z-index: 3;
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.8);
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    pointer-events: none;
+  }
+
+  /* arrow prev/next on image */
+  .sda-card__arrow {
+    position: absolute; top: 50%; z-index: 4;
+    transform: translateY(-50%);
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,.88); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #333; opacity: 0; transition: opacity .2s, background .15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  }
+  .sda-card:hover .sda-card__arrow { opacity: 1; }
+  .sda-card__arrow--prev { left: 6px; }
+  .sda-card__arrow--next { right: 6px; }
+  .sda-card__arrow:hover { background: #fff; }
+
+  /* quick-add / view-more actions */
+  .sda-card__actions {
+    position: absolute; bottom: 12px; right: 12px; z-index: 4;
+    display: flex; align-items: center; gap: 8px; padding: 7px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.22);
+    background: rgba(17,19,23,.52);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 22px rgba(0,0,0,.24);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .18s ease, transform .22s cubic-bezier(.4,0,.2,1);
+  }
+  .sda-card:hover .sda-card__actions { opacity: 1; transform: translateY(0); }
+  .sda-card__quick-add {
+    width: 40px; height: 40px; border-radius: 999px;
+    background: linear-gradient(145deg, #21242c 0%, #111318 100%);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.24);
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    transition: background .18s, color .18s, transform .18s, border-color .18s;
+    box-shadow: 0 5px 14px rgba(0,0,0,.25);
+  }
+  .sda-card__quick-add:hover {
+    background: #fff;
+    color: #111;
+    border-color: rgba(255,255,255,.7);
+    transform: translateY(-1px);
+  }
+  .sda-card__quick-add--sold-out {
+    background: rgba(228,228,228,.92);
+    color: #7e7e7e;
+    border-color: rgba(255,255,255,.35);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .sda-card__quick-add svg { width: 17px; height: 17px; flex-shrink: 0; }
+  .sda-card__view-more {
+    width: 40px; height: 40px; flex-shrink: 0; border-radius: 999px;
+    background: rgba(255,255,255,.96);
+    color: #16191f;
+    border: 1px solid rgba(255,255,255,.65);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    transition: background .18s, color .18s, transform .18s, border-color .18s;
+    box-shadow: 0 5px 14px rgba(0,0,0,.18);
+  }
+  .sda-card__view-more:hover {
+    background: var(--sda-accent);
+    color: var(--sda-accent-text);
+    border-color: transparent;
+    transform: translateY(-1px);
+  }
+  .sda-card__view-more svg { width: 17px; height: 17px; }
+
+  /* info area */
+  .sda-card__info {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 14px 14px 16px;
+    flex: 1;
+    min-height: 188px;
+    background:
+      radial-gradient(140% 120% at 100% 100%, rgba(var(--color-button), 0.08) 0%, transparent 56%),
+      linear-gradient(180deg, #ffffff 0%, #fcfcfe 62%, #f7f8fb 100%);
+  }
+  .sda-card__info::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(0,0,0,.16), rgba(0,0,0,.03));
+  }
+  .sda-card__name-link { text-decoration: none; color: inherit; }
+  .sda-card__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #171a22;
+    margin: 0;
+    line-height: 1.35; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    min-height: 40px;
+    letter-spacing: .01em;
+  }
+  .sda-card__name-link:hover .sda-card__name { color: var(--sd-brown)!important; }
+  .sda-card__desc {
+    font-size: 12px;
+    color: #646a76;
+    margin: 0;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 34px;
+  }
+  .sda-card__colours {
+    font-size: 12px;
+    color: #4f586a;
+    margin: 0;
+    line-height: 1.4;
+  }
+  .sda-card__price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(17, 24, 39, .18);
+  }
+  .sda-card__price {
+    font-size: 27px;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    color: #111;
+  }
+  .sda-card__price--sale {
+    color: #d61f57;
+    text-shadow: 0 1px 0 rgba(255,255,255,.4);
+  }
+  .sda-card__was {
+    font-size: 12px;
+    color: #8d93a1;
+    text-decoration: line-through;
+    font-weight: 600;
+  }
+  .sda-card__finance {
+    margin: 1px 0 0;
+    font-size: 12px;
+    color: #2b3344;
+    font-style: italic;
+    background: rgba(255, 255, 255, .82);
+    border: 1px solid rgba(17, 24, 39, .11);
+    border-radius: 999px;
+    padding: 5px 10px;
+    width: fit-content;
+  }
+  /* ── Promo banner: full-width image card ── */
+  .sda-promo {
+    display: block;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    background: #111521;
+    height: 100%;
+    min-height: 100%;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  }
+  .sda-promo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(0,0,0,.16);
+  }
+  /* Position variants */
+  .sda-promo--left {
+    max-width: 100%;
+    margin: 0;
+  }
+  .sda-promo--right {
+    max-width: 100%;
+    margin: 0;
+  }
+  /* .sda-promo--center is default full-width */
+  @media (max-width: 749px) {
+    .sda-promo--left,
+    .sda-promo--right { max-width: 100%; }
+  }
+  .sda-promo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  /* aspect ratio wrapper so banner has consistent height */
+  .sda-promo__img-wrap {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: block;
+  }
+  @media (max-width: 749px) {
+    .sda-promo__img-wrap { height: 100%; aspect-ratio: auto; }
+  }
+  /* keep old class names inert so leftover references don't break */
+  .sda-promo__cta:hover {
+    opacity: .9;
+  }
+
+
+
+  /* ================================================================
+     SHOP BY COLOR — image cards
+  ================================================================ */
+  .sda-color-strip {
+    background: #fff;
+    border-bottom: 1px solid #efefef;
+  }
+  .sda-color-strip__wrap {
+    max-width: 1440px; margin: 0 auto;
+    padding: 14px 20px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .sda-color-strip__heading {
+    font-size: 13px; font-weight: 700; color: #111;
+    letter-spacing: .01em; text-align: center;
+  }
+  .sda-color-strip__scroll {
+    display: flex; align-items: flex-start; gap: 12px;
+    overflow-x: auto; overflow-y: visible;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    padding: 2px 0;
+    justify-content: center;
+  }
+  .sda-color-strip__scroll::-webkit-scrollbar { display: none; }
+  .sda-color-card {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    text-decoration: none; flex-shrink: 0; width: 80px;
+  }
+  .sda-color-card__thumb {
+    width: 72px; height: 72px; border-radius: 10px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: #f5f5f5; border: 2px solid transparent;
+    transition: border-color .15s;
+  }
+  .sda-color-card--active .sda-color-card__thumb,
+  .sda-color-card:hover .sda-color-card__thumb { border-color: #111; }
+  .sda-color-card__thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .sda-color-card__fill { width: 100%; height: 100%; display: block; }
+  /* Hex swatch (preferred when collection has custom.menu_color metaobject set) */
+  .sda-color-card__swatch {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #ccc;
+  }
+  .sda-color-card--hex .sda-color-card__thumb { background: transparent; }
+  .sda-color-card__fallback {
+    font-size: 22px; font-weight: 700; color: #888; text-transform: uppercase;
+  }
+  .sda-color-card__name {
+    font-size: 11px; color: #333; text-align: center;
+    font-weight: 500; line-height: 1.3; max-width: 72px;
+  }
+  .sda-color-card--active .sda-color-card__name { color: #111; font-weight: 700; }
+  /* Below 990px: Shop by Color + Shop by Range become wrap-grids,
+     not horizontal scrollers. Tablet + mobile share this behavior. */
+  @media (max-width: 989px) {
+    .sda-color-strip__wrap { padding: 12px 12px 14px; }
+    .sda-color-strip__scroll {
+      flex-wrap: wrap;
+      justify-content: center;
+      overflow-x: visible;
+      gap: 10px 14px;
+      padding: 4px 4px 6px;
+    }
+    .sda-color-card { width: 60px; flex-shrink: 1; }
+    .sda-color-card__thumb { width: 52px; height: 52px; }
+
+    /* Shop by Range — same wrap-grid behavior (uses the generic
+       .sda-cat-strip__scroll with --range modifier). */
+    .sda-cat-strip__scroll--range {
+      flex-wrap: wrap;
+      justify-content: center !important;
+      overflow-x: visible;
+      gap: 8px 10px;
+      padding: 2px 0;
+    }
+    /* Hide the range slider arrows once the strip wraps as a grid. */
+    .sda-cat-strip--range .sda-style-nav { display: none !important; }
+  }
+
+  /* Shop by Style — keep the 2-row clamp on mobile so the
+     "Show more" button has overflow to expand. Center-aligned. */
+  @media (max-width: 749px) {
+    .sda-cat-strip--style .sda-cat-strip__scroll--style {
+      justify-content: center;
+      /* keep the 80px clamp from the earlier mobile rule so the
+         Show More button surfaces when chips overflow. */
+    }
+  }
+
+  /* ================================================================
+     VIEW TOGGLE BAR (grid / list)
+  ================================================================ */
+  .sda-view-bar {
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .sda-view-bar__wrap {
+    max-width: 1440px; margin: 0 auto;
+    padding: 8px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .sda-view-toggle {
+    display: flex; align-items: center; gap: 2px;
+    background: #f3f3f3; border-radius: 8px; padding: 3px;
+  }
+  .sda-col-btn {
+    width: 34px; height: 34px; border: none; border-radius: 6px;
+    background: transparent; cursor: pointer; color: #888;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s;
+  }
+  .sda-col-btn:hover { color: #111; }
+  .sda-col-btn.active { background: #fff; color: #111; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+
+  /* Hide the 3/4/5 column grid-view toggle on mobile (no point — */
+  /* mobile uses a single fixed column count). */
+  @media (max-width: 749px) {
+    .sda-view-toggle { display: none !important; }
+  }
+
+  /* ================================================================
+     MOBILE FILTER BUTTON + DRAWER
+  ================================================================ */
+  .sda-mobile-filter-bar {
+    display: none;
+    padding: 10px 12px;
+    background: #fff;
+    border-bottom: 1px solid #ebebeb;
+    gap: 8px;
+    align-items: center;
+  }
+  @media (max-width: 749px) {
+    .sda-fb-pill, .sda-fb-label { display: none !important; }
+    .sda-mobile-filter-bar { display: flex; }
+    #SdaFilterBar,
+    #SdaFilterBarSpacer { display: none !important; }
+  }
+  .sda-mobile-filter-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 16px;
+    background: #F3F3F3; border: 1px solid rgba(0,0,0,.2);
+    border-radius: 30px; font-size: 13px; font-weight: 600; color: #111;
+    cursor: pointer; font-family: inherit;
+    transition: background .15s;
+  }
+  .sda-mobile-filter-btn:hover { background: #e8e8e8; }
+  .sda-mobile-filter-count {
+    background: #111; color: #fff; border-radius: 99px;
+    padding: 1px 6px; font-size: 11px; font-weight: 700;
+  }
+  .sda-drawer-backdrop {
+    position: fixed; inset: 0; z-index: 8000;
+    background: rgba(0,0,0,.45);
+    opacity: 0; pointer-events: none;
+    transition: opacity .28s;
+  }
+  .sda-drawer-backdrop.open { opacity: 1; pointer-events: all; }
+  .sda-filter-drawer {
+    position: fixed; left: 0; bottom: 0; right: 0;
+    z-index: 9000; background: #fff;
+    border-radius: 20px 20px 0 0;
+    max-height: 88vh; display: flex; flex-direction: column;
+    transform: translateY(100%);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 -8px 32px rgba(0,0,0,.18);
+  }
+  .sda-filter-drawer.open { transform: translateY(0); }
+  .sda-filter-drawer__handle {
+    width: 36px; height: 4px; border-radius: 2px;
+    background: #ddd; margin: 10px auto 0;
+  }
+  .sda-filter-drawer__header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px 10px; border-bottom: 1px solid #f0f0f0;
+  }
+  .sda-filter-drawer__title { font-size: 16px; font-weight: 700; color: #111; }
+  .sda-filter-drawer__close {
+    width: 32px; height: 32px; border: none; background: #f3f3f3;
+    border-radius: 50%; cursor: pointer; font-size: 18px; color: #555;
+    display: flex; align-items: center; justify-content: center; line-height: 1;
+  }
+  .sda-filter-drawer__body {
+    flex: 1; overflow-y: auto; padding: 0 0 8px; -webkit-overflow-scrolling: touch;
+  }
+  .sda-filter-acc { border-bottom: 1px solid #f3f3f3; }
+  .sda-filter-acc__btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; background: transparent; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 600; color: #111; font-family: inherit; text-align: left;
+  }
+  .sda-filter-acc__chevron { transition: transform .2s; opacity: .5; flex-shrink: 0; }
+  .sda-filter-acc__btn.open .sda-filter-acc__chevron { transform: rotate(180deg); opacity: 1; }
+  .sda-filter-acc__body { display: none; padding: 4px 20px 14px; }
+  .sda-filter-acc__body.open { display: block; }
+  .sda-filter-acc__check {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 0; font-size: 13.5px; color: #222; cursor: pointer;
+  }
+  .sda-filter-acc__check input[type=checkbox] {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .sda-filter-acc__box {
+    width: 18px; height: 18px; flex-shrink: 0;
+    border: 1.5px solid #bbb; border-radius: 3px; position: relative;
+    transition: background .12s, border-color .12s; background: #fff;
+  }
+  .sda-filter-acc__check input:checked ~ .sda-filter-acc__box {
+    background: #111; border-color: #111;
+  }
+  .sda-filter-acc__check input:checked ~ .sda-filter-acc__box::after {
+    content: ''; position: absolute;
+    left: 3px; top: 1px; width: 5px; height: 9px;
+    border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(44deg);
+  }
+  .sda-filter-drawer__footer {
+    padding: 12px 20px; border-top: 1px solid #f0f0f0; display: flex; gap: 8px;
+  }
+  .sda-drawer-apply-btn {
+    flex: 1; padding: 13px; background: var(--sda-accent); color: var(--sda-accent-text);
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .sda-drawer-clear-btn {
+    padding: 13px 18px; background: #f3f3f3; color: #111;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit; text-decoration: none;
+    display: inline-flex; align-items: center;
+  }
+
+  /* â”€â”€ Responsive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  @media (max-width: 1299px) {
+    .sda-banner {
+      height: 580px;
+      min-height: 580px;
+    }
+    .sda-banner__title {
+      font-size: 66px;
+      line-height: 56px;
+      max-width: 560px;
+    }
+    .sda-color-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
+  @media (max-width: 989px) {
+    .sda-banner {
+      height: 460px;
+      min-height: 460px;
+    }
+    .sda-banner__content { padding: 34px 16px; }
+    .sda-grid { grid-template-columns: repeat({{ section.settings.tablet_columns | default: 2 }}, 1fr); }
+    .sda-banner__title { font-size: 56px; line-height: 48px; }
+    .sda-top-intro__desc,
+    .sda-top-intro__title { font-size: 18px; line-height: 27px; }
+    .sda-cat-strip__scroll { justify-content: center; }
+    .sda-discovery__wrap { padding: 16px; }
+    .sda-color-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 749px) {
+    .sda-grid { grid-template-columns: repeat({{ section.settings.mobile_columns | default: 1 }}, 1fr); gap: 12px; }
+    .sda-banner { height: 300px; min-height: 300px; }
+    .sda-banner__bg { transform: scale(1.01); }
+    .sda-filter-bar__wrap,
+    .sda-active-bar,
+    .sda-results-bar,
+    #SdaGridWrap { padding-left: 12px; padding-right: 12px; }
+    .sda-filter-bar__wrap { gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+    .sda-banner__content { padding: 24px 12px; }
+    .sda-fb-label { font-size: 12px; }
+    .sda-fb-pill { height: 46px; padding: 0 12px; }
+    .sda-btn { font-size: 12px; padding: 7px 10px; }
+    .sda-banner__title { font-size: 34px; line-height: 34px; }
+    .sda-banner__desc { font-size: 12px; margin-bottom: 12px; max-width: 100%; }
+    .sda-top-intro { padding: 16px 12px 14px; }
+    .sda-top-intro__desc,
+    .sda-top-intro__title { font-size: 14px; line-height: 21px; }
+    .sda-fb-sort-lbl { display: none; }
+    /* Promo banner — mobile */
+    .sda-promo__img-wrap { height: 100%; aspect-ratio: auto; }
+    .sda-card__arrow { display: none; }
+    .sda-card__actions {
+      transform: translateY(0);
+      opacity: 1;
+      right: 10px;
+      bottom: 10px;
+      padding: 6px;
+      gap: 6px;
+      justify-content: flex-end;
+      background: rgba(17,19,23,.45);
+      border-color: rgba(255,255,255,.2);
+    }
+    .sda-card__quick-add, .sda-card__view-more {
+      width: 34px;
+      height: 34px;
+      flex-basis: 34px;
+    }
+    .sda-card__quick-add svg, .sda-card__view-more svg { width: 16px; height: 16px; }
+    .sda-card__meta-grid {
+      max-width: calc(100% - 20px);
+      font-size: 10px;
+      top: 10px;
+      left: 10px;
+    }
+    .sda-card__save-badge,
+    .sda-card__delivery-badge {
+      font-size: 10px;
+      padding: 5px 8px;
+    }
+    .sda-card__badge {
+      right: 46px;
+      top: 10px;
+      font-size: 10px;
+    }
+    .sda-card__info {
+      gap: 6px;
+      padding: 12px 12px 14px;
+      min-height: 164px;
+    }
+    .sda-card__info::before {
+      left: 12px;
+      right: 12px;
+    }
+    .sda-card__name {
+      font-size: 14px;
+      min-height: 38px;
+    }
+    .sda-card__desc {
+      min-height: 30px;
+      font-size: 11px;
+    }
+    .sda-card__price {
+      font-size: 23px;
+    }
+    .sda-card__price-row {
+      padding-top: 7px;
+      gap: 7px;
+    }
+    .sda-card__finance {
+      font-size: 11px;
+      padding: 4px 9px;
+    }
+  }
+
+  /* Collection description inline links — theme default colour, underline on hover */
+  .sda-collection-head__desc a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: text-decoration-thickness .15s ease;
+  }
+  .sda-collection-head__desc a:hover,
+  .sda-collection-head__desc a:focus-visible {
+    text-decoration-thickness: 2px;
+  }
+</style>
+
+{%- comment -%} â•â•â• PAGE â•â•â• {%- endcomment -%}
+<div class="sda-page" id="SdaPage">
+  {%- comment -%} ── Unified Collection Header (banner + intro merged) ── {%- endcomment -%}
+  {%- if section.settings.show_banner or intro_description != blank or intro_title != blank -%}
+    {%- liquid
+      assign banner_visual = banner_img
+      if banner_visual == blank and collection.image != blank
+        assign banner_visual = collection.image
+      endif
+    -%}
+    <section class="sda-collection-head{% if banner_visual %} sda-collection-head--has-image{% endif %}" aria-label="{{ collection.title | escape }}">
+      {%- if banner_visual != blank -%}
+        <div class="sda-collection-head__visual" aria-hidden="true">
+          {{
+            banner_visual
+            | image_url: width: 1400
+            | image_tag: class: 'sda-collection-head__img', loading: 'eager', fetchpriority: 'high', alt: collection.title
+          }}
+          <span class="sda-collection-head__vignette"></span>
+        </div>
+      {%- endif -%}
+
+      <div class="sda-collection-head__inner">
+        <nav class="sda-collection-head__crumb" aria-label="Breadcrumb">
+          <a href="{{ routes.collections_url }}">Collections</a>
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+            <path d="M3 1L7 5L3 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>{{ collection.title }}</span>
+        </nav>
+
+        <h1 class="sda-collection-head__title">
+          {%- if banner_static_text != blank -%}{{ banner_static_text }}{%- else -%}{{ collection.title }}{%- endif -%}
+        </h1>
+
+        <span class="sda-collection-head__ornament" aria-hidden="true">
+          <svg width="60" height="10" viewBox="0 0 60 10" fill="none">
+            <path d="M2 5h20M38 5h20" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <circle cx="30" cy="5" r="3.2" fill="currentColor"/>
+          </svg>
+        </span>
+
+        {%- if banner_sub != blank or intro_description != blank -%}
+          <div class="sda-collection-head__desc">
+            {%- if banner_sub != blank -%}
+              <p>{{ banner_sub | strip_html | truncate: 200 }}</p>
+            {%- elsif intro_description != blank -%}
+              {{ intro_description }}
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        <div class="sda-collection-head__meta">
+          <span class="sda-collection-head__count">
+            <strong>{{ collection.products_count }}</strong>
+            {%- if collection.products_count == 1 -%}product{%- else -%}products{%- endif -%}
+          </span>
+          {%- if banner_cta_lbl != blank and banner_cta_url != blank -%}
+            <a href="{{ banner_cta_url }}" class="sda-collection-head__cta">
+              {{ banner_cta_lbl }}
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
+                <path d="M1 5H13M9 1L13 5L9 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  {%- comment -%} Shop By Blocks — ordered by schema {%- endcomment -%}
+  {%- for sdb_i in (1..3) -%}
+    {%- if sdb_i == 1 -%}
+      {%- assign sdb_key = section.settings.shop_by_block_1 -%}
+    {%- elsif sdb_i == 2 -%}
+      {%- assign sdb_key = section.settings.shop_by_block_2 -%}
+    {%- else -%}
+      {%- assign sdb_key = section.settings.shop_by_block_3 -%}
+    {%- endif -%}
+
+    {%- if sdb_key == 'style' and child_cats != blank -%}
+      <div class="sda-cat-strip sda-cat-strip--style" data-style-strip>
+        <div class="sda-cat-strip__wrap">
+          <span class="sda-cat-strip__heading">
+            {{- section.settings.child_category_heading | default: 'Shop by Style' -}}
+          </span>
+          <div class="sda-cat-strip__slider">
+            <button
+              type="button"
+              class="sda-style-nav sda-style-nav--prev"
+              data-style-prev
+              aria-label="Previous styles"
+            >
+              <svg width="8" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true">
+                <path d="M6.5 1.5L2 6L6.5 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="sda-cat-strip__scroll sda-cat-strip__scroll--style" data-style-track data-style-clamp>
+              {%- for sdb_cat in child_cats -%}
+                {%- liquid
+                  assign sdb_c_url = sdb_cat.url | default: sdb_cat.value.url
+                  assign sdb_c_title = sdb_cat.title | default: sdb_cat.label | default: sdb_cat.value.title
+                  if sdb_c_url == blank and sdb_c_title != blank
+                    assign sdb_c_url = routes.collections_url | append: '/' | append: sdb_c_title | handleize
+                  endif
+                  assign sdb_c_active = false
+                  if sdb_c_url contains collection.handle
+                    assign sdb_c_active = true
+                  endif
+                -%}
+                {%- if sdb_c_title != blank -%}
+                  <a
+                    href="{{ sdb_c_url | default: '#' }}"
+                    class="sda-cat-chip{% if sdb_c_active %} sda-cat-chip--active{% endif %}"
+                  >
+                    {{- sdb_c_title -}}
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            <button type="button" class="sda-style-nav sda-style-nav--next" data-style-next aria-label="Next styles">
+              <svg width="8" height="12" viewBox="0 0 8 12" fill="none" aria-hidden="true">
+                <path d="M1.5 1.5L6 6L1.5 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="sda-cat-strip--style__more"
+              data-style-toggle
+              aria-expanded="false"
+              data-show-label="Show more"
+              data-hide-label="Show less"
+            >
+              Show more
+            </button>
+          </div>
+        </div>
+      </div>
+
+    {%- elsif sdb_key == 'color' and color_collection_refs != blank -%}
+      <div class="sda-color-strip">
+        <div class="sda-color-strip__wrap">
+          <span class="sda-color-strip__heading">
+            {{- section.settings.color_collection_heading | default: 'Shop by Color' -}}
+          </span>
+          <div class="sda-color-strip__scroll">
+            {%- for sdb_col in color_collection_refs -%}
+              {%- liquid
+                assign sdb_col_obj = sdb_col
+                if sdb_col_obj.value != blank
+                  assign sdb_col_obj = sdb_col_obj.value
+                endif
+
+                assign sdb_col_handle = sdb_col_obj.handle | default: sdb_col.handle | default: sdb_col.value.handle
+                assign sdb_col_url = sdb_col_obj.url | default: sdb_col.url | default: sdb_col.value.url
+                assign sdb_col_title = sdb_col_obj.title | default: sdb_col.title | default: sdb_col.label | default: sdb_col.value.title
+                if sdb_col_title == blank and sdb_col_handle != blank
+                  assign sdb_col_title = sdb_col_handle | replace: '-', ' '
+                endif
+                if sdb_col_url == blank and sdb_col_handle != blank
+                  assign sdb_col_url = routes.collections_url | append: '/' | append: sdb_col_handle
+                elsif sdb_col_url == blank and sdb_col_title != blank
+                  assign sdb_col_url = routes.collections_url | append: '/' | append: sdb_col_title | handleize
+                endif
+                assign sdb_col_active = false
+                comment
+                  Prefer the menu_color metaobject hex (same source as the nav swatches).
+                  Fall back to the existing image-based design if no hex is set.
+                endcomment
+                assign sdb_col_hex = null
+                assign sdb_col_menu_meta = sdb_col_obj.metafields.custom.menu_color.value
+                if sdb_col_menu_meta != null
+                  assign sdb_col_hex = sdb_col_menu_meta.color_code
+                endif
+
+                assign sdb_col_color_meta = sdb_col_obj.metafields.custom.color
+                assign sdb_col_color_image = sdb_col_color_meta.value
+                if sdb_col_color_image == blank
+                  assign sdb_col_color_image = sdb_col_color_meta
+                endif
+                if sdb_col_color_image == blank
+                  assign sdb_col_color_image = sdb_col_obj.image | default: sdb_col.image
+                endif
+                if sdb_col_handle == collection.handle or sdb_col_obj.handle == collection.handle or sdb_col_url contains collection.handle
+                  assign sdb_col_active = true
+                endif
+                if sdb_col_title == blank
+                  assign sdb_col_title = 'Color ' | append: forloop.index
+                endif
+              -%}
+              <a
+                href="{{ sdb_col_url | default: '#' }}"
+                class="sda-color-card{% if sdb_col_active %} sda-color-card--active{% endif %}{% if sdb_col_hex != blank %} sda-color-card--hex{% endif %}"
+              >
+                <span class="sda-color-card__thumb">
+                  {%- if sdb_col_hex != blank -%}
+                    <span
+                      class="sda-color-card__swatch"
+                      style="background: {{ sdb_col_hex }};"
+                      aria-hidden="true"
+                    ></span>
+                  {%- elsif sdb_col_color_image != blank -%}
+                    {{
+                      sdb_col_color_image
+                      | image_url: width: 160
+                      | image_tag:
+                        loading: 'lazy',
+                        alt: sdb_col_title,
+                        widths: '80,120,160',
+                        sizes: '(max-width: 749px) 52px, 72px'
+                    }}
+                  {%- else -%}
+                    <span class="sda-color-card__fallback">{{ sdb_col_title | slice: 0 }}</span>
+                  {%- endif -%}
+                </span>
+                <span class="sda-color-card__name">{{ sdb_col_title }}</span>
+              </a>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+
+    {%- elsif sdb_key == 'range' and range_collection_refs != blank -%}
+      <div class="sda-cat-strip">
+        <div class="sda-cat-strip__wrap">
+          <span class="sda-cat-strip__heading">
+            {{- section.settings.range_collection_heading | default: 'Shop by Range' -}}
+          </span>
+          <div class="sda-cat-strip__scroll sda-cat-strip__scroll--range">
+            {%- for sdb_rng in range_collection_refs -%}
+              {%- liquid
+                assign sdb_rng_obj = sdb_rng
+                if sdb_rng_obj.value != blank
+                  assign sdb_rng_obj = sdb_rng_obj.value
+                endif
+
+                assign sdb_rng_handle = sdb_rng_obj.handle | default: sdb_rng.handle | default: sdb_rng.value.handle
+                assign sdb_rng_url = sdb_rng_obj.url | default: sdb_rng.url | default: sdb_rng.value.url
+                assign sdb_rng_title = sdb_rng_obj.title | default: sdb_rng.title | default: sdb_rng.label | default: sdb_rng.value.title
+                if sdb_rng_title == blank and sdb_rng_handle != blank
+                  assign sdb_rng_title = sdb_rng_handle | replace: '-', ' '
+                endif
+                if sdb_rng_url == blank and sdb_rng_handle != blank
+                  assign sdb_rng_url = routes.collections_url | append: '/' | append: sdb_rng_handle
+                elsif sdb_rng_url == blank and sdb_rng_title != blank
+                  assign sdb_rng_url = routes.collections_url | append: '/' | append: sdb_rng_title | handleize
+                endif
+                assign sdb_rng_active = false
+                if sdb_rng_handle == collection.handle or sdb_rng_url contains collection.handle
+                  assign sdb_rng_active = true
+                endif
+              -%}
+              {%- if sdb_rng_title != blank -%}
+                <a
+                  href="{{ sdb_rng_url | default: '#' }}"
+                  class="sda-cat-chip{% if sdb_rng_active %} sda-cat-chip--active{% endif %}"
+                >
+                  {{- sdb_rng_title -}}
+                </a>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- comment -%} Sentinel for sticky detection {%- endcomment -%}
+  <div id="SdaFbSentinel" style="height:1px;pointer-events:none;" aria-hidden="true"></div>
+  {%- comment -%} â”€â”€ Filter Bar â”€â”€ {%- endcomment -%}
+
+  {%- comment -%} Mobile Filter Button (hidden on desktop) {%- endcomment -%}
+  <div class="sda-mobile-filter-bar" id="SdaMobileFilterBar">
+    <button type="button" class="sda-mobile-filter-btn" id="SdaMobileFilterBtn">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      Filters
+      {%- if total_active > 0 -%}
+        <span class="sda-mobile-filter-count">{{ total_active }}</span>
+      {%- endif -%}
+    </button>
+    <div class="sda-fb-sort" style="flex-shrink:0;">
+      <div class="sda-dropdown" data-fid="SdaSortPanelMobile">
+        <button
+          type="button"
+          class="sda-btn"
+          data-panel="SdaSortPanelMobile"
+          aria-expanded="false"
+          style="background:#F3F3F3;border:1px solid rgba(0,0,0,.2);border-radius:30px;padding:10px 16px;"
+        >
+          <span class="sda-sort-active-mobile">
+            {%- for option in collection.sort_options -%}
+              {%- if option.value == sort_by -%}{{ option.name }}{%- endif -%}
+            {%- endfor -%}
+          </span>
+          <svg class="sda-btn__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+            <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="sda-panel" id="SdaSortPanelMobile" role="listbox" style="min-width:200px;padding:6px 0;">
+          {%- for option in collection.sort_options -%}
+            <label class="sda-sort-option{% if option.value == sort_by %} sda-sort-option--active{% endif %}">
+              <input
+                type="radio"
+                name="sort_by"
+                value="{{ option.value }}"
+                {% if option.value == sort_by %}
+                  checked
+                {% endif %}
+              >
+              <svg class="sda-sort-tick" width="13" height="10" viewBox="0 0 13 10" fill="none">
+                <path d="M1 5L4.5 8.5L12 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="sda-sort-lbl">{{ option.name }}</span>
+            </label>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Mobile Filter Drawer {%- endcomment -%}
+  <div class="sda-drawer-backdrop" id="SdaDrawerBackdrop"></div>
+  <div class="sda-filter-drawer" id="SdaFilterDrawer" role="dialog" aria-label="Filters" aria-modal="true">
+    <div class="sda-filter-drawer__handle" aria-hidden="true"></div>
+    <div class="sda-filter-drawer__header">
+      <span class="sda-filter-drawer__title"
+        >Filters
+        {%- if total_active > 0 -%}
+          <small style="font-weight:400;font-size:13px;color:#888;">{{ total_active }} active</small>
+        {%- endif -%}
+      </span>
+      <button class="sda-filter-drawer__close" id="SdaDrawerClose" aria-label="Close filters">&times;</button>
+    </div>
+    <div class="sda-filter-drawer__body">
+      {%- for filter in collection.filters -%}
+        {%- liquid
+          assign df_active = false
+          if filter.active_values.size > 0
+            assign df_active = true
+          endif
+          if filter.type == 'price_range'
+            if filter.min_value.value or filter.max_value.value
+              assign df_active = true
+            endif
+          endif
+          assign df_id = 'SdaDf-' | append: forloop.index
+        -%}
+        <div class="sda-filter-acc">
+          <button
+            type="button"
+            class="sda-filter-acc__btn{% if df_active %} open{% endif %}"
+            data-acc="{{ df_id }}"
+            aria-expanded="{{ df_active }}"
+          >
+            {{ filter.label -}}
+            {%- if filter.active_values.size > 0 %}
+              <span class="sda-btn__count">{{ filter.active_values.size }}</span>
+            {%- endif %}
+            <svg class="sda-filter-acc__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none">
+              <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="sda-filter-acc__body{% if df_active %} open{% endif %}" id="{{ df_id }}">
+            {%- if filter.type == 'list' or filter.type == 'boolean' -%}
+              {%- for value in filter.values -%}
+                <label class="sda-filter-acc__check">
+                  <input
+                    type="checkbox"
+                    name="{{ value.param_name }}"
+                    value="{{ value.value }}"
+                    form="SdaFacetForm"
+                    {% if value.active %}
+                      checked
+                    {% endif %}
+                    {% if value.count == 0 and value.active == false %}
+                      disabled
+                    {% endif %}
+                  >
+                  <span class="sda-filter-acc__box" aria-hidden="true"></span>
+                  <span>{{ value.label | escape }}</span>
+                  <span style="color:#bbb;font-size:12px;margin-left:auto;">({{ value.count }})</span>
+                </label>
+              {%- endfor -%}
+            {%- elsif filter.type == 'price_range' -%}
+              <div style="display:flex;gap:10px;margin-top:4px;">
+                <div style="flex:1;">
+                  <label style="font-size:11px;color:#888;display:block;margin-bottom:4px;">From</label>
+                  <div class="sda-price-field__inner">
+                    <span class="sda-price-field__sym">&pound;</span>
+                    <input
+                      type="number"
+                      class="sda-price-field__input"
+                      name="{{ filter.min_value.param_name }}"
+                      form="SdaFacetForm"
+                      {%- if filter.min_value.value -%}
+                        value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                      {%- endif -%}
+                      placeholder="0"
+                      min="0"
+                      max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                    >
+                  </div>
+                </div>
+                <div style="flex:1;">
+                  <label style="font-size:11px;color:#888;display:block;margin-bottom:4px;">To</label>
+                  <div class="sda-price-field__inner">
+                    <span class="sda-price-field__sym">&pound;</span>
+                    <input
+                      type="number"
+                      class="sda-price-field__input"
+                      name="{{ filter.max_value.param_name }}"
+                      form="SdaFacetForm"
+                      {%- if filter.max_value.value -%}
+                        value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                      {%- endif -%}
+                      placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                      min="0"
+                      max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                    >
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="sda-filter-drawer__footer">
+      <a href="{{ collection.url }}" class="sda-drawer-clear-btn sda-remove-link">Clear all</a>
+      <button type="button" class="sda-drawer-apply-btn" id="SdaDrawerApply">Show Results</button>
+    </div>
+  </div>
+
+  <div class="sda-filter-bar" id="SdaFilterBar">
+    <div class="sda-filter-bar__wrap">
+      <form id="SdaFacetForm" novalidate style="display:flex;align-items:center;flex:1;gap:14px;">
+        {%- comment -%} "Filter by:" label â€” outside the pill {%- endcomment -%}
+        <span class="sda-fb-label">Filter by:</span>
+
+        {%- comment -%} Pill container with all filter buttons inside {%- endcomment -%}
+        <div class="sda-fb-pill">
+          <div class="sda-fb-filters">
+            {%- for filter in collection.filters -%}
+              {%- liquid
+                assign f_active = false
+                if filter.active_values.size > 0
+                  assign f_active = true
+                endif
+                if filter.type == 'price_range'
+                  if filter.min_value.value or filter.max_value.value
+                    assign f_active = true
+                  endif
+                endif
+                assign f_id = 'SdaPanel-' | append: forloop.index
+              -%}
+              <div class="sda-dropdown" data-fid="{{ f_id }}">
+                <button
+                  type="button"
+                  class="sda-btn{% if f_active %} sda-btn--active{% endif %}"
+                  data-panel="{{ f_id }}"
+                  aria-expanded="false"
+                >
+                  <span>{{ filter.label }}</span>
+                  {%- if filter.active_values.size > 0 -%}
+                    <span class="sda-btn__count">{{ filter.active_values.size }}</span>
+                  {%- endif -%}
+                  <svg class="sda-btn__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+
+                <div class="sda-panel" id="{{ f_id }}" role="dialog" aria-label="{{ filter.label }} filter">
+                  {%- if filter.type == 'list' or filter.type == 'boolean' -%}
+                    {%- assign is_swatch = false -%}
+                    {%- if filter.presentation == 'swatch' -%}{%- assign is_swatch = true -%}{%- endif -%}
+                    {%- if is_swatch == false -%}
+                      {%- for v in filter.values limit: 5 -%}
+                        {%- if v.swatch -%}{%- assign is_swatch = true -%}{%- break -%}{%- endif -%}
+                      {%- endfor -%}
+                    {%- endif -%}
+                    {%- comment -%} Last-resort fallback: detect by first value's param_name containing 'color_swatch' {%- endcomment -%}
+                    {%- if is_swatch == false -%}
+                      {%- assign first_v = filter.values | first -%}
+                      {%- if first_v.param_name contains 'color_swatch' -%}
+                        {%- assign is_swatch = true -%}
+                      {%- elsif filter.label contains 'olor' -%}
+                        {%- assign is_swatch = true -%}
+                      {%- endif -%}
+                    {%- endif -%}
+                    <ul class="sda-panel__list{% if is_swatch %} sda-panel__list--swatch{% endif %}" role="list" data-debug-swatch="{{ is_swatch }}" data-debug-pres="{{ filter.presentation }}" data-debug-param="{{ filter.values.first.param_name }}">
+                      {%- for value in filter.values -%}
+                        <li class="sda-panel__item{% if value.count == 0 and value.active == false %} sda-panel__item--disabled{% endif %}{% if is_swatch %} sda-panel__item--swatch{% endif %}">
+                          <label class="sda-panel__check-label{% if is_swatch %} sda-panel__check-label--swatch{% endif %}">
+                            <input
+                              type="checkbox"
+                              class="sda-panel__checkbox"
+                              name="{{ value.param_name }}"
+                              value="{{ value.value }}"
+                              {% if value.active %}checked{% endif %}
+                              {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                            >
+                            {%- if is_swatch -%}
+                              {%- assign sw_img = blank -%}
+                              {%- assign sw_color = blank -%}
+                              {%- if value.swatch.image -%}{%- assign sw_img = value.swatch.image -%}{%- endif -%}
+                              {%- if value.swatch.color -%}{%- assign sw_color = value.swatch.color -%}{%- endif -%}
+                              {%- comment -%} Fallback: lookup the metaobject by GID and read its image/color_code fields {%- endcomment -%}
+                              {%- if sw_img == blank and sw_color == blank -%}
+                                {%- comment -%} Match by label (case-insensitive) against preloaded color metaobjects {%- endcomment -%}
+                                {%- assign val_label_norm = value.label | strip | downcase -%}
+                                {%- for mo in shop.metaobjects.color.values -%}
+                                  {%- assign mo_name_norm = mo.name | strip | downcase -%}
+                                  {%- if mo_name_norm == val_label_norm -%}
+                                    {%- if mo.image -%}{%- assign sw_img = mo.image -%}{%- endif -%}
+                                    {%- if mo.color_code -%}{%- assign sw_color = mo.color_code -%}{%- endif -%}
+                                    {%- break -%}
+                                  {%- endif -%}
+                                {%- endfor -%}
+                              {%- endif -%}
+                              <span class="sda-panel__swatch" aria-hidden="true"
+                                {%- if sw_img != blank -%}
+                                  style="background-image:url('{{ sw_img | image_url: width: 80 }}');background-size:cover;background-position:center;"
+                                {%- elsif sw_color != blank -%}
+                                  style="background:{{ sw_color }};"
+                                {%- endif -%}
+                              ></span>
+                            {%- else -%}
+                              <span class="sda-panel__box" aria-hidden="true"></span>
+                            {%- endif -%}
+                            <span class="sda-panel__value">{{ value.label | escape }}</span>
+                            <span class="sda-panel__qty">({{ value.count }})</span>
+                          </label>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- elsif filter.type == 'price_range' -%}
+                    <div class="sda-panel__price">
+                      <p class="sda-panel__price-hint">Enter price range</p>
+                      <div class="sda-panel__price-row">
+                        <div class="sda-price-field">
+                          <label for="{{ f_id }}-min">From</label>
+                          <div class="sda-price-field__inner">
+                            <span class="sda-price-field__sym">Â£</span>
+                            <input
+                              id="{{ f_id }}-min"
+                              class="sda-price-field__input"
+                              type="number"
+                              name="{{ filter.min_value.param_name }}"
+                              {%- if filter.min_value.value -%}
+                                value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                              {%- endif -%}
+                              placeholder="0"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            >
+                          </div>
+                        </div>
+                        <span class="sda-price-sep">â€”</span>
+                        <div class="sda-price-field">
+                          <label for="{{ f_id }}-max">To</label>
+                          <div class="sda-price-field__inner">
+                            <span class="sda-price-field__sym">Â£</span>
+                            <input
+                              id="{{ f_id }}-max"
+                              class="sda-price-field__input"
+                              type="number"
+                              name="{{ filter.max_value.param_name }}"
+                              {%- if filter.max_value.value -%}
+                                value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                              {%- endif -%}
+                              placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                              min="0"
+                              max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                            >
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {%- endif -%}
+                  {%- if f_active -%}
+                    <div class="sda-panel__footer">
+                      <a href="{{ filter.url_to_remove }}" class="sda-panel__clear sda-remove-link">Clear</a>
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+
+            {%- if total_active > 0 -%}
+              <a href="{{ collection.url }}" class="sda-clear-btn sda-remove-link"> âœ• Clear ({{ total_active }}) </a>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- comment -%} /sda-fb-pill {%- endcomment -%}
+
+        {%- comment -%} Right: sort {%- endcomment -%}
+        <div class="sda-fb-sort">
+          <span class="sda-fb-sort-lbl">Sort by:</span>
+          <div class="sda-dropdown" data-fid="SdaSortPanel">
+            <button type="button" class="sda-btn" data-panel="SdaSortPanel" aria-expanded="false">
+              <span class="sda-sort-active">
+                {%- for option in collection.sort_options -%}
+                  {%- if option.value == sort_by -%}{{ option.name }}{%- endif -%}
+                {%- endfor -%}
+              </span>
+              <svg class="sda-btn__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="sda-panel" id="SdaSortPanel" role="listbox" style="min-width:200px;padding:6px 0;">
+              {%- for option in collection.sort_options -%}
+                <label class="sda-sort-option{% if option.value == sort_by %} sda-sort-option--active{% endif %}">
+                  <input
+                    type="radio"
+                    name="sort_by"
+                    value="{{ option.value }}"
+                    {% if option.value == sort_by %}
+                      checked
+                    {% endif %}
+                  >
+                  <svg class="sda-sort-tick" width="13" height="10" viewBox="0 0 13 10" fill="none" aria-hidden="true">
+                    <path d="M1 5L4.5 8.5L12 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span class="sda-sort-lbl">{{ option.name }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="SdaFilterBarSpacer" style="display:none;height:0;" aria-hidden="true"></div>
+  {%- comment -%} â”€â”€ Active pills â”€â”€ {%- endcomment -%}
+  <div class="sda-active-bar" id="SdaActivePills">
+    {%- if total_active > 0 -%}
+      {%- for filter in collection.filters -%}
+        {%- if filter.type == 'list' or filter.type == 'boolean' -%}
+          {%- for value in filter.active_values -%}
+            <a href="{{ value.url_to_remove }}" class="sda-pill sda-remove-link">
+              {{ filter.label }}: {{ value.label | escape }}
+              <span class="sda-pill__x" aria-hidden="true">Ã—</span>
+            </a>
+          {%- endfor -%}
+        {%- elsif filter.type == 'price_range' -%}
+          {%- if filter.min_value.value or filter.max_value.value -%}
+            <a href="{{ filter.url_to_remove }}" class="sda-pill sda-remove-link">
+              Price:
+              {%- if filter.min_value.value -%}
+                {{ filter.min_value.value | money }}
+              {%- else -%}
+                {{ 0 | money }}
+              {%- endif -%}
+              â€“
+              {%- if filter.max_value.value -%}
+                {{ filter.max_value.value | money }}
+              {%- else -%}
+                {{ filter.range_max | money }}
+              {%- endif -%}
+              <span class="sda-pill__x" aria-hidden="true">Ã—</span>
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      <a href="{{ collection.url }}" class="sda-clear-all sda-remove-link">Clear all</a>
+    {%- endif -%}
+  </div>
+  {%- comment -%} â”€â”€ Results count â”€â”€ {%- endcomment -%}
+  <div class="sda-results-bar">
+    <span class="sda-results-count" id="SdaResultCount">
+      <strong>{{ collection.products_count }}</strong>
+      {{ collection.products_count | pluralize: 'result', 'results' }}
+    </span>
+    <div class="sda-view-toggle">
+      <button class="sda-col-btn" data-cols="3" aria-label="3 columns" title="3 columns">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="4" height="14" rx="1" fill="currentColor"/><rect x="6" y="1" width="4" height="14" rx="1" fill="currentColor"/><rect x="11" y="1" width="4" height="14" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="sda-col-btn active" data-cols="4" aria-label="4 columns" title="4 columns">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="2.5" height="14" rx="1" fill="currentColor"/><rect x="4.5" y="1" width="2.5" height="14" rx="1" fill="currentColor"/><rect x="8" y="1" width="2.5" height="14" rx="1" fill="currentColor"/><rect x="11.5" y="1" width="2.5" height="14" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="sda-col-btn" data-cols="5" aria-label="5 columns" title="5 columns">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="1" y="1" width="2" height="14" rx="1" fill="currentColor"/><rect x="3.75" y="1" width="2" height="14" rx="1" fill="currentColor"/><rect x="6.5" y="1" width="2" height="14" rx="1" fill="currentColor"/><rect x="9.25" y="1" width="2" height="14" rx="1" fill="currentColor"/><rect x="12" y="1" width="2" height="14" rx="1" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  {%- comment -%} â”€â”€ Product Grid â”€â”€ {%- endcomment -%}
+  {%- paginate collection.products by products_per_page -%}
+    <div id="SdaGridWrap">
+      {%- if collection.products.size > 0 -%}
+        <div class="sda-grid">
+          {%- liquid
+            assign idx = 0
+            assign promo_position = 0
+          -%}
+          {%- for product in collection.products -%}
+            {%- assign _tags_norm = product.tags | join: ',' | downcase | split: ',' -%}
+            {%- if _tags_norm contains 'none sale item' -%}{%- continue -%}{%- endif -%}
+            {%- assign idx = idx | plus: 1 -%}
+
+            {%- if show_promo and promo_source != 'none' -%}
+              {%- assign promo_interval_val = 8 -%}
+              {%- assign idx_for_insert = idx | minus: 1 -%}
+              {%- assign idx_mod = idx_for_insert | modulo: promo_interval_val -%}
+              {%- if promo_interval_val > 0 and idx > 1 and idx_mod == 0 -%}
+                {%- assign promo_cycle = idx_for_insert | divided_by: promo_interval_val | minus: 1 -%}
+
+                {%- comment -%} Resolve banner data: metaobject takes priority over blocks {%- endcomment -%}
+                {%- if promo_source == 'meta' -%}
+                  {%- assign pb_total = promo_meta_count -%}
+                  {%- assign pb_slot = promo_cycle | modulo: pb_total -%}
+                  {%- comment -%} Use for-loop to safely pick item at pb_slot index {%- endcomment -%}
+                  {%- assign pb_meta = null -%}
+                  {%- assign pb_loop_idx = 0 -%}
+                  {%- for pb_item in promo_metas -%}
+                    {%- if pb_loop_idx == pb_slot -%}
+                      {%- assign pb_meta = pb_item -%}
+                    {%- endif -%}
+                    {%- assign pb_loop_idx = pb_loop_idx | plus: 1 -%}
+                  {%- endfor -%}
+                  {%- assign pb_img = pb_meta.image.value -%}
+                  {%- if pb_img == blank -%}
+                    {%- assign pb_img = pb_meta.image -%}
+                  {%- endif -%}
+                  {%- if pb_img == blank -%}
+                    {%- assign pb_img = pb_meta.banner_image.value
+                      | default: pb_meta.banner_image
+                      | default: pb_meta.promo_image.value
+                      | default: pb_meta.promo_image
+                      | default: pb_meta.desktop_image.value
+                      | default: pb_meta.desktop_image
+                      | default: pb_meta.banner.value
+                      | default: pb_meta.banner
+                      | default: pb_meta.collection_image.value
+                      | default: pb_meta.collection_image
+                    -%}
+                  {%- endif -%}
+                  {%- if pb_img == blank and promo_single_img != blank -%}
+                    {%- assign pb_img = promo_single_img -%}
+                  {%- endif -%}
+                  {%- assign pb_link_raw = pb_meta.link.value.url
+                    | default: pb_meta.link.value
+                    | default: pb_meta.link.url
+                    | default: pb_meta.link
+                    | default: pb_meta.cta_url.value.url
+                    | default: pb_meta.cta_url.value
+                    | default: pb_meta.cta_url
+                    | default: pb_meta.button_link.value.url
+                    | default: pb_meta.button_link.value
+                    | default: pb_meta.button_link
+                    | default: pb_meta.url.value.url
+                    | default: pb_meta.url.value
+                    | default: pb_meta.url
+                  -%}
+                  {%- assign pb_cta_url = pb_link_raw.url
+                    | default: pb_link_raw
+                    | default: promo_single_link_raw.url
+                    | default: promo_single_link_raw
+                    | default: collection.url
+                  -%}
+                  {%- assign pb_bg = pb_meta.bg_color.value
+                    | default: pb_meta.bg_color
+                    | default: pb_meta.bg_colour.value
+                    | default: pb_meta.bg_colour
+                    | default: pb_meta.background_color.value
+                    | default: pb_meta.background_color
+                    | default: promo_single_bg
+                    | default: '#111521'
+                  -%}
+                  {%- assign pb_head = pb_meta.heading.value
+                    | default: pb_meta.heading
+                    | default: pb_meta.title.value
+                    | default: pb_meta.title
+                    | default: pb_meta.name
+                    | default: promo_single_heading
+                    | default: section.settings.promo_heading
+                    | default: 'SPEND & SAVE'
+                  -%}
+                {%- elsif promo_source == 'collection_meta' -%}
+                  {%- assign pb_img = promo_single_img -%}
+                  {%- assign pb_eyebrow = promo_single_eyebrow -%}
+                  {%- assign pb_head = promo_single_heading
+                    | default: section.settings.promo_heading
+                    | default: 'SPEND & SAVE'
+                  -%}
+                  {%- assign pb_sub = promo_single_sub -%}
+                  {%- assign pb_text = promo_single_text -%}
+                  {%- assign pb_cta_label = promo_single_cta_label
+                    | default: section.settings.promo_cta_label
+                    | default: 'Shop Now'
+                  -%}
+                  {%- assign pb_link_raw = promo_single_link_raw -%}
+                  {%- assign pb_cta_url = pb_link_raw.url | default: pb_link_raw | default: collection.url -%}
+                  {%- assign pb_bg = promo_single_bg | default: '#111521' -%}
+                {%- else -%}
+                  {%- assign pb_total = promo_blocks_count -%}
+                  {%- assign pb_slot = promo_cycle | modulo: pb_total -%}
+                  {%- assign pb_block = promo_blocks[pb_slot] -%}
+                  {%- assign pb_img = pb_block.settings.image -%}
+                  {%- assign pb_eyebrow = pb_block.settings.eyebrow -%}
+                  {%- assign pb_head = pb_block.settings.heading | default: 'SPEND & SAVE' -%}
+                  {%- assign pb_sub = pb_block.settings.subheading -%}
+                  {%- assign pb_text = pb_block.settings.body -%}
+                  {%- assign pb_cta_label = pb_block.settings.cta_label | default: 'Shop Now' -%}
+                  {%- assign pb_link_raw = pb_block.settings.cta_url -%}
+                  {%- assign pb_cta_url = pb_link_raw.url | default: pb_link_raw | default: collection.url -%}
+                  {%- assign pb_bg = pb_block.settings.bg_color | default: '#111521' -%}
+                {%- endif -%}
+
+                {%- liquid
+                  assign pb_pos_class = 'sda-promo--center'
+                  if promo_position == 0
+                    assign pb_pos_class = 'sda-promo--left'
+                  elsif promo_position == 1
+                    assign pb_pos_class = 'sda-promo--right'
+                  endif
+                  assign promo_position = promo_position | plus: 1
+                  if promo_position >= 3
+                    assign promo_position = 0
+                  endif
+                -%}
+                {%- if pb_img != blank -%}
+                  <a
+                    href="{{ pb_cta_url }}"
+                    class="sda-promo {{ pb_pos_class }}"
+                    {% if promo_source == 'blocks' %}
+                      {{ pb_block.shopify_attributes -}}
+                    {% endif %}
+                    aria-label="{{ pb_head | escape }}"
+                  >
+                    <div class="sda-promo__img-wrap">
+                      {%- assign pb_img_url = pb_img | image_url: width: 1600 -%}
+                      {%- if pb_img_url == blank -%}
+                        {%- assign pb_img_url = pb_img.url | default: pb_img.src | default: pb_img -%}
+                      {%- endif -%}
+                      <img
+                        src="{{ pb_img_url }}"
+                        alt="{{ pb_head | escape }}"
+                        loading="lazy"
+                        width="1200"
+                        height="1200"
+                      >
+                    </div>
+                  </a>
+                {%- endif -%}
+              {%- endif -%}
+            {%- endif -%}
+
+            {%- liquid
+              assign has_compare = false
+              if product.compare_at_price > product.price
+                assign has_compare = true
+                assign save_amt = product.compare_at_price | minus: product.price
+              endif
+              assign badge = ''
+              if product.tags contains 'New In' or product.tags contains 'new-in'
+                assign badge = 'New In'
+              elsif has_compare
+                assign badge = 'Sale'
+              elsif product.tags contains 'Best Seller' or product.tags contains 'best-seller'
+                assign badge = 'Best Seller'
+              endif
+            -%}
+
+            {%- liquid
+              assign card_swatch_colour = ''
+              assign card_swatch_code = ''
+              assign card_color_count = 0
+              assign card_desc_text = ''
+
+              assign card_color_meta = product.metafields.custom.product_colors.value
+              if card_color_meta != blank
+                assign card_swatch_code = card_color_meta.color_code | default: card_color_meta.colour_code | default: card_color_meta.hex | default: card_color_meta.color | default: card_color_meta.colour
+              endif
+
+              for opt in product.options_with_values
+                assign opt_name_normalized = opt.name | downcase | strip
+                if opt_name_normalized contains 'colour' or opt_name_normalized contains 'color'
+                  assign card_swatch_colour = opt.selected_value | default: opt.values.first
+                  assign card_color_count = opt.values.size
+                endif
+                if opt_name_normalized == 'material' or opt_name_normalized == 'fabric' or opt_name_normalized == 'upholstery' or opt_name_normalized == 'style'
+                  assign card_desc_text = opt.values | join: ', '
+                endif
+              endfor
+              if card_swatch_code == blank and card_swatch_colour != blank
+                assign card_swatch_code = card_swatch_colour
+              endif
+              if card_desc_text == blank and product.metafields.custom.card_description.value != blank
+                assign card_desc_text = product.metafields.custom.card_description.value
+              endif
+              assign first_variant_id = product.first_available_variant.id | default: product.variants.first.id
+            -%}
+            <div class="sda-card" data-pid="{{ product.id }}">
+              {%- comment -%} â”€â”€ Image area â”€â”€ {%- endcomment -%}
+              <div class="sda-card__media">
+                {%- comment -%} Save + Free Delivery (separate badges) {%- endcomment -%}
+                <div class="sda-card__meta-grid">
+                  {%- if has_compare -%}
+                    <div class="sda-card__save-badge">Save {{ save_amt | money }}</div>
+                  {%- endif -%}
+                  <div class="sda-card__delivery-badge">
+                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <path d="M2.2 5.8H11.2V12.7H2.2V5.8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                      <path d="M11.2 8H14.4L16.6 10.2V12.7H11.2V8Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+                      <circle cx="6.1" cy="14.1" r="1.3" fill="currentColor"/>
+                      <circle cx="13.9" cy="14.1" r="1.3" fill="currentColor"/>
+                    </svg>
+                    <span>Free Delivery</span>
+                  </div>
+                </div>
+                {%- if badge != blank -%}
+                  <span
+                    class="sda-card__badge{% if badge == 'Sale' %} sda-card__badge--sale{% elsif badge == 'New In' %} sda-card__badge--new{% elsif badge == 'Best Seller' %} sda-card__badge--best{% endif %}"
+                  >
+                    {{ badge }}
+                  </span>
+                {%- endif -%}
+
+                {%- comment -%} Wishlist {%- endcomment -%}
+                <button type="button" class="sda-card__wish" aria-label="Wishlist {{ product.title | escape }}">
+                  <svg width="16" height="15" viewBox="0 0 18 16" fill="none">
+                    <path d="M9 14.875C9 14.875 1.125 9.875 1.125 4.875C1.125 2.665 2.915 0.875 5.125 0.875C6.449 0.875 7.625 1.54 8.35 2.565C8.617 2.94 9.383 2.94 9.65 2.565C10.375 1.54 11.551 0.875 12.875 0.875C15.085 0.875 16.875 2.665 16.875 4.875C16.875 9.875 9 14.875 9 14.875Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+
+                {%- comment -%} Image slider {%- endcomment -%}
+                <a href="{{ product.url }}" class="sda-card__img-link" tabindex="-1">
+                  <div class="sda-card__slider" data-sda-slider>
+                    {%- if product.images.size > 0 -%}
+                      {%- for img in product.images limit: 5 -%}
+                        <div class="sda-card__slide{% if forloop.first %} on{% endif %}">
+                          {%- assign img_loading = 'lazy' -%}
+                          {%- if forloop.first -%}{%- assign img_loading = 'eager' -%}{%- endif -%}
+                          {%- assign img_alt = img.alt | default: product.title | escape -%}
+                          {{
+                            img
+                            | image_url: width: 600
+                            | image_tag:
+                              class: 'sda-card__img',
+                              loading: img_loading,
+                              alt: img_alt,
+                              widths: '300,450,600'
+                          }}
+                        </div>
+                      {%- endfor -%}
+                    {%- else -%}
+                      <div class="sda-card__slide on">
+                        {{ 'product-1' | placeholder_svg_tag: 'sda-card__img sda-card__img--ph' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                  {%- if product.images.size > 1 -%}
+                    <button type="button" class="sda-card__arrow sda-card__arrow--prev" tabindex="-1" aria-label="Previous image">
+                      <svg width="6" height="11" viewBox="0 0 7 12" fill="none" aria-hidden="true">
+                        <path d="M6 1L1 6L6 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <button type="button" class="sda-card__arrow sda-card__arrow--next" tabindex="-1" aria-label="Next image">
+                      <svg width="6" height="11" viewBox="0 0 7 12" fill="none" aria-hidden="true">
+                        <path d="M1 1L6 6L1 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  {%- endif -%}
+                </a>
+
+                {%- comment -%} Color swatch dot {%- endcomment -%}
+                {%- if card_swatch_colour != blank or card_swatch_code != blank -%}
+                  <span
+                    class="sda-card__swatch"
+                    title="{{ card_swatch_colour | default: 'Colour' | escape }}"
+                    style="background:#d7dbe2; background:{{ card_swatch_code | escape }};"
+                  ></span>
+                {%- endif -%}
+
+                {%- comment -%} Image count {%- endcomment -%}
+                {%- if product.images.size > 1 -%}
+                  <span class="sda-card__img-count">{{ product.images.size }}</span>
+                {%- endif -%}
+
+                {%- comment -%} Quick Add + View More â€” slide up on hover {%- endcomment -%}
+                <div class="sda-card__actions">
+                  {%- if first_variant_id != blank -%}
+                    <product-form data-section-id="{{ section.id }}">
+                      {%- assign sda_form_id = 'sda-qa-' | append: section.id | append: '-' | append: product.id -%}
+                      {%- form 'product', product, id: sda_form_id, class: 'sda-qa-form', novalidate: 'novalidate' -%}
+                        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                        <button
+                          type="submit"
+                          name="add"
+                          class="sda-card__quick-add{% unless product.available %} sda-card__quick-add--sold-out{% endunless %}"
+                          aria-label="Quick add {{ product.title | escape }}"
+                          title="{% if product.available %}Quick add{% else %}Sold out{% endif %}"
+                          {% unless product.available %}
+                            disabled aria-disabled="true"
+                          {% endunless %}
+                        >
+                          {%- if product.available -%}
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                              <path d="M3 5.5H5.9L7.6 15.4C7.73 16.15 8.38 16.7 9.14 16.7H17.54C18.23 16.7 18.84 16.24 19.02 15.58L20.32 10.22C20.55 9.29 19.85 8.4 18.91 8.4H7.05" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M12 6.2V2.9M10.35 4.55H13.65" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                              <circle cx="10.1" cy="19.15" r="1.35" fill="currentColor"/>
+                              <circle cx="17.1" cy="19.15" r="1.35" fill="currentColor"/>
+                            </svg>
+                          {%- else -%}
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                              <path d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                          {%- endif -%}
+                          {%- render 'loading-spinner' -%}
+                        </button>
+                      {%- endform -%}
+                    </product-form>
+                  {%- endif -%}
+                  <a
+                    href="{{ product.url }}"
+                    class="sda-card__view-more"
+                    aria-label="View {{ product.title | escape }}"
+                    title="View details"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M2.6 12C4.85 8.45 7.86 6.4 12 6.4C16.14 6.4 19.15 8.45 21.4 12C19.15 15.55 16.14 17.6 12 17.6C7.86 17.6 4.85 15.55 2.6 12Z" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+                      <circle cx="12" cy="12" r="2.55" stroke="currentColor" stroke-width="1.75"/>
+                      <path d="M12 10.4V12.1L13.45 13.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              {%- comment -%} â”€â”€ Info area â”€â”€ {%- endcomment -%}
+              <div class="sda-card__info">
+                <a href="{{ product.url }}" class="sda-card__name-link">
+                  <h3 class="sda-card__name">{{ product.title }}</h3>
+                </a>
+
+                {%- if card_color_count > 0 -%}
+                  <p class="sda-card__colours">
+                    {{ card_color_count }} colour{% if card_color_count != 1 %}s{% endif %} available
+                  </p>
+                {%- endif -%}
+
+                {%- comment -%} Variant description {%- endcomment -%}
+                {%- if card_desc_text != blank -%}
+                  <p class="sda-card__desc">{{ card_desc_text }}</p>
+                {%- elsif product.description != blank -%}
+                  <p class="sda-card__desc">{{ product.description | strip_html | truncate: 80 }}</p>
+                {%- endif -%}
+
+                {%- comment -%} Price {%- endcomment -%}
+                <div class="sda-card__price-row">
+                  {%- if has_compare -%}
+                    <span class="sda-card__was">{{ product.compare_at_price | money }}</span>
+                    <span class="sda-card__price sda-card__price--sale">{{ product.price | money }}</span>
+                  {%- else -%}
+                    <span class="sda-card__price">{{ product.price | money }}</span>
+                  {%- endif -%}
+                </div>
+
+                {%- if section.settings.show_finance_text and section.settings.finance_text != blank -%}
+                  <p class="sda-card__finance">{{ section.settings.finance_text }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.next -%}
+          <div
+            id="SdaSentinel"
+            data-next="{{ paginate.next.url }}"
+            style="height:1px;margin-top:20px;"
+            aria-hidden="true"
+          ></div>
+          <div id="SdaSpinner" class="sda-spinner-wrap" style="display:none;"><span class="sda-spinner"></span></div>
+        {%- endif -%}
+
+      {%- else -%}
+        <div class="sda-empty">
+          <p>No products match your filters.</p>
+          {%- if total_active > 0 -%}
+            <a href="{{ collection.url }}" class="sda-remove-link">Clear all filters</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endpaginate -%}
+
+  {%- comment -%} ── SEO Bottom Content (rendered after product loop) ── {%- endcomment -%}
+  {%- assign seo_bottom = collection.metafields.custom.seo_bottom -%}
+  {%- if seo_bottom != blank -%}
+    <section class="sda-seo-bottom" aria-label="About {{ collection.title | escape }}">
+      <div class="sda-seo-bottom__inner">
+        <div class="sda-seo-bottom__content rte">
+          {{ seo_bottom | metafield_tag }}
+        </div>
+      </div>
+    </section>
+  {%- endif -%}
+
+  <div id="SdaSectionEnd" style="height:1px;pointer-events:none;" aria-hidden="true"></div>
+</div>
+
+<script>
+  (function () {
+    'use strict';
+
+    var SECTION = 'sd-collection-alt';
+    var form = document.getElementById('SdaFacetForm');
+    var gridWrap = document.getElementById('SdaGridWrap');
+    var resultCount = document.getElementById('SdaResultCount');
+    var countBar = document.getElementById('SdaCountBar');
+    var activePills = document.getElementById('SdaActivePills');
+    var filterBar = document.getElementById('SdaFilterBar');
+    var filterSpacer = document.getElementById('SdaFilterBarSpacer');
+    var filterStart = document.getElementById('SdaFbSentinel');
+    var sectionEnd = document.getElementById('SdaSectionEnd');
+
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DROPDOWN â€” position:fixed panels via JS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    var openPanel = null;
+
+    function positionPanel(btn, panel) {
+      /* Filter pill panels are CSS-positioned full-width below the pill —
+         skip inline positioning so they don't get pinned to the button. */
+      if (panel.closest('.sda-fb-pill')) {
+        panel.style.top = '';
+        panel.style.left = '';
+        return;
+      }
+      var r = btn.getBoundingClientRect();
+      var pw = Math.max(panel.offsetWidth || 240, 220);
+      var left = r.left;
+      /* keep panel within viewport */
+      if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+      if (left < 8) left = 8;
+      panel.style.top = r.bottom + 4 + 'px';
+      panel.style.left = left + 'px';
+    }
+
+    function closeAll(except) {
+      document.querySelectorAll('.sda-panel.sda-panel--open').forEach(function (p) {
+        if (p === except) return;
+        p.classList.remove('sda-panel--open');
+        var btn = document.querySelector('[data-panel="' + p.id + '"]');
+        if (btn) {
+          btn.classList.remove('sda-btn--open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+      if (openPanel !== except) openPanel = null;
+    }
+
+    document.querySelectorAll('.sda-btn[data-panel]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var panelId = btn.dataset.panel;
+        var panel = document.getElementById(panelId);
+        if (!panel) return;
+        var isOpen = panel.classList.contains('sda-panel--open');
+        closeAll(null);
+        if (!isOpen) {
+          panel.classList.add('sda-panel--open');
+          btn.classList.add('sda-btn--open');
+          btn.setAttribute('aria-expanded', 'true');
+          positionPanel(btn, panel);
+          openPanel = panel;
+        }
+      });
+    });
+
+    /* Reposition on scroll/resize so panels follow their button */
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (!openPanel) return;
+        var btn = document.querySelector('[data-panel="' + openPanel.id + '"]');
+        if (btn) positionPanel(btn, openPanel);
+      },
+      { passive: true }
+    );
+
+    window.addEventListener('resize', function () {
+      if (!openPanel) return;
+      var btn = document.querySelector('[data-panel="' + openPanel.id + '"]');
+      if (btn) positionPanel(btn, openPanel);
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.sda-dropdown') && !e.target.closest('.sda-panel')) closeAll(null);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAll(null);
+    });
+    function getHeaderOffset() {
+      // Find the lowest visible "stuck" element at the top of the viewport — header,
+      // announcement bar, promo bar, etc. — and sit just below it. This handles themes
+      // where multiple layered bars are sticky/fixed at the top simultaneously.
+      var maxBottom = 0;
+      var candidates = document.querySelectorAll(
+        'sticky-header, .header-wrapper, header.header, .shopify-section-header, ' +
+          '.announcement-bar, .announcement-bar-section, .sd-announcement-bar, ' +
+          '[data-sticky-top], [data-announcement-bar], .header-group'
+      );
+      candidates.forEach(function (el) {
+        var s = getComputedStyle(el);
+        if (s.display === 'none' || s.visibility === 'hidden') return;
+        var pos = s.position;
+        var r = el.getBoundingClientRect();
+        // Element is "at the top" if it's pinned (fixed/sticky and currently flush) OR if it's
+        // a layout-flow element that the page-top sticky sits beneath when scrolling stops.
+        if ((pos === 'fixed' || pos === 'sticky') && r.top <= 1) {
+          if (r.bottom > maxBottom) maxBottom = r.bottom;
+        }
+      });
+      if (maxBottom > 0) return Math.round(maxBottom);
+
+      // Fallback to the CSS variable, then to the header element itself.
+      var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
+      if (v > 0) return v;
+      var hw = document.querySelector('.header-wrapper, sticky-header, header.header');
+      return hw ? Math.round(hw.getBoundingClientRect().bottom) : 0;
+    }
+
+    function syncFilterBarFixedState() {
+      if (!filterBar || !filterSpacer) return;
+      // Mobile uses a different bar; this desktop one is display:none on small screens.
+      if (window.matchMedia('(max-width: 749px)').matches) {
+        if (filterBar.classList.contains('sda-filter-bar--fixed')) {
+          filterBar.classList.remove('sda-filter-bar--fixed');
+          filterBar.classList.remove('sda-filter-bar--shadow');
+          filterBar.style.top = '';
+          filterSpacer.style.display = 'none';
+        }
+        return;
+      }
+
+      var topOffset = getHeaderOffset();
+      var barHeight = filterBar.offsetHeight || 0;
+      var isFixed = filterBar.classList.contains('sda-filter-bar--fixed');
+
+      // Reference point: when fixed, the spacer sits where the bar used to be.
+      // When not fixed, the bar itself reports its own viewport position.
+      var refTop = isFixed ? filterSpacer.getBoundingClientRect().top : filterBar.getBoundingClientRect().top;
+
+      var shouldFix = refTop <= topOffset;
+
+      // Optional bottom bound: stop sticking once we're past the end of the product grid,
+      // but only if the sectionEnd marker is laid out (rect.top !== 0 means it has flow).
+      if (sectionEnd) {
+        var endRect = sectionEnd.getBoundingClientRect();
+        if (endRect.top || endRect.bottom) {
+          if (endRect.top < topOffset + barHeight + 2) shouldFix = false;
+        }
+      }
+
+      if (shouldFix === isFixed) return;
+
+      filterBar.classList.toggle('sda-filter-bar--fixed', shouldFix);
+      filterBar.classList.toggle('sda-filter-bar--shadow', shouldFix);
+      /* Sticky handles positioning via CSS (top: 130px). Clear any legacy
+         inline top so it doesn't override the stylesheet. Spacer is not
+         needed for sticky (element stays in flow). */
+      filterBar.style.top = '';
+      filterSpacer.style.display = 'none';
+      filterSpacer.style.height = '0px';
+    }
+
+    window.addEventListener('scroll', syncFilterBarFixedState, { passive: true });
+    window.addEventListener('resize', syncFilterBarFixedState);
+    syncFilterBarFixedState();
+
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   AJAX FILTERING
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    function setLoading(on) {
+      gridWrap.classList.toggle('sda-loading', on);
+    }
+
+    function normalizedUrl(url) {
+      var u = new URL(url, window.location.origin);
+      u.searchParams.delete('section_id');
+      return u.pathname + u.search;
+    }
+
+    function syncCanonical(url) {
+      var canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) return;
+      var u = new URL(url, window.location.origin);
+      u.searchParams.delete('section_id');
+      u.hash = '';
+      canonical.setAttribute('href', u.toString());
+    }
+
+    function applyFromDoc(doc, url, opts) {
+      opts = opts || {};
+      var shouldPushState = opts.pushState !== false;
+      var shouldScroll = opts.scroll !== false;
+      var cleanUrl = normalizedUrl(url);
+      var ng = doc.getElementById('SdaGridWrap');
+      if (ng) gridWrap.innerHTML = ng.innerHTML;
+      var nc = doc.getElementById('SdaResultCount');
+      if (nc && resultCount) resultCount.innerHTML = nc.innerHTML;
+      var nb = doc.getElementById('SdaCountBar');
+      if (nb && countBar) countBar.innerHTML = nb.innerHTML;
+      var na = doc.getElementById('SdaActivePills');
+      if (na && activePills) activePills.innerHTML = na.innerHTML;
+      if (shouldPushState) history.pushState({}, '', cleanUrl);
+      syncCanonical(cleanUrl);
+      setLoading(false);
+      initSliders(gridWrap);
+      initWishlist(gridWrap);
+      document.dispatchEvent(new CustomEvent('sda:grid-updated'));
+      syncFormToUrl(cleanUrl);
+      resetInfinite();
+      syncFilterBarFixedState();
+      if (shouldScroll) {
+        window.scrollTo({ top: filterBar ? filterBar.offsetTop - 10 : 0, behavior: 'smooth' });
+      }
+    }
+
+    function doFilter(url, opts) {
+      opts = opts || {};
+      setLoading(true);
+      var targetUrl = new URL(url, window.location.origin);
+      targetUrl.searchParams.delete('section_id');
+      var historyUrl = targetUrl.pathname + targetUrl.search;
+      var requestUrl = new URL(targetUrl.toString());
+      requestUrl.searchParams.set('section_id', SECTION);
+      fetch(requestUrl.toString())
+        .then(function (r) {
+          return r.text();
+        })
+        .then(function (html) {
+          applyFromDoc(new DOMParser().parseFromString(html, 'text/html'), historyUrl, opts);
+        })
+        .catch(function () {
+          setLoading(false);
+        });
+    }
+
+    var debounce;
+    function scheduleFilter() {
+      clearTimeout(debounce);
+      debounce = setTimeout(function () {
+        if (!form) return;
+        var params = new URLSearchParams(new FormData(form));
+        Array.from(params.entries()).forEach(function (p) {
+          if (!p[1]) params.delete(p[0]);
+        });
+        var qs = params.toString();
+        doFilter(window.location.pathname + (qs ? '?' + qs : ''));
+      }, 300);
+    }
+
+    if (form) {
+      form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+        cb.addEventListener('change', scheduleFilter);
+      });
+      form.querySelectorAll('input[type="radio"][name="sort_by"]').forEach(function (r) {
+        r.addEventListener('change', function () {
+          /* update sort button label */
+          var lbl = document.querySelector('.sda-sort-active');
+          var opt = r.closest('.sda-sort-option');
+          if (lbl && opt) lbl.textContent = opt.querySelector('.sda-sort-lbl').textContent;
+          document.querySelectorAll('.sda-sort-option').forEach(function (o) {
+            o.classList.toggle('sda-sort-option--active', !!o.querySelector('input:checked'));
+          });
+          closeAll(null);
+          scheduleFilter();
+        });
+      });
+      form.querySelectorAll('input[type="number"]').forEach(function (n) {
+        n.addEventListener('change', scheduleFilter);
+      });
+    }
+
+    /* Remove-link clicks (pills, clear-all, panel clear) */
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('.sda-remove-link');
+      if (!link) return;
+      e.preventDefault();
+      doFilter(link.getAttribute('href'));
+    });
+
+    window.addEventListener('popstate', function () {
+      doFilter(window.location.href, { pushState: false, scroll: false });
+    });
+
+    function syncFormToUrl(url) {
+      if (!form) return;
+      var params = new URLSearchParams(url.split('?')[1] || '');
+      form.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+        cb.checked = params.getAll(cb.name).indexOf(cb.value) > -1;
+      });
+      form.querySelectorAll('input[type="radio"][name="sort_by"]').forEach(function (r) {
+        r.checked = r.value === (params.get('sort_by') || '');
+      });
+      /* update active states on buttons */
+      document.querySelectorAll('.sda-dropdown').forEach(function (dd) {
+        var checked = dd.querySelectorAll('input[type="checkbox"]:checked').length;
+        var btn = dd.querySelector('.sda-btn');
+        if (!btn) return;
+        btn.classList.toggle('sda-btn--active', checked > 0);
+        var cEl = btn.querySelector('.sda-btn__count');
+        if (checked > 0) {
+          if (!cEl) {
+            cEl = document.createElement('span');
+            cEl.className = 'sda-btn__count';
+            btn.insertBefore(cEl, btn.querySelector('.sda-btn__chevron'));
+          }
+          cEl.textContent = checked;
+        } else if (cEl) cEl.remove();
+      });
+    }
+
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   IMAGE SLIDERS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    function initStyleStripSlider() {
+      // Wrapped grid of chips, clamped to ~2 rows. "Show more" toggles `is-expanded`.
+      document.querySelectorAll('.sda-cat-strip--style').forEach(function (strip) {
+        var track = strip.querySelector('[data-style-track]');
+        var btn = strip.querySelector('[data-style-toggle]');
+        if (!track || !btn) return;
+
+        function checkOverflow() {
+          // Disable the max-height transition for the duration of measurement so the
+          // class toggle below never produces a visible flicker.
+          var prevTransition = track.style.transition;
+          track.style.transition = 'none';
+
+          var wasExpanded = strip.classList.contains('is-expanded');
+          // Force the collapsed state to read both the clamp and the content's full height.
+          // scrollHeight always reports the full natural height regardless of overflow:hidden.
+          strip.classList.remove('is-expanded');
+          // eslint-disable-next-line no-unused-expressions
+          track.offsetHeight; /* force reflow */
+          var clientH = track.clientHeight;
+          var scrollH = track.scrollHeight;
+          var overflows = scrollH > clientH + 2;
+
+          // Restore prior state. NEVER auto-collapse a user-expanded strip.
+          if (wasExpanded) strip.classList.add('is-expanded');
+          // eslint-disable-next-line no-unused-expressions
+          track.offsetHeight; /* commit before re-enabling transition */
+          track.style.transition = prevTransition;
+
+          strip.classList.toggle('is-overflowing', overflows);
+          if (!overflows && !wasExpanded) strip.classList.remove('is-expanded');
+        }
+
+        if (!strip._sdaStyleStripInit) {
+          btn.addEventListener('click', function () {
+            var expanded = strip.classList.toggle('is-expanded');
+            btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            btn.textContent = expanded ? btn.dataset.hideLabel || 'Show less' : btn.dataset.showLabel || 'Show more';
+          });
+
+          // Only re-measure when the WIDTH actually changes — mobile browsers fire `resize`
+          // on every URL-bar show/hide as the user scrolls, which would otherwise re-run the
+          // measurement constantly.
+          var lastWidth = window.innerWidth;
+          window.addEventListener('resize', function () {
+            if (window.innerWidth === lastWidth) return;
+            lastWidth = window.innerWidth;
+            window.requestAnimationFrame(checkOverflow);
+          });
+          strip._sdaStyleStripInit = true;
+        }
+
+        checkOverflow();
+      });
+    }
+    function initSliders(root) {
+      root.querySelectorAll('[data-sda-slider]').forEach(function (sl) {
+        if (sl._sda) return;
+        sl._sda = 1;
+        var media = sl.closest('.sda-card__media');
+        var slides = Array.from(sl.querySelectorAll('.sda-card__slide'));
+        var dots = media ? Array.from(media.querySelectorAll('.sda-card__dot')) : [];
+        var cur = 0;
+        if (slides.length < 2) return;
+        function go(n) {
+          slides[cur].classList.remove('on');
+          if (dots[cur]) dots[cur].classList.remove('on');
+          cur = (n + slides.length) % slides.length;
+          slides[cur].classList.add('on');
+          if (dots[cur]) dots[cur].classList.add('on');
+        }
+        var prev = media && media.querySelector('.sda-card__arrow--prev');
+        var next = media && media.querySelector('.sda-card__arrow--next');
+        if (prev)
+          prev.addEventListener('click', function (e) {
+            e.preventDefault();
+            go(cur - 1);
+          });
+        if (next)
+          next.addEventListener('click', function (e) {
+            e.preventDefault();
+            go(cur + 1);
+          });
+        var tx = 0;
+        sl.addEventListener(
+          'touchstart',
+          function (e) {
+            tx = e.touches[0].clientX;
+          },
+          { passive: true }
+        );
+        sl.addEventListener('touchend', function (e) {
+          var d = tx - e.changedTouches[0].clientX;
+          if (Math.abs(d) > 35) go(d > 0 ? cur + 1 : cur - 1);
+        });
+      });
+    }
+
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   WISHLIST
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    function initWishlist(root) {
+      root.querySelectorAll('.sda-card__wish').forEach(function (btn) {
+        if (btn._sda) return;
+        btn._sda = 1;
+        btn.addEventListener('click', function () {
+          this.classList.toggle('on');
+        });
+      });
+    }
+
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   INFINITE SCROLL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    /* Quick add to cart */
+    var cartToastEl = null;
+
+    /* ═══════════════════════════════════════════════════
+   VIEW TOGGLE
+═══════════════════════════════════════════════════ */
+    (function initColToggle() {
+      var COL_KEY = 'sda-col-pref';
+
+      function applyCol(cols) {
+        document.querySelectorAll('.sda-col-btn').forEach(function (b) {
+          b.classList.toggle('active', +b.dataset.cols === +cols);
+        });
+        try {
+          localStorage.setItem(COL_KEY, cols);
+        } catch (e) {}
+        // Only override columns on desktop — CSS handles tablet/mobile
+        if (window.innerWidth > 989) {
+          var grid = document.querySelector('.sda-grid');
+          if (grid) grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+        }
+      }
+
+      function resetColOnResize() {
+        var saved;
+        try {
+          saved = localStorage.getItem(COL_KEY);
+        } catch (e) {}
+        if (!saved) return;
+        var grid = document.querySelector('.sda-grid');
+        if (!grid) return;
+        if (window.innerWidth > 989) {
+          grid.style.gridTemplateColumns = 'repeat(' + saved + ', 1fr)';
+        } else {
+          grid.style.gridTemplateColumns = '';
+        }
+      }
+      window.addEventListener('resize', resetColOnResize);
+
+      // Restore saved preference
+      var saved;
+      try {
+        saved = localStorage.getItem(COL_KEY);
+      } catch (e) {}
+      if (saved) {
+        applyCol(+saved);
+      } else {
+        // default from section setting
+        var grid = document.querySelector('.sda-grid');
+        if (grid) {
+          var cs = window.getComputedStyle(grid).gridTemplateColumns;
+          var count = cs.split(' ').length;
+          document.querySelectorAll('.sda-col-btn').forEach(function (b) {
+            b.classList.toggle('active', +b.dataset.cols === count);
+          });
+        }
+      }
+
+      // Event delegation
+      document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.sda-col-btn');
+        if (!btn) return;
+        applyCol(+btn.dataset.cols);
+      });
+
+      // Re-apply after AJAX grid replacement
+      document.addEventListener('sda:grid-updated', function () {
+        var cur;
+        try {
+          cur = localStorage.getItem(COL_KEY);
+        } catch (e) {}
+        if (cur) applyCol(+cur);
+      });
+    })();
+
+    /* ═══════════════════════════════════════════════════
+   MOBILE FILTER DRAWER
+═══════════════════════════════════════════════════ */
+    (function initMobileDrawer() {
+      var drawer = document.getElementById('SdaFilterDrawer');
+      var backdrop = document.getElementById('SdaDrawerBackdrop');
+
+      if (!drawer) return;
+
+      function openDrawer() {
+        drawer.classList.add('open');
+        if (backdrop) backdrop.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeDrawer() {
+        drawer.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      // Event delegation — all drawer controls
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('#SdaMobileFilterBtn')) {
+          openDrawer();
+          return;
+        }
+        if (e.target.closest('#SdaDrawerClose')) {
+          closeDrawer();
+          return;
+        }
+        if (e.target.closest('#SdaDrawerApply')) {
+          closeDrawer();
+          var form = document.getElementById('SdaFacetForm');
+          if (form) {
+            var url = new URL(window.location.href);
+            url.search = '';
+            var fd = new FormData(form);
+            for (var pair of fd.entries()) {
+              if (pair[1]) url.searchParams.append(pair[0], pair[1]);
+            }
+            window.location.href = url.toString();
+          }
+          return;
+        }
+        if (e.target.closest('#SdaDrawerClear')) {
+          closeDrawer();
+          window.location.href = window.location.pathname;
+          return;
+        }
+        if (e.target.closest('#SdaDrawerBackdrop') && !e.target.closest('#SdaFilterDrawer')) {
+          closeDrawer();
+          return;
+        }
+      });
+
+      if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+      // Accordion toggles
+      document.querySelectorAll('.sda-filter-acc__btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var body = btn.nextElementSibling;
+          var isOpen = btn.classList.toggle('open');
+          if (body) {
+            body.classList.toggle('open', isOpen);
+            body.style.maxHeight = isOpen ? body.scrollHeight + 'px' : '0';
+          }
+        });
+      });
+
+      // Swipe down to close
+      var startY = 0;
+      drawer.addEventListener(
+        'touchstart',
+        function (e) {
+          startY = e.touches[0].clientY;
+        },
+        { passive: true }
+      );
+      drawer.addEventListener(
+        'touchend',
+        function (e) {
+          if (e.changedTouches[0].clientY - startY > 80) closeDrawer();
+        },
+        { passive: true }
+      );
+    })();
+
+    /* ═══════════════════════════════════════════════════
+   INFINITE SCROLL
+═══════════════════════════════════════════════════ */
+    var infBusy = false;
+    var infObs = null;
+
+    function resetInfinite() {
+      infBusy = false;
+      if (infObs) {
+        infObs.disconnect();
+        infObs = null;
+      }
+      window.removeEventListener('scroll', onScroll);
+      setupInfinite();
+    }
+
+    function loadNext() {
+      var sentinel = document.getElementById('SdaSentinel');
+      var spinner = document.getElementById('SdaSpinner');
+      if (!sentinel || infBusy) return;
+      var nextUrl = sentinel.dataset.next;
+      if (!nextUrl) return;
+      infBusy = true;
+      if (spinner) spinner.style.display = '';
+
+      var nextRequestUrl = new URL(nextUrl, window.location.origin);
+      nextRequestUrl.searchParams.set('section_id', SECTION);
+      fetch(nextRequestUrl.toString())
+        .then(function (r) {
+          return r.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var newGrid = doc.querySelector('.sda-grid');
+          var curGrid = document.querySelector('.sda-grid');
+          if (newGrid && curGrid) {
+            newGrid.querySelectorAll('.sda-card, .sda-promo').forEach(function (el) {
+              curGrid.appendChild(el);
+            });
+            initSliders(curGrid);
+            initWishlist(curGrid);
+            document.dispatchEvent(new CustomEvent('sda:grid-updated'));
+          }
+          var newSentinel = doc.getElementById('SdaSentinel');
+          if (newSentinel && newSentinel.dataset.next) {
+            sentinel.dataset.next = newSentinel.dataset.next;
+          } else {
+            sentinel.remove();
+            if (spinner) spinner.remove();
+            if (infObs) {
+              infObs.disconnect();
+              infObs = null;
+            }
+            window.removeEventListener('scroll', onScroll);
+          }
+          if (spinner) spinner.style.display = 'none';
+          infBusy = false;
+        })
+        .catch(function () {
+          if (spinner) spinner.style.display = 'none';
+          infBusy = false;
+        });
+    }
+
+    function nearBottom() {
+      var s = document.getElementById('SdaSentinel');
+      if (!s) return false;
+      return s.getBoundingClientRect().top <= window.innerHeight + 400;
+    }
+
+    function onScroll() {
+      if (nearBottom()) loadNext();
+    }
+
+    function setupInfinite() {
+      var sentinel = document.getElementById('SdaSentinel');
+      if (!sentinel) return;
+      if ('IntersectionObserver' in window) {
+        infObs = new IntersectionObserver(
+          function (entries) {
+            if (entries[0].isIntersecting) loadNext();
+          },
+          { rootMargin: '0px 0px 400px 0px' }
+        );
+        infObs.observe(sentinel);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      setTimeout(function () {
+        if (nearBottom()) loadNext();
+      }, 300);
+    }
+
+    initSliders(document);
+    initWishlist(document);
+    initStyleStripSlider();
+    window.addEventListener('resize', initStyleStripSlider);
+    document.addEventListener('sda:grid-updated', initStyleStripSlider);
+    setupInfinite();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection Alt Layout",
+  "tag": "section",
+  "class": "section-sda-collection",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_banner",
+      "label": "Show banner",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Grid Columns"
+    },
+    {
+      "type": "range",
+      "id": "desktop_columns",
+      "label": "Desktop columns",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "tablet_columns",
+      "label": "Tablet columns (â‰¤989px)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Mobile columns (up to 749px)",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Child Category Strip"
+    },
+    {
+      "type": "text",
+      "id": "child_category_heading",
+      "label": "Heading",
+      "default": "Shop by Style"
+    },
+    {
+      "type": "text",
+      "id": "color_collection_heading",
+      "label": "Shop by Color heading",
+      "default": "Shop by Color"
+    },
+    {
+      "type": "text",
+      "id": "range_collection_heading",
+      "label": "Shop by Range heading",
+      "default": "Shop by Range"
+    },
+    {
+      "type": "header",
+      "content": "Promo Banners"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_promo",
+      "label": "Show promo banners in grid",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "promo_interval",
+      "label": "Show banner after every N products",
+      "min": 3,
+      "max": 24,
+      "step": 1,
+      "default": 3,
+      "info": "E.g. 3 = after every 3 products."
+    },
+    {
+      "type": "header",
+      "content": "Product Card"
+    },
+    {
+      "type": "text",
+      "id": "card_cta_label",
+      "label": "CTA text",
+      "default": "More details"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_finance_text",
+      "label": "Show finance text",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "finance_text",
+      "label": "Finance text",
+      "default": "From Â£29/month with 0% finance"
+    },
+    {
+      "type": "header",
+      "content": "Shop By Block Order"
+    },
+    {
+      "type": "select",
+      "id": "shop_by_block_1",
+      "label": "First block",
+      "default": "style",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "style", "label": "Shop by Style" },
+        { "value": "color", "label": "Shop by Color" },
+        { "value": "range", "label": "Shop by Range" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "shop_by_block_2",
+      "label": "Second block",
+      "default": "color",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "style", "label": "Shop by Style" },
+        { "value": "color", "label": "Shop by Color" },
+        { "value": "range", "label": "Shop by Range" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "shop_by_block_3",
+      "label": "Third block",
+      "default": "range",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "style", "label": "Shop by Style" },
+        { "value": "color", "label": "Shop by Color" },
+        { "value": "range", "label": "Shop by Range" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "promo_banner",
+      "name": "Promo Banner",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Fallback background colour",
+          "default": "#111521"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow badge",
+          "default": "Limited Time"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "SPEND & SAVE"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Sub-heading",
+          "default": "Save up to £500"
+        },
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Body text",
+          "default": "On selected sofas and corner groups this season."
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Button label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "Button URL"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

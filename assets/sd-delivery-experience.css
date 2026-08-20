@@ -1,0 +1,591 @@
+/* ============================================================
+   SD Delivery Experience
+   ============================================================ */
+
+.sd-delivery {
+  --sd-delivery-teal: var(--sd-clr-teal, #2f4858);
+  --sd-delivery-warm: var(--sd-clr-accent-brown, #a58c70);
+  --sd-delivery-tan-rgb: var(--sd-clr-taupe-rgb, 192, 176, 159);
+  --sd-delivery-cream: #f7f3ec;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(100rem 46rem at 95% -10%, rgba(var(--sd-delivery-tan-rgb), 0.28), transparent 58%),
+    radial-gradient(76rem 38rem at -10% 100%, rgba(47, 72, 88, 0.13), transparent 55%),
+    linear-gradient(180deg, #faf8f4 0%, #f5efe7 100%);
+}
+
+.sd-delivery__shape {
+  position: absolute;
+  border-radius: 999rem;
+  pointer-events: none;
+  filter: blur(1.2rem);
+  opacity: 0.35;
+}
+
+.sd-delivery__shape--one {
+  width: 34rem;
+  height: 34rem;
+  right: -10rem;
+  top: -10rem;
+  background: rgba(165, 140, 112, 0.52);
+}
+
+.sd-delivery__shape--two {
+  width: 30rem;
+  height: 30rem;
+  left: -8rem;
+  bottom: -12rem;
+  background: rgba(47, 72, 88, 0.34);
+}
+
+.sd-delivery__container {
+  position: relative;
+  z-index: 1;
+  max-width: 142rem;
+  display: grid;
+  gap: 2.6rem;
+}
+
+.sd-delivery__hero {
+  position: relative;
+  min-height: 54rem;
+  border-radius: 3.2rem;
+  overflow: hidden;
+}
+
+.sd-delivery__hero-media,
+.sd-delivery__day-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.sd-delivery__hero-image,
+.sd-delivery__day-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sd-delivery__hero-image--mobile,
+.sd-delivery__day-image--mobile {
+  display: none;
+}
+
+.sd-delivery__hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.16) 8%, rgba(0, 0, 0, 0.58) 100%);
+}
+
+.sd-delivery__hero-content {
+  position: absolute;
+  left: 4rem;
+  right: 4rem;
+  bottom: 3.2rem;
+  max-width: 78rem;
+  display: grid;
+  gap: 1.6rem;
+  z-index: 2;
+}
+
+.sd-delivery__badge {
+  width: fit-content;
+  border: 0.15rem solid #000;
+  border-radius: 999rem;
+  padding: 0.7rem 1.5rem;
+  background: rgba(255, 255, 255, 0.75);
+  color: #000;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sd-delivery__title {
+  margin: 0;
+  color: #fff;
+  font-family: var(--sd-font-display);
+  font-size: clamp(3.6rem, 6vw, 7.2rem);
+  font-weight: 900;
+  line-height: 0.88;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.sd-delivery__subtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: Montserrat, sans-serif;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  line-height: 1.55;
+}
+
+.sd-delivery__hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.sd-delivery__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rem;
+  text-decoration: none;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 0.95rem 1.7rem;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.sd-delivery__btn:hover { transform: translateY(-0.1rem); }
+
+.sd-delivery__btn--solid {
+  background: #fff;
+  color: #000;
+}
+
+.sd-delivery__btn--ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 0.1rem solid rgba(255, 255, 255, 0.38);
+}
+
+.sd-delivery__tracker,
+.sd-delivery__process,
+.sd-delivery__before,
+.sd-delivery__setup,
+.sd-delivery__trust,
+.sd-delivery__charges,
+.sd-delivery__faq {
+  border-radius: 2.6rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 1.2rem 2.6rem rgba(0, 0, 0, 0.07);
+  padding: 2.2rem;
+}
+
+.sd-delivery__section-head {
+  margin-bottom: 1.4rem;
+}
+
+.sd-delivery__section-title {
+  margin: 0;
+  color: #111;
+  font-family: var(--sd-font-display);
+  font-size: clamp(2.4rem, 3vw, 4.2rem);
+  font-weight: 900;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.sd-delivery__section-copy {
+  margin: 1rem 0 0;
+  color: rgba(0, 0, 0, 0.72);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.45rem;
+  line-height: 1.6;
+}
+
+.sd-delivery__tracker-list {
+  list-style: none;
+  margin: 1.2rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.sd-delivery__tracker-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.8rem;
+  border-radius: 1.2rem;
+  background: #f7f5f2;
+  padding: 0.8rem;
+}
+
+.sd-delivery__tracker-dot {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 999rem;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.sd-delivery__tracker-item.is-complete .sd-delivery__tracker-dot,
+.sd-delivery__tracker-item.is-current .sd-delivery__tracker-dot {
+  background: var(--sd-delivery-teal);
+}
+
+.sd-delivery__tracker-label {
+  font-family: Montserrat, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.sd-delivery__process-grid,
+.sd-delivery__tips-grid,
+.sd-delivery__setup-grid,
+.sd-delivery__trust-grid,
+.sd-delivery__charge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.sd-delivery-card,
+.sd-delivery-charge-card {
+  border-radius: 1.8rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  padding: 1.4rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sd-delivery-card:hover,
+.sd-delivery-charge-card:hover {
+  transform: translateY(-0.2rem);
+  box-shadow: 0 0.9rem 1.8rem rgba(0, 0, 0, 0.09);
+}
+
+.sd-delivery-card__icon {
+  width: 4.8rem;
+  height: 4.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rem;
+  background: rgba(47, 72, 88, 0.08);
+  color: var(--sd-delivery-teal);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.sd-delivery-card__icon svg { width: 60%; height: 60%; }
+.sd-delivery-card__icon img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+
+.sd-delivery-card__title {
+  margin: 1rem 0 0;
+  color: #151515;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.sd-delivery-card__text {
+  margin: 0.8rem 0 0;
+  color: rgba(0, 0, 0, 0.72);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.35rem;
+  line-height: 1.55;
+}
+
+.sd-delivery__day {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  border-radius: 2.6rem;
+  overflow: hidden;
+}
+
+.sd-delivery__day-media {
+  min-height: 34rem;
+  border-radius: 2rem;
+}
+
+.sd-delivery__day-content {
+  border-radius: 2rem;
+  background: #fff;
+  border: 0.1rem solid rgba(0, 0, 0, 0.08);
+  padding: 1.6rem;
+}
+
+.sd-delivery__day-list {
+  margin: 1.2rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+}
+
+.sd-delivery-day-point {
+  display: grid;
+  grid-template-columns: 3.2rem 1fr;
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.sd-delivery-day-point__icon {
+  width: 4.0rem;
+  height: 4.0rem;
+  border-radius: 999rem;
+  background: rgba(47, 72, 88, 0.08);
+  color: var(--sd-delivery-teal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sd-delivery-day-point__icon svg { width: 55%; height: 55%; }
+.sd-delivery-day-point__icon img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+
+.sd-delivery-day-point__title {
+  margin: 0;
+  color: #141414;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.sd-delivery-day-point__text {
+  margin: 0.35rem 0 0;
+  color: rgba(0, 0, 0, 0.72);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.45;
+}
+
+.sd-delivery-charge-card__zone {
+  margin: 0;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.sd-delivery-charge-card__price {
+  margin: 0.65rem 0 0;
+  color: #121212;
+  font-family: var(--sd-font-display);
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 0.95;
+}
+
+.sd-delivery-charge-card__eta {
+  margin: 0.6rem 0 0;
+  color: var(--sd-delivery-teal);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sd-delivery-charge-card__note {
+  margin: 0.8rem 0 0;
+  color: rgba(0, 0, 0, 0.72);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
+.sd-delivery-faq {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.sd-delivery-faq__item {
+  border-radius: 1.6rem;
+  border: 0.1rem solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  overflow: hidden;
+}
+
+.sd-delivery-faq__button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 1.3rem 1.4rem;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  cursor: pointer;
+  color: #111;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.sd-delivery-faq__plus {
+  width: 1.7rem;
+  height: 1.7rem;
+  position: relative;
+  margin-top: 0.1rem;
+}
+
+.sd-delivery-faq__plus::before,
+.sd-delivery-faq__plus::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.4rem;
+  height: 0.2rem;
+  background: #2f4858;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease;
+}
+
+.sd-delivery-faq__plus::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.sd-delivery-faq__button[aria-expanded='true'] .sd-delivery-faq__plus::after {
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+.sd-delivery-faq__panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.32s ease;
+}
+
+.sd-delivery-faq__answer {
+  padding: 0 1.4rem 1.4rem;
+  color: rgba(0, 0, 0, 0.74);
+  font-family: Montserrat, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.6;
+}
+
+.sd-delivery__sticky-cta {
+  position: fixed;
+  right: 1.6rem;
+  bottom: 1.6rem;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 999rem;
+  padding: 1rem 1.4rem;
+  text-decoration: none;
+  border: 0.1rem solid rgba(0, 0, 0, 0.16);
+  background: #2f4858;
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  box-shadow: 0 1rem 2.2rem rgba(0, 0, 0, 0.18);
+}
+
+.sd-reveal {
+  opacity: 0;
+  transform: translateY(1.8rem);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.sd-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media screen and (max-width: 1199px) {
+  .sd-delivery__process-grid,
+  .sd-delivery__tips-grid,
+  .sd-delivery__setup-grid,
+  .sd-delivery__trust-grid,
+  .sd-delivery__charge-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .sd-delivery__tracker-list,
+  .sd-delivery__day {
+    grid-template-columns: 1fr;
+  }
+
+  .sd-delivery__hero {
+    min-height: 48rem;
+  }
+
+  .sd-delivery__hero-content {
+    left: 2rem;
+    right: 2rem;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .sd-delivery__hero {
+    min-height: 42rem;
+    border-radius: 2.2rem;
+  }
+
+  .sd-delivery__hero-media--has-mobile .sd-delivery__hero-image--desktop,
+  .sd-delivery__day-media--has-mobile .sd-delivery__day-image--desktop {
+    display: none;
+  }
+
+  .sd-delivery__hero-media--has-mobile .sd-delivery__hero-image--mobile,
+  .sd-delivery__day-media--has-mobile .sd-delivery__day-image--mobile {
+    display: block;
+  }
+
+  .sd-delivery__hero-content {
+    left: 1.6rem;
+    right: 1.6rem;
+    bottom: 1.8rem;
+  }
+
+  .sd-delivery__title {
+    font-size: 3.1rem;
+  }
+
+  .sd-delivery__subtitle {
+    font-size: 1.3rem;
+  }
+
+  .sd-delivery__tracker,
+  .sd-delivery__process,
+  .sd-delivery__before,
+  .sd-delivery__setup,
+  .sd-delivery__trust,
+  .sd-delivery__charges,
+  .sd-delivery__faq {
+    border-radius: 1.8rem;
+    padding: 1.5rem;
+  }
+
+  .sd-delivery__section-title {
+    font-size: 2.4rem;
+  }
+
+  .sd-delivery__section-copy {
+    font-size: 1.3rem;
+  }
+
+  .sd-delivery__process-grid,
+  .sd-delivery__tips-grid,
+  .sd-delivery__setup-grid,
+  .sd-delivery__trust-grid,
+  .sd-delivery__charge-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sd-delivery__day-media {
+    min-height: 22rem;
+  }
+
+  .sd-delivery__sticky-cta {
+    left: 1.2rem;
+    right: 1.2rem;
+    bottom: 1.2rem;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,301 @@
+/* ============================================================
+   SD Product Info — Delivery & Support tab
+   Collapsible "Delivery & Support" widget — 4-step process +
+   speak-to-team CTA, in the product info column.
+   Brand palette: cream / taupe / brown / teal + gold accent.
+   ============================================================ */
+
+.sd-pinsup {
+  --ps-cream: var(--color-sd-cream, #FFFAEA);
+  --ps-taupe: var(--color-sd-tan,   #C0B09F);
+  --ps-brown: var(--color-sd-brown, #A58C70);
+  --ps-teal:  var(--color-sd-teal,  #2F4858);
+  --ps-gold:  #E8A53A;
+  --ps-line:  rgba(165, 140, 112, 0.30);
+
+  position: relative;
+  margin: 0 0 2rem;
+  padding: 0;
+  background:
+    linear-gradient(180deg, #fffdf3 0%, var(--ps-cream) 60%, rgba(192, 176, 159, 0.18) 100%);
+  border: 1px solid var(--ps-line);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 18px 36px -22px rgba(47, 72, 88, 0.32);
+  overflow: hidden;
+}
+
+/* ── Bar (clickable tab) ───────────────────────────────── */
+.sd-pinsup__bar {
+  appearance: none;
+  display: flex; width: 100%;
+  align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1rem 1.4rem;
+  background: var(--ps-teal);
+  color: #fff; border: 0; cursor: pointer;
+  text-align: left; font-family: inherit;
+  position: relative; z-index: 2;
+  transition: filter 0.25s ease;
+}
+.sd-pinsup__bar:hover { filter: brightness(1.08); }
+.sd-pinsup__bar:focus-visible { outline: 2px solid var(--ps-gold); outline-offset: -2px; }
+
+.sd-pinsup__bar-l { display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex: 1; }
+
+.sd-pinsup__bar-ico {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.sd-pinsup__bar-txt { display: flex; flex-direction: column; min-width: 0; }
+.sd-pinsup__bar-title {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem; font-weight: 700; letter-spacing: 0.02em; line-height: 1.15;
+}
+.sd-pinsup__bar-sub {
+  font-size: 1rem; font-weight: 500;
+  color: rgba(255, 255, 255, 0.72); letter-spacing: 0.02em; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.sd-pinsup__bar-toggle {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff; font-family: var(--sd-font-body, inherit);
+  font-size: 1.1rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 0.45rem 0.85rem; border-radius: 999px; flex-shrink: 0;
+}
+.sd-pinsup__bar:hover .sd-pinsup__bar-toggle { background: rgba(255, 255, 255, 0.24); }
+.sd-pinsup__bar-chev { transition: transform 0.3s ease; }
+.sd-pinsup.is-collapsed .sd-pinsup__bar-chev { transform: rotate(-90deg); }
+
+/* ── Panel collapse ────────────────────────────────────── */
+.sd-pinsup__panel {
+  position: relative;
+  max-height: 1800px; opacity: 1; overflow: hidden;
+  padding: 1.8rem 1.8rem 1.6rem;
+  transition: max-height 0.45s ease, opacity 0.3s ease, padding 0.4s ease;
+}
+.sd-pinsup.is-collapsed .sd-pinsup__panel {
+  max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; pointer-events: none;
+}
+
+.sd-pinsup__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(165, 140, 112, 0.04) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(165, 140, 112, 0.03) 0 2px, transparent 2px 6px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.sd-pinsup__head { position: relative; z-index: 1; margin-bottom: 1.4rem; }
+
+.sd-pinsup__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(165, 140, 112, 0.14);
+  border: 1px solid rgba(165, 140, 112, 0.32);
+  color: var(--ps-brown);
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.05rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  margin-bottom: 0.7rem;
+}
+.sd-pinsup__eyebrow svg { color: var(--ps-gold); }
+
+.sd-pinsup__title {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 2rem; font-weight: 600;
+  color: var(--ps-teal);
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.01em; line-height: 1.15;
+}
+
+.sd-pinsup__sub {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.2rem;
+  color: rgba(47, 72, 88, 0.7);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── 4-step process timeline ───────────────────────────── */
+.sd-pinsup__steps {
+  position: relative; z-index: 1;
+  list-style: none; margin: 0 0 1.2rem; padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.sd-pinsup__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 36px 36px 1fr;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border: 1px solid var(--ps-line);
+  border-radius: 14px;
+  box-shadow: 0 8px 18px -14px rgba(47, 72, 88, 0.30);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.sd-pinsup__step:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px -16px rgba(47, 72, 88, 0.36);
+}
+
+/* Connecting line down the left edge between steps */
+.sd-pinsup__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 27px;
+  top: 100%;
+  height: 0.7rem;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(232, 165, 58, 0.6), rgba(232, 165, 58, 0.05));
+  pointer-events: none;
+}
+
+.sd-pinsup__step-n {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--ps-gold) 0%, #c78a1e 100%);
+  color: #2c1c00;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem; font-weight: 800;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 4px 10px -3px rgba(232, 165, 58, 0.55);
+}
+
+.sd-pinsup__step-ico {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(47, 72, 88, 0.08);
+  border: 1px solid rgba(47, 72, 88, 0.18);
+  color: var(--ps-teal);
+}
+
+.sd-pinsup__step-body {
+  display: flex; flex-direction: column; gap: 0.1rem;
+  min-width: 0;
+}
+.sd-pinsup__step-body strong {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--ps-teal);
+  line-height: 1.2;
+}
+.sd-pinsup__step-body span {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.1rem; font-weight: 500;
+  color: rgba(47, 72, 88, 0.72);
+  line-height: 1.4;
+}
+
+/* ── Theme editor rich-text notes ──────────────────────── */
+.sd-pinsup__notes {
+  position: relative; z-index: 1;
+  margin-bottom: 1.0rem;
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px dashed rgba(165, 140, 112, 0.32);
+  border-radius: 12px;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  color: rgba(47, 72, 88, 0.78);
+  line-height: 1.55;
+}
+.sd-pinsup__notes p:first-child { margin-top: 0; }
+.sd-pinsup__notes p:last-child  { margin-bottom: 0; }
+
+/* ── Speak-to-team CTA card ────────────────────────────── */
+.sd-pinsup__cta {
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 1.1rem;
+  background: linear-gradient(135deg, var(--ps-teal) 0%, #1f3340 100%);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 14px;
+  box-shadow: 0 12px 22px -16px rgba(47, 72, 88, 0.55);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+}
+.sd-pinsup__cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 16px 28px -16px rgba(47, 72, 88, 0.65);
+}
+
+.sd-pinsup__cta-ico {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--ps-gold) 0%, #c78a1e 100%);
+  color: #2c1c00;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.sd-pinsup__cta-text {
+  display: flex; flex-direction: column; gap: 0.1rem;
+  min-width: 0;
+}
+.sd-pinsup__cta-text strong {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.35rem; font-weight: 700;
+  letter-spacing: -0.005em;
+}
+.sd-pinsup__cta-text small {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1rem; font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.02em;
+}
+
+.sd-pinsup__cta-arrow { color: rgba(255, 255, 255, 0.85); transition: transform 0.22s ease; }
+.sd-pinsup__cta:hover .sd-pinsup__cta-arrow { transform: translateX(3px); color: #fff; }
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 749px) {
+  .sd-pinsup      { border-radius: 0; margin: 0 0 0.9rem; }
+}
+@media screen and (max-width: 480px) {
+  .sd-pinsup__bar { padding: 0.9rem 1.1rem; }
+  .sd-pinsup__bar-title { font-size: 1.2rem; }
+  .sd-pinsup__bar-sub { font-size: 0.95rem; }
+  .sd-pinsup__bar-toggle-label { display: none; }
+  .sd-pinsup__bar-toggle { padding: 0.45rem 0.6rem; }
+  .sd-pinsup__panel { padding: 1.4rem 1.2rem 1.2rem; }
+  .sd-pinsup__title { font-size: 1.7rem; }
+  .sd-pinsup__step {
+    grid-template-columns: 28px 28px 1fr;
+    gap: 0.7rem;
+    padding: 0.75rem 0.85rem;
+  }
+  .sd-pinsup__step-n,
+  .sd-pinsup__step-ico { width: 28px; height: 28px; }
+  .sd-pinsup__step-body strong { font-size: 1.25rem; }
+  .sd-pinsup__step-body span { font-size: 1rem; }
+  .sd-pinsup__cta { grid-template-columns: 36px 1fr auto; padding: 0.8rem 0.95rem; }
+  .sd-pinsup__cta-ico { width: 36px; height: 36px; }
+}

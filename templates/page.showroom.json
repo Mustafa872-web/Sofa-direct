@@ -1,0 +1,116 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-info-hero",
+      "settings": {
+        "badge_text": "Visit Us In Coventry",
+        "heading": "Our Showroom",
+        "body_text": "Step inside to experience comfort, quality and design firsthand. Test fabrics, compare recliners and get expert guidance — all under one roof."
+      },
+      "blocks": {
+        "c1": { "type": "chip", "settings": { "icon": true, "text": "Free Parking" } },
+        "c2": { "type": "chip", "settings": { "icon": true, "text": "Open Mon–Sat" } },
+        "c3": { "type": "chip", "settings": { "icon": true, "text": "Expert Advice On Site" } }
+      },
+      "block_order": ["c1", "c2", "c3"]
+    },
+    "intro": {
+      "type": "sd-info-intro",
+      "settings": {
+        "eyebrow": "Find Us",
+        "heading": "Unit 2a Durbar Industrial Estate, Durbar Avenue, Coventry CV6 5QF",
+        "body": "<p>Call <strong>+44 02476 581 053</strong> or email <strong>sales@furnitureinstore.co.uk</strong>. We'd love to welcome you in.</p>"
+      }
+    },
+    "hours": {
+      "type": "sd-info-cards",
+      "settings": {
+        "eyebrow": "Opening Hours",
+        "heading": "When We're Open",
+        "bg": "cream"
+      },
+      "blocks": {
+        "h1": {
+          "type": "card",
+          "settings": {
+            "number": "MO",
+            "title": "Weekdays",
+            "text": "Monday to Friday",
+            "sub1": "Hours",
+            "list1": "10:00 – 18:00"
+          }
+        },
+        "h2": {
+          "type": "card",
+          "settings": {
+            "number": "SA",
+            "title": "Saturday",
+            "text": "Weekend opening",
+            "sub1": "Hours",
+            "list1": "10:00 – 18:00"
+          }
+        },
+        "h3": {
+          "type": "card",
+          "settings": {
+            "number": "SU",
+            "title": "Sunday",
+            "text": "Closed",
+            "sub1": "We're resting",
+            "list1": "Shop online 24/7 at sofadirect.co.uk"
+          }
+        }
+      },
+      "block_order": ["h1", "h2", "h3"]
+    },
+    "what": {
+      "type": "sd-info-cards",
+      "settings": {
+        "eyebrow": "What's Inside",
+        "heading": "Everything You Need To Decide"
+      },
+      "blocks": {
+        "w1": { "type": "card", "settings": { "title": "Current Designs & Room Sets", "text": "See our latest sofa ranges displayed in fully styled settings." } },
+        "w2": { "type": "card", "settings": { "title": "Try Before You Buy", "text": "Sit, recline and compare fabric, leather, and power recliner models." } },
+        "w3": { "type": "card", "settings": { "title": "Sizing & Styling Guidance", "text": "Our team will help you pick the right size, shape and finish for your space." } },
+        "w4": { "type": "card", "settings": { "title": "Finance On The Day", "text": "Apply for DivideBuy, Klarna, PayPal or Clearpay in store — instant decisions." } }
+      },
+      "block_order": ["w1", "w2", "w3", "w4"]
+    },
+    "tips": {
+      "type": "sd-info-steps",
+      "settings": {
+        "heading": "Plan Your Visit",
+        "body": "Three quick things to bring so we can give you the very best advice."
+      },
+      "blocks": {
+        "s1": { "type": "step", "settings": { "title": "Room Measurements", "text": "Width, depth and height — plus doorway widths for delivery access." } },
+        "s2": { "type": "step", "settings": { "title": "Preferred Colours", "text": "Paint swatches or photos help us match fabrics and leathers to your décor." } },
+        "s3": { "type": "step", "settings": { "title": "Delivery Needs", "text": "Let us know your postcode and any access considerations so we can quote accurately." } }
+      },
+      "block_order": ["s1", "s2", "s3"]
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "settings": {
+        "heading": "Pop in and say hello",
+        "body": "No appointment needed — but feel free to call ahead if you'd like a specific model reserved for testing."
+      },
+      "blocks": {
+        "btn1": { "type": "button", "settings": { "label": "Get Directions", "link": "https://maps.google.com/?q=Unit+2a+Durbar+Industrial+Estate,+Durbar+Avenue,+Coventry+CV6+5QF" } },
+        "btn2": { "type": "button", "settings": { "label": "Call 02476 581 053", "link": "tel:02476 581 053", "outline": true } }
+      },
+      "block_order": ["btn1", "btn2"]
+    }
+  },
+  "order": ["hero", "intro", "hours", "what", "tips", "cta"]
+}

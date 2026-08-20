@@ -1,0 +1,330 @@
+<link rel="stylesheet" href="{{ 'sd-clearance-sale.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-clearance-sale.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign limit      = section.settings.products_to_show | default: 6
+  assign eyebrow    = section.settings.eyebrow
+  assign stat_1     = section.settings.stat_1
+  assign stat_2     = section.settings.stat_2
+  assign stat_3     = section.settings.stat_3
+-%}
+
+<section
+  id="sd-clearance-{{ section.id }}"
+  class="sd-clearance"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+
+  {%- comment -%} Decorative giant "%" sitting behind the heading + ambient sparkles. {%- endcomment -%}
+  <div class="sd-clearance__bg-mark" aria-hidden="true">%</div>
+  <span class="sd-clearance__sparkle sd-clearance__sparkle--1" aria-hidden="true"></span>
+  <span class="sd-clearance__sparkle sd-clearance__sparkle--2" aria-hidden="true"></span>
+  <span class="sd-clearance__sparkle sd-clearance__sparkle--3" aria-hidden="true"></span>
+
+  {%- comment -%} ── Header ── {%- endcomment -%}
+  <div class="sd-clearance__header page-width">
+
+    {%- if eyebrow != blank -%}
+      <p class="sd-clearance__eyebrow">
+        <span class="sd-clearance__eyebrow-dot" aria-hidden="true"></span>
+        {{ eyebrow }}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="sd-clearance__heading"><span class="sd-clearance__heading-text">{{ section.settings.heading }}</span></h2>
+      <span class="sd-clearance__flourish" aria-hidden="true">
+        <span class="sd-clearance__flourish-line"></span>
+        <span class="sd-clearance__flourish-diamond"></span>
+        <span class="sd-clearance__flourish-line"></span>
+      </span>
+    {%- endif -%}
+
+    {%- if section.settings.body != blank -%}
+      <p class="sd-clearance__body">{{ section.settings.body }}</p>
+    {%- endif -%}
+
+    {%- if stat_1 != blank or stat_2 != blank or stat_3 != blank -%}
+      <ul class="sd-clearance__stats" role="list">
+        {%- if stat_1 != blank -%}
+          <li class="sd-clearance__stat">
+            <span class="sd-clearance__stat-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="8" cy="8" r="2" fill="currentColor"/>
+                <circle cx="16" cy="16" r="2" fill="currentColor"/>
+                <path d="M19 5L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span>{{ stat_1 }}</span>
+          </li>
+        {%- endif -%}
+        {%- if stat_2 != blank -%}
+          <li class="sd-clearance__stat">
+            <span class="sd-clearance__stat-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M6 19a2 2 0 100-4 2 2 0 000 4zM18 19a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>{{ stat_2 }}</span>
+          </li>
+        {%- endif -%}
+        {%- if stat_3 != blank -%}
+          <li class="sd-clearance__stat">
+            <span class="sd-clearance__stat-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>{{ stat_3 }}</span>
+          </li>
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
+
+    {%- if section.settings.cta_label != blank and section.settings.cta_url != blank -%}
+      <a
+        href="{{ section.settings.cta_url }}"
+        class="sd-clearance__cta"
+        aria-label="{{ section.settings.cta_label | escape }}"
+      >
+        {{- section.settings.cta_label -}}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    {%- endif -%}
+
+  </div>
+
+  {%- comment -%} ── Product grid ── {%- endcomment -%}
+  <div class="sd-clearance__grid page-width">
+
+    {%- if collection != blank and collection.products_count > 0 -%}
+
+      {%- for product in collection.products limit: limit -%}
+        {%- liquid
+          assign cell_alt = product.featured_image.alt | default: product.title | escape
+          assign has_sale = false
+          assign discount_pct = 0
+          assign savings = 0
+          if product.compare_at_price_max > product.price
+            assign has_sale = true
+            assign savings = product.compare_at_price_max | minus: product.price
+            assign discount_pct = savings | times: 100 | divided_by: product.compare_at_price_max
+          endif
+        -%}
+        <article class="sd-clearance__card{% if has_sale %} sd-clearance__card--sale{% endif %}">
+          <a href="{{ product.url }}" class="sd-clearance__card-link" aria-label="{{ product.title | escape }}">
+
+            {%- if has_sale -%}
+              <span class="sd-clearance__badge" aria-hidden="true">
+                <strong>−{{ discount_pct }}%</strong>
+                <span>OFF</span>
+              </span>
+            {%- endif -%}
+
+            <div class="sd-clearance__card-img-wrap">
+              {%- if product.featured_image != blank -%}
+                {{
+                  product.featured_image
+                  | image_url: width: 640
+                  | image_tag:
+                    class: 'sd-clearance__card-img',
+                    widths: '320,480,640',
+                    sizes: '(min-width: 990px) 30vw, (min-width: 750px) 48vw, 48vw',
+                    alt: cell_alt,
+                    loading: 'lazy'
+                }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'sd-clearance__card-img' }}
+              {%- endif -%}
+            </div>
+
+            <div class="sd-clearance__card-info">
+              <h3 class="sd-clearance__card-title">{{ product.title }}</h3>
+
+              <div class="sd-clearance__card-price-row">
+                {%- if has_sale -%}
+                  <span class="sd-clearance__card-rrp" aria-label="Was">{{ product.compare_at_price_max | money }}</span>
+                  <span class="sd-clearance__card-price">{{ product.price | money }}</span>
+                  <span class="sd-clearance__card-save">Save {{ savings | money }}</span>
+                {%- else -%}
+                  <span class="sd-clearance__card-price">{{ product.price | money }}</span>
+                {%- endif -%}
+              </div>
+
+              <span class="sd-clearance__card-shop">
+                Shop Now
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+
+          </a>
+        </article>
+      {%- endfor -%}
+
+    {%- else -%}
+
+      {%- comment -%} Placeholder cells for editor / no collection selected {%- endcomment -%}
+      {%- for i in (1..6) -%}
+        <article class="sd-clearance__card sd-clearance__card--sale">
+          <a href="#" class="sd-clearance__card-link">
+            <span class="sd-clearance__badge" aria-hidden="true">
+              <strong>−40%</strong>
+              <span>OFF</span>
+            </span>
+            <div class="sd-clearance__card-img-wrap">
+              {{ 'product-' | append: i | placeholder_svg_tag: 'sd-clearance__card-img' }}
+            </div>
+            <div class="sd-clearance__card-info">
+              <h3 class="sd-clearance__card-title">Sample Sofa</h3>
+              <div class="sd-clearance__card-price-row">
+                <span class="sd-clearance__card-rrp">£1,999</span>
+                <span class="sd-clearance__card-price">£1,199</span>
+                <span class="sd-clearance__card-save">Save £800</span>
+              </div>
+              <span class="sd-clearance__card-shop">
+                Shop Now
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+          </a>
+        </article>
+      {%- endfor -%}
+
+    {%- endif -%}
+
+  </div>
+
+</section>
+
+<script>
+(function () {
+  var section = document.getElementById('sd-clearance-{{ section.id }}');
+  if (!section) return;
+
+  function activate() {
+    section.classList.add('is-visible');
+  }
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            activate();
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.10 }
+    );
+    observer.observe(section);
+  } else {
+    activate();
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "SD Clearance Sale",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow badge",
+      "info": "Small pulsing badge shown above the heading. Leave blank to hide.",
+      "default": "Limited Time · Limited Stock"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Clearance Sale 2026"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body paragraph",
+      "default": "Discover final reductions on hand-picked sofas, including standout designs and customer favourites. Limited availability — once they're gone, they're gone."
+    },
+    {
+      "type": "header",
+      "content": "Stat highlights (3 items)"
+    },
+    {
+      "type": "text",
+      "id": "stat_1",
+      "label": "Stat 1",
+      "default": "Up to 50% Off"
+    },
+    {
+      "type": "text",
+      "id": "stat_2",
+      "label": "Stat 2",
+      "default": "Free UK Delivery"
+    },
+    {
+      "type": "text",
+      "id": "stat_3",
+      "label": "Stat 3",
+      "default": "5-Year Frame Warranty"
+    },
+    {
+      "type": "header",
+      "content": "CTA Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop Clearance Sale Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Product Grid"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 3,
+      "max": 12,
+      "step": 3,
+      "default": 6,
+      "label": "Products to show (3 per row on desktop)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Clearance Sale",
+      "settings": {
+        "heading": "Clearance Sale 2026",
+        "body": "Discover final reductions on hand-picked sofas, including standout designs and customer favourites. Limited availability — once they're gone, they're gone.",
+        "cta_label": "Shop Clearance Sale Now",
+        "products_to_show": 6
+      }
+    }
+  ]
+}
+{% endschema %}

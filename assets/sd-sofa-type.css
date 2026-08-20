@@ -1,0 +1,201 @@
+/* ============================================================
+   SD Sofa Type — horizontal card strip / slider
+   Figma node 425:344
+   Card: 211px × 175px, radius 17.6px
+   Label badge: white pill, Montserrat Bold 16px, #9c9d88
+   When blocks > 3 → slider with prev/next arrows
+   ============================================================ */
+
+/* ── Section wrapper ──────────────────────────────────────── */
+.sd-sofa-type {
+  padding: var(--sd-section-pad-desktop) 0;
+}
+
+/* ── Header row ───────────────────────────────────────────── */
+.sd-sofa-type__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.0rem;
+  padding: 0 var(--sd-space-3xl);
+}
+
+.sd-sofa-type__heading {
+  font-family: var(--sd-font-body);
+  font-weight: 500;
+  font-size: var(--sd-text-sm);   /* 1.6rem / 16px — matches Figma */
+  color: #1b1b1b;
+  margin: 0;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* ── Slider wrapper (contains arrows + track) ─────────────── */
+.sd-sofa-type__slider-wrap {
+  position: relative;
+  padding: 0 var(--sd-space-3xl);
+}
+
+/* When ≤ 3 items: no slider chrome needed */
+.sd-sofa-type--static .sd-st__arrow {
+  display: none;
+}
+
+/* ── Track outer — clips overflow ─────────────────────────── */
+.sd-st__track-outer {
+  overflow: hidden;
+  width: 100%;
+}
+
+/* ── Track — flex row ─────────────────────────────────────── */
+.sd-st__track {
+  display: flex;
+  align-items: stretch;
+  gap: 1.3rem;
+  transition: transform 0.40s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* Static (≤ 3): no transition needed */
+.sd-sofa-type--static .sd-st__track {
+  transition: none;
+  flex-wrap: nowrap;
+}
+
+/* ── Slide ────────────────────────────────────────────────── */
+.sd-st__slide {
+  flex-shrink: 0;
+  /* Width set by JS when slider active; static = auto fill */
+}
+
+.sd-sofa-type--static .sd-st__slide {
+  flex: 1 1 0;
+  max-width: 26rem;   /* ~211px scaled; prevents cards going huge */
+}
+
+/* ── Card ─────────────────────────────────────────────────── */
+.sd-st__card {
+  position: relative;
+  display: block;
+  border-radius: 1.8rem;
+  overflow: hidden;
+  aspect-ratio: 211 / 175;  /* Figma ratio */
+  background: #d9d9d9;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sd-st__card:hover .sd-st__img {
+  transform: scale(1.04);
+}
+
+/* ── Image ────────────────────────────────────────────────── */
+.sd-st__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.sd-st__img--placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Label badge — overlaid at bottom-center ─────────────── */
+.sd-st__label {
+  position: absolute;
+  bottom: 0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: var(--sd-radius-pill);
+  padding: 0.44rem 1.76rem;
+  font-family: var(--sd-font-body);
+  font-weight: 700;
+  font-size: var(--sd-text-sm);   /* 1.6rem / 16px */
+  color: #9c9d88;
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  pointer-events: none;
+}
+
+/* ── Arrows ───────────────────────────────────────────────── */
+.sd-st__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 4.0rem;
+  height: 4.0rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.sd-st__arrow:hover {
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
+.sd-st__arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.sd-st__arrow--prev { left: calc(var(--sd-space-3xl) - 2.0rem); }
+.sd-st__arrow--next { right: calc(var(--sd-space-3xl) - 2.0rem); }
+
+/* ── Tablet  750px – 989px ────────────────────────────────── */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .sd-sofa-type__header,
+  .sd-sofa-type__slider-wrap {
+    padding-left: 3.2rem;
+    padding-right: 3.2rem;
+  }
+
+  .sd-sofa-type--static .sd-st__slide {
+    max-width: 20rem;
+  }
+
+  .sd-st__label {
+    font-size: 1.4rem;
+    padding: 0.36rem 1.3rem;
+  }
+
+  .sd-st__arrow--prev { left: calc(3.2rem - 2.0rem); }
+  .sd-st__arrow--next { right: calc(3.2rem - 2.0rem); }
+}
+
+/* ── Mobile ───────────────────────────────────────────────── */
+@media (max-width: 749px) {
+  .sd-sofa-type__header,
+  .sd-sofa-type__slider-wrap {
+    padding-left: 2.0rem;
+    padding-right: 2.0rem;
+  }
+
+  .sd-sofa-type--static .sd-st__slide {
+    max-width: 16rem;
+  }
+
+  .sd-st__label {
+    font-size: 1.2rem;
+    padding: 0.3rem 1.0rem;
+  }
+
+  .sd-st__arrow--prev { left: 0; }
+  .sd-st__arrow--next { right: 0; }
+}

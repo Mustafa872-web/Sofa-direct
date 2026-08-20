@@ -1,0 +1,271 @@
+<link rel="stylesheet" href="{{ 'sd-blog-main.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-blog-main.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign featured_article = blog.articles.first
+  assign current_tag = current_tags | first
+  assign items_per_page = section.settings.articles_per_page | default: 9
+-%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- paginate blog.articles by items_per_page -%}
+  <section class="sd-blog section-{{ section.id }}-padding">
+    <div class="sd-blog__bg-shape sd-blog__bg-shape--one" aria-hidden="true"></div>
+    <div class="sd-blog__bg-shape sd-blog__bg-shape--two" aria-hidden="true"></div>
+
+    <div class="sd-blog__container page-width">
+      {%- if paginate.current_page == 1 and featured_article -%}
+        <article class="sd-blog__hero">
+          <a href="{{ featured_article.url }}" class="sd-blog__hero-media">
+            {%- if featured_article.image != blank -%}
+              {{
+                featured_article.image
+                | image_url: width: 1800
+                | image_tag:
+                  class: 'sd-blog__hero-image',
+                  widths: '700,1000,1400,1800',
+                  sizes: '(min-width: 1200px) 66vw, 100vw',
+                  alt: featured_article.image.alt | default: featured_article.title,
+                  loading: 'eager',
+                  fetchpriority: 'high'
+              }}
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'sd-blog__hero-image' }}
+            {%- endif -%}
+          </a>
+
+          <div class="sd-blog__hero-content">
+            <span class="sd-blog__eyebrow">{{ section.settings.hero_badge }}</span>
+            <h1 class="sd-blog__title">{{ section.settings.heading | default: blog.title | escape }}</h1>
+            <h2 class="sd-blog__hero-title">
+              <a href="{{ featured_article.url }}">{{ featured_article.title | escape }}</a>
+            </h2>
+            <p class="sd-blog__hero-excerpt">
+              {{ featured_article.excerpt_or_content | strip_html | truncatewords: 30 }}
+            </p>
+
+            <div class="sd-blog__hero-meta">
+              <span>{{ featured_article.published_at | date: '%d %b %Y' }}</span>
+              {%- if featured_article.tags.size > 0 -%}
+                <span aria-hidden="true">/</span>
+                <span>{{ featured_article.tags.first }}</span>
+              {%- endif -%}
+            </div>
+
+            <div class="sd-blog__hero-actions">
+              <a href="{{ featured_article.url }}" class="sd-blog__btn sd-blog__btn--solid">Read featured story</a>
+              <a href="#sd-blog-grid-{{ section.id }}" class="sd-blog__btn sd-blog__btn--ghost">Explore all posts</a>
+            </div>
+          </div>
+        </article>
+      {%- endif -%}
+
+      <nav class="sd-blog__sticky-nav" aria-label="Blog categories">
+        <div class="sd-blog__sticky-nav-inner">
+          <a href="{{ blog.url }}" class="sd-blog__tag{% if current_tag == blank %} is-active{% endif %}">All</a>
+          {%- for tag in blog.all_tags -%}
+            <a
+              href="{{ blog.url }}/tagged/{{ tag | handleize }}"
+              class="sd-blog__tag{% if current_tag == tag %} is-active{% endif %}"
+            >
+              {{ tag }}
+            </a>
+          {%- endfor -%}
+        </div>
+      </nav>
+
+      <div class="sd-blog__layout">
+        {%- if section.settings.show_sidebar -%}
+          <aside class="sd-blog__sidebar">
+            <div class="sd-blog__panel">
+              <h3 class="sd-blog__panel-title">Search articles</h3>
+              <form action="{{ routes.search_url }}" method="get" class="sd-blog__search-form" role="search">
+                <input type="hidden" name="type" value="article">
+                <input type="hidden" name="options[prefix]" value="last">
+                <label class="visually-hidden" for="SDBlogSearch-{{ section.id }}">Search articles</label>
+                <input
+                  id="SDBlogSearch-{{ section.id }}"
+                  class="sd-blog__search-input"
+                  type="search"
+                  name="q"
+                  placeholder="Search stories"
+                  value="{{ search.terms | escape }}"
+                >
+                <button type="submit" class="sd-blog__search-btn">Search</button>
+              </form>
+            </div>
+
+            <div class="sd-blog__panel">
+              <h3 class="sd-blog__panel-title">Categories</h3>
+              <ul class="sd-blog__category-list" role="list">
+                <li>
+                  <a href="{{ blog.url }}" class="{% if current_tag == blank %}is-active{% endif %}">All Posts</a>
+                </li>
+                {%- for tag in blog.all_tags -%}
+                  <li>
+                    <a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="{% if current_tag == tag %}is-active{% endif %}">
+                      {{ tag }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+
+            <div class="sd-blog__panel">
+              <h3 class="sd-blog__panel-title">Recent posts</h3>
+              <ul class="sd-blog__recent-list" role="list">
+                {%- for article in blog.articles limit: 5 -%}
+                  <li class="sd-blog__recent-item">
+                    <a href="{{ article.url }}">{{ article.title | escape }}</a>
+                    <span>{{ article.published_at | date: '%d %b %Y' }}</span>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          </aside>
+        {%- endif -%}
+
+        <div class="sd-blog__content" id="sd-blog-grid-{{ section.id }}">
+          <div class="sd-blog__grid">
+            {%- for article in blog.articles -%}
+              {%- unless paginate.current_page == 1 and featured_article and article.id == featured_article.id -%}
+                <article class="sd-blog-card">
+                  <a href="{{ article.url }}" class="sd-blog-card__media">
+                    {%- if article.image != blank -%}
+                      {{
+                        article.image
+                        | image_url: width: 900
+                        | image_tag:
+                          class: 'sd-blog-card__image',
+                          widths: '320,460,640,900',
+                          sizes: '(min-width: 1600px) 22vw, (min-width: 1200px) 30vw, (min-width: 750px) 48vw, 100vw',
+                          alt: article.image.alt | default: article.title,
+                          loading: 'lazy'
+                      }}
+                    {%- else -%}
+                      {{ 'lifestyle-2' | placeholder_svg_tag: 'sd-blog-card__image' }}
+                    {%- endif -%}
+                    <span class="sd-blog-card__media-glow" aria-hidden="true"></span>
+                  </a>
+
+                  <div class="sd-blog-card__body">
+                    <p class="sd-blog-card__meta">
+                      <span>{{ article.published_at | date: '%d %b %Y' }}</span>
+                      {%- if article.tags.size > 0 -%}
+                        <span aria-hidden="true">/</span>
+                        <span>{{ article.tags.first }}</span>
+                      {%- endif -%}
+                    </p>
+                    <h3 class="sd-blog-card__title">
+                      <a href="{{ article.url }}">{{ article.title | escape }}</a>
+                    </h3>
+                    <p class="sd-blog-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+                    <a href="{{ article.url }}" class="sd-blog-card__cta">Read more -></a>
+                  </div>
+                </article>
+              {%- endunless -%}
+            {%- endfor -%}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="sd-blog__pagination" role="navigation" aria-label="Pagination">
+              {%- if paginate.previous -%}
+                <a class="sd-blog__page-btn" href="{{ paginate.previous.url }}">Previous</a>
+              {%- endif -%}
+
+              <div class="sd-blog__page-list">
+                {%- for part in paginate.parts -%}
+                  {%- if part.is_link -%}
+                    <a class="sd-blog__page-link" href="{{ part.url }}">{{ part.title }}</a>
+                  {%- else -%}
+                    <span class="sd-blog__page-link{% if part.title == paginate.current_page %} is-active{% endif %}">
+                      {{ part.title }}
+                    </span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+
+              {%- if paginate.next -%}
+                <a class="sd-blog__page-btn" href="{{ paginate.next.url }}">Next</a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "SD Main Blog",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "hero_badge",
+      "label": "Hero badge",
+      "default": "Editorial Journal"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Sofa Direct Stories"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sidebar",
+      "label": "Show sidebar (desktop)",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "label": "Articles per page",
+      "default": 9
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 72
+    }
+  ]
+}
+{% endschema %}

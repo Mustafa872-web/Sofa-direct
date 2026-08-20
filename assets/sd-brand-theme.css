@@ -1,0 +1,1746 @@
+/* ════════════════════════════════════════════════════════════════
+   Sofa Direct — Global Brand Theme Overrides
+   Applies logo color palette across the whole site.
+   Brand palette:
+     Cream  #FFFAEA
+     Taupe  #C0B09F
+     Brown  #A58C70  (logo)
+     Teal   #2F4858
+     Gold   #E5A41A  (accent)
+     Ink    #121212
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Display font note ─────────────────────────────────────────
+   Recoleta DEMO trial files (FONTSPRINGDEMO-*) embed a "DEMO"
+   watermark inside the glyphs and must NOT be referenced.
+   Playfair Display (Google Fonts, fully licensed) is loaded from
+   layout/theme.liquid and serves as the display font fallback.
+   CSS rules use:  font-family: 'Recoleta', 'Playfair Display', …
+   so headings cleanly fall through to Playfair Display. ─── */
+
+:root {
+  --sd-cream:  #FFFAEA;
+  --sd-taupe:  #C0B09F;
+  --sd-brown:  #A58C70;
+  --sd-teal:   #2F4858;
+  --sd-gold:   #E5A41A;
+  --sd-ink:    #121212;
+
+  /* Override Dawn link/hover colors globally */
+  --link-color:       var(--sd-teal);
+  --link-hover-color: var(--sd-brown);
+}
+
+/* ─── Hover state — every link/button picks up brand brown ─── */
+a:not(.button):not(.btn):not([class*="sd-"]):not([class*="sda-"]):not(.sda-cat-chip):hover,
+.link:hover {
+  color: var(--sd-brown) !important;
+  transition: color .18s ease;
+}
+
+/* Category chip pills — keep cream text on hover (brown background) */
+.sda-cat-chip:hover,
+a.sda-cat-chip:hover {
+  color: var(--sd-cream, #FFFAEA) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Filter bar — keep sticky + dropdown above card badges
+   ════════════════════════════════════════════════════════════════ */
+/* Dropdown wrapper stacking */
+.sda-dropdown { position: relative; z-index: 10; }
+.sda-dropdown.sda-dropdown--open { z-index: 1000; }
+/* Inside the filter pill, the panel positions to the pill itself
+   (full-width bar drop), not to each per-filter dropdown. */
+.sda-fb-pill .sda-dropdown,
+.sda-fb-pill .sda-dropdown.sda-dropdown--open { position: static; }
+/* Filter pill panels — full-width drop below the pill */
+.sda-fb-pill .sda-panel {
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin-top: 6px;
+}
+
+/* Sticky filter bar — sits exactly below the sticky header (dynamic height) */
+.sda-filter-bar.sda-filter-bar--fixed {
+  position: fixed;
+  top: var(--header-height, 90px);
+  left: 0;
+  right: 0;
+  z-index: 900;
+}
+
+/* Filter panel above EVERYTHING */
+.sda-panel { z-index: 99999 !important; }
+
+/* When dropdown is open, push product card badges behind */
+body:has(.sda-panel.sda-panel--open) .sda-card,
+body:has(.sda-dropdown.sda-dropdown--open) .sda-card {
+  z-index: 0 !important;
+  position: relative;
+}
+body:has(.sda-panel.sda-panel--open) .sda-card__meta-grid,
+body:has(.sda-panel.sda-panel--open) .sda-card__badge,
+body:has(.sda-panel.sda-panel--open) .sda-card__save-badge,
+body:has(.sda-panel.sda-panel--open) .sda-card__delivery-badge,
+body:has(.sda-panel.sda-panel--open) .sda-card__wish,
+body:has(.sda-dropdown.sda-dropdown--open) .sda-card__meta-grid,
+body:has(.sda-dropdown.sda-dropdown--open) .sda-card__badge,
+body:has(.sda-dropdown.sda-dropdown--open) .sda-card__save-badge,
+body:has(.sda-dropdown.sda-dropdown--open) .sda-card__delivery-badge,
+body:has(.sda-dropdown.sda-dropdown--open) .sda-card__wish {
+  z-index: 0 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Product Card — Symmetric layout (title / desc / price aligned)
+   All cards share the same horizontal "ruler" lines.
+   ════════════════════════════════════════════════════════════════ */
+.sda-card { display: flex; flex-direction: column; }
+.sda-card__media { flex: 0 0 auto; }
+.sda-card__info {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: 1rem;
+}
+.sda-card__name {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif) !important;
+  color: var(--sd-teal) !important;
+  line-height: 1.3 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  min-height: 3.9rem !important;        /* exactly 2 lines reserved */
+  margin: 0 0 0.4rem !important;
+}
+.sda-card__colours {
+  font-size: 1.15rem !important;
+  font-weight: 500 !important;
+  color: var(--sd-brown) !important;
+  min-height: 1.6rem;                   /* uniform space whether shown or not */
+  margin: 0 0 0.4rem !important;
+  letter-spacing: 0.02em;
+}
+.sda-card__desc {
+  font-size: 1.15rem !important;
+  color: rgba(47, 72, 88, 0.65) !important;
+  line-height: 1.45 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  min-height: 3.3rem !important;        /* exactly 2 lines reserved */
+  margin: 0 0 1rem !important;
+}
+.sda-card__price-row {
+  margin-top: auto !important;          /* pushes price to bottom */
+  padding-top: 0.8rem !important;
+  border-top: 1px dashed rgba(165, 140, 112, 0.3) !important;
+  display: flex; align-items: baseline; gap: 0.8rem;
+  flex-wrap: wrap;
+  min-height: 4.4rem;
+}
+.sda-card__price {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif) !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: var(--sd-teal) !important;
+  line-height: 1 !important;
+}
+.sda-card__price--sale { color: var(--sd-brown) !important; }
+.sda-card__was {
+  font-size: 1.15rem !important;
+  color: rgba(47, 72, 88, 0.45) !important;
+  text-decoration: line-through;
+  text-decoration-color: var(--sd-brown);
+  font-weight: 500 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SEO Bottom — Editorial rich-text section with decorative flourishes
+   ════════════════════════════════════════════════════════════════ */
+.sda-seo-bottom {
+  position: relative;
+  background:
+    radial-gradient(120% 80% at 50% 0%, #fffdf3 0%, var(--sd-cream, #FFFAEA) 60%, #f5ecd6 100%);
+  padding: 8rem 2rem 9rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Subtle dot grain texture */
+.sda-seo-bottom::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(165, 140, 112, 0.10) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Decorative ornament + top stripe */
+.sda-seo-bottom::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--sd-gold, #E5A41A) 25%,
+    var(--sd-brown, #A58C70) 50%,
+    var(--sd-gold, #E5A41A) 75%,
+    transparent 100%);
+  opacity: 0.8;
+}
+
+/* Soft ambient blob */
+.sda-seo-bottom__inner::before {
+  content: '';
+  position: absolute;
+  width: 380px; height: 380px;
+  background: var(--sd-brown, #A58C70);
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.12;
+  top: -120px; right: -100px;
+  pointer-events: none;
+  z-index: 0;
+}
+.sda-seo-bottom__inner::after {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  background: var(--sd-gold, #E5A41A);
+  border-radius: 50%;
+  filter: blur(110px);
+  opacity: 0.08;
+  bottom: -100px; left: -80px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sda-seo-bottom__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(255, 250, 234, 0.5));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(165, 140, 112, 0.18);
+  border-radius: 1.8rem;
+  padding: 5rem 4.5rem;
+  box-shadow:
+    0 24px 60px rgba(47, 72, 88, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Decorative top corner ornaments */
+.sda-seo-bottom__inner > *:first-child::before {
+  content: '';
+  display: block;
+  width: 50px; height: 4px;
+  background: linear-gradient(90deg, var(--sd-brown, #A58C70), var(--sd-gold, #E5A41A));
+  border-radius: 4px;
+  margin: 0 0 2rem;
+  opacity: 0.85;
+}
+
+.sda-seo-bottom__content {
+  position: relative;
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  color: rgba(47, 72, 88, 0.85);
+  font-size: 1.55rem;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+}
+
+/* Headings — editorial serif with subtle accents */
+.sda-seo-bottom__content h1,
+.sda-seo-bottom__content h2,
+.sda-seo-bottom__content h3,
+.sda-seo-bottom__content h4 {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  color: var(--sd-teal, #2F4858);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.4rem;
+  position: relative;
+}
+.sda-seo-bottom__content h1 { font-size: 3.4rem; }
+.sda-seo-bottom__content h2 {
+  font-size: 2.6rem;
+  margin-top: 3.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(165, 140, 112, 0.22);
+}
+.sda-seo-bottom__content h2::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: var(--sd-brown, #A58C70);
+}
+.sda-seo-bottom__content h3 {
+  font-size: 2rem;
+  margin-top: 2.4rem;
+  padding-left: 1.2rem;
+  border-left: 3px solid var(--sd-brown, #A58C70);
+}
+.sda-seo-bottom__content h4 {
+  font-size: 1.7rem;
+  margin-top: 1.8rem;
+  color: var(--sd-brown, #A58C70);
+}
+
+/* Paragraphs */
+.sda-seo-bottom__content p {
+  margin: 0 0 1.4rem;
+}
+.sda-seo-bottom__content p:last-child { margin-bottom: 0; }
+
+/* First paragraph drop cap (editorial flourish) */
+.sda-seo-bottom__content > p:first-of-type::first-letter {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 5.5rem;
+  font-weight: 700;
+  color: var(--sd-brown, #A58C70);
+  float: left;
+  line-height: 0.95;
+  margin: 0.4rem 1rem 0 0;
+  padding-right: 0.2rem;
+}
+
+/* Lists with custom bullets */
+.sda-seo-bottom__content ul,
+.sda-seo-bottom__content ol {
+  margin: 1.4rem 0;
+  padding-left: 0;
+  list-style: none;
+}
+.sda-seo-bottom__content ul li {
+  position: relative;
+  padding-left: 2rem;
+  margin: 0.65rem 0;
+  line-height: 1.7;
+}
+.sda-seo-bottom__content ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.85rem;
+  width: 8px;
+  height: 8px;
+  background: var(--sd-gold, #E5A41A);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(229, 164, 26, 0.15);
+}
+.sda-seo-bottom__content ol {
+  counter-reset: seo-counter;
+  padding-left: 0;
+}
+.sda-seo-bottom__content ol li {
+  counter-increment: seo-counter;
+  position: relative;
+  padding-left: 3rem;
+  margin: 0.65rem 0;
+  line-height: 1.7;
+}
+.sda-seo-bottom__content ol li::before {
+  content: counter(seo-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--sd-cream, #FFFAEA);
+  background: var(--sd-brown, #A58C70);
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Links */
+.sda-seo-bottom__content a {
+  color: var(--sd-brown, #A58C70) !important;
+  text-decoration: none;
+  background-image: linear-gradient(var(--sd-brown, #A58C70), var(--sd-brown, #A58C70));
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  padding-bottom: 1px;
+  transition: background-size 0.28s ease, color 0.18s;
+}
+.sda-seo-bottom__content a:hover {
+  color: var(--sd-teal, #2F4858) !important;
+  background-image: linear-gradient(var(--sd-teal, #2F4858), var(--sd-teal, #2F4858));
+  background-size: 100% 2px;
+}
+
+.sda-seo-bottom__content strong {
+  color: var(--sd-teal, #2F4858);
+  font-weight: 700;
+}
+.sda-seo-bottom__content em {
+  font-style: italic;
+  color: rgba(47, 72, 88, 0.9);
+}
+
+/* Blockquote — premium editorial */
+.sda-seo-bottom__content blockquote {
+  position: relative;
+  padding: 2rem 2.2rem 2rem 4rem;
+  margin: 2.4rem 0;
+  background: rgba(255, 250, 234, 0.6);
+  border-left: 4px solid var(--sd-gold, #E5A41A);
+  border-radius: 0 0.8rem 0.8rem 0;
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-style: italic;
+  color: var(--sd-teal, #2F4858);
+  font-size: 1.75rem;
+  line-height: 1.6;
+}
+.sda-seo-bottom__content blockquote::before {
+  content: '“';
+  position: absolute;
+  top: -0.6rem;
+  left: 1.2rem;
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 6rem;
+  font-style: normal;
+  color: var(--sd-brown, #A58C70);
+  opacity: 0.35;
+  line-height: 1;
+}
+.sda-seo-bottom__content blockquote p { margin: 0 !important; }
+
+/* Code/inline */
+.sda-seo-bottom__content code {
+  background: rgba(165, 140, 112, 0.12);
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 0.92em;
+  color: var(--sd-teal, #2F4858);
+}
+
+/* Tables */
+.sda-seo-bottom__content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 1.4rem;
+}
+.sda-seo-bottom__content th,
+.sda-seo-bottom__content td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(165, 140, 112, 0.2);
+}
+.sda-seo-bottom__content th {
+  background: rgba(255, 250, 234, 0.6);
+  color: var(--sd-teal, #2F4858);
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Decorative bottom flourish */
+.sda-seo-bottom__inner > *:last-child::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, var(--sd-brown, #A58C70), transparent);
+  margin: 3rem auto 0;
+  opacity: 0.55;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sda-seo-bottom { padding: 6rem 1.5rem 7rem; }
+  .sda-seo-bottom__inner { padding: 4rem 3rem; border-radius: 1.4rem; }
+}
+@media (max-width: 768px) {
+  .sda-seo-bottom { padding: 4.5rem 1.2rem 5.5rem; }
+  .sda-seo-bottom__inner { padding: 3rem 2rem; border-radius: 1.2rem; }
+  .sda-seo-bottom__content { font-size: 1.4rem; line-height: 1.75; }
+  .sda-seo-bottom__content h1 { font-size: 2.6rem; }
+  .sda-seo-bottom__content h2 { font-size: 2.1rem; margin-top: 2.6rem; }
+  .sda-seo-bottom__content h3 { font-size: 1.7rem; }
+  .sda-seo-bottom__content h4 { font-size: 1.5rem; }
+  .sda-seo-bottom__content > p:first-of-type::first-letter {
+    font-size: 4.4rem;
+    margin: 0.3rem 0.7rem 0 0;
+  }
+  .sda-seo-bottom__content blockquote { padding: 1.6rem 1.6rem 1.6rem 3rem; font-size: 1.5rem; }
+  .sda-seo-bottom__content blockquote::before { font-size: 4.5rem; left: 0.8rem; top: -0.4rem; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Unified Collection Header — replaces dark banner + intro
+   Cream brand background, elegant typography, optional image
+   ════════════════════════════════════════════════════════════════ */
+.sda-collection-head {
+  position: relative;
+  background:
+    radial-gradient(110% 70% at 50% 0%, #3d5664 0%, var(--sd-teal) 55%, #243a48 100%);
+  padding: 7rem 2rem 6rem;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--sd-cream);
+}
+/* Subtle textured grain */
+.sda-collection-head::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255, 250, 234, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Bottom gold/brown accent stripe */
+.sda-collection-head::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sd-gold) 25%, var(--sd-brown) 50%, var(--sd-gold) 75%, transparent);
+  opacity: 0.8;
+}
+
+/* Optional image — soft background visual */
+.sda-collection-head__visual {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+}
+.sda-collection-head__img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.22;
+  filter: saturate(0.85) contrast(1.05);
+}
+.sda-collection-head__vignette {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 80% at 50% 50%, transparent 0%, rgba(47, 72, 88, 0.85) 75%),
+    linear-gradient(180deg, rgba(47, 72, 88, 0.55) 0%, rgba(47, 72, 88, 0.85) 100%);
+}
+
+/* Floating ambient glows */
+.sda-collection-head__inner::before,
+.sda-collection-head__inner::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: -1;
+}
+.sda-collection-head__inner::before {
+  width: 320px; height: 320px;
+  background: var(--sd-brown);
+  opacity: 0.22;
+  top: -60px; left: -80px;
+}
+.sda-collection-head__inner::after {
+  width: 260px; height: 260px;
+  background: var(--sd-gold);
+  opacity: 0.12;
+  bottom: -80px; right: -60px;
+}
+
+.sda-collection-head__inner {
+  position: relative; z-index: 1;
+  max-width: 920px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex; flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+/* Breadcrumb chip — cream pill on teal */
+.sda-collection-head__crumb {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.1rem; font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sd-cream);
+  background: rgba(255, 250, 234, 0.12);
+  border: 1px solid rgba(229, 164, 26, 0.32);
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.sda-collection-head__crumb a {
+  color: var(--sd-taupe) !important;
+  text-decoration: none;
+  opacity: 0.85;
+  transition: opacity 0.18s, color 0.18s;
+}
+.sda-collection-head__crumb a:hover {
+  opacity: 1;
+  color: var(--sd-gold) !important;
+}
+.sda-collection-head__crumb svg { color: var(--sd-gold); opacity: 0.7; }
+.sda-collection-head__crumb span { color: var(--sd-cream); }
+
+/* Title — huge serif on cream */
+.sda-collection-head__title {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif) !important;
+  font-size: clamp(3.5rem, 6.5vw, 7rem) !important;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--sd-cream);
+  margin: 0;
+  text-wrap: balance;
+  text-transform: uppercase;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Decorative ornament — gold */
+.sda-collection-head__ornament {
+  display: inline-flex;
+  color: var(--sd-gold);
+  margin-top: 0.4rem;
+}
+
+/* Description — italic in soft taupe/cream */
+.sda-collection-head__desc {
+  max-width: 720px;
+  margin-top: 0.6rem;
+}
+.sda-collection-head__desc p {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.55rem;
+  line-height: 1.6;
+  font-style: italic;
+  color: rgba(255, 250, 234, 0.85);
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Meta row */
+.sda-collection-head__meta {
+  display: inline-flex; align-items: center; gap: 1.6rem;
+  margin-top: 0.8rem;
+  flex-wrap: wrap; justify-content: center;
+}
+.sda-collection-head__count {
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.15rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sd-taupe);
+}
+.sda-collection-head__count strong {
+  color: var(--sd-gold);
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
+  margin-right: 0.3rem;
+}
+.sda-collection-head__cta {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-family: var(--sd-font-body, Montserrat, sans-serif);
+  font-size: 1.15rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--sd-teal);
+  text-decoration: none;
+  padding: 0.9rem 1.8rem;
+  background: var(--sd-cream);
+  border-radius: 999px;
+  transition: background 0.22s, transform 0.15s, gap 0.18s, color 0.22s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+.sda-collection-head__cta:hover {
+  background: var(--sd-gold);
+  color: var(--sd-teal);
+  transform: translateY(-1px);
+  gap: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sda-collection-head { padding: 4.5rem 1.5rem 4rem; }
+  .sda-collection-head__inner { gap: 1.1rem; }
+  .sda-collection-head__title { font-size: clamp(2.8rem, 9vw, 4.5rem) !important; }
+  .sda-collection-head__desc p { font-size: 1.3rem; }
+  .sda-collection-head__crumb { font-size: 0.95rem; padding: 0.45rem 1rem; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   FULL RESPONSIVE — Announcement Bar + Header
+   ════════════════════════════════════════════════════════════════ */
+
+/* ─── Tablet (<= 990px) ─── */
+@media screen and (max-width: 990px) {
+  /* Marquee — smaller text/icons */
+  .sd-marquee__viewport { padding: 0.7rem 0; }
+  .sd-marquee__item { font-size: 1.05rem; padding: 0 1.4rem; gap: 0.65rem; }
+  .sd-marquee__icon { width: 1.4rem; height: 1.4rem; }
+  .sd-marquee__dot { width: 0.4rem; height: 0.4rem; }
+
+  /* Announcement bar — single column stack */
+  .sd-ann2__inner {
+    grid-template-columns: auto 1fr !important;
+    gap: 0.8rem !important;
+    padding: 0.7rem 1.2rem !important;
+    min-height: auto !important;
+    justify-items: center;
+  }
+  .sd-ann2__call { padding: 0.35rem 0.8rem 0.35rem 0.35rem; gap: 0.55rem; }
+  .sd-ann2__call-icon { width: 2.4rem; height: 2.4rem; }
+  .sd-ann2__call-icon svg { width: 1.1rem; height: 1.1rem; }
+  .sd-ann2__call-label { font-size: 0.78rem; }
+  .sd-ann2__call-num { font-size: 1.15rem; }
+
+  .sd-ann2__sale { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+  .sd-ann2__sale-flower { width: 3.2rem; height: 3.2rem; }
+  .sd-ann2__sale-flower svg { width: 1.7rem; height: 1.7rem; }
+  .sd-ann2__sale-text { text-align: center; align-items: center; }
+  .sd-ann2__sale-eyebrow { font-size: 0.85rem; padding: 0.25rem 0.7rem; }
+  .sd-ann2__sale-headline { font-size: 1.5rem; }
+  .sd-ann2__sale-cta { font-size: 1rem; padding: 0.65rem 1.4rem; margin-left: 0; }
+
+  .sd-ann2__capsule { display: none; }   /* hide on tablet — saves space */
+}
+
+/* ─── Mobile (<= 749px) ─── REDESIGNED ─── */
+@media screen and (max-width: 749px) {
+  /* Marquee — even tighter */
+  .sd-marquee__item { font-size: 0.95rem; padding: 0 1rem; gap: 0.5rem; letter-spacing: 1px; }
+  .sd-marquee__icon { width: 1.2rem; height: 1.2rem; }
+  .sd-marquee::before, .sd-marquee::after { width: 3rem; }
+
+  /* ═════ Announcement bar — clean & comfortable ═════ */
+  .sd-ann2__inner {
+    padding: 0.9rem 1.2rem !important;
+    gap: 0.9rem !important;
+    grid-template-columns: 1fr auto !important;
+    align-items: center !important;
+    justify-items: stretch !important;
+    min-height: unset !important;
+  }
+  .sd-ann2__call { display: none !important; }
+  .sd-ann2__capsule { display: none !important; }
+  .sd-ann2__spacer { display: none !important; }
+
+  /* Sale — center column flush */
+  .sd-ann2__sale {
+    grid-column: 1 / 2;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.9rem !important;
+    justify-content: flex-start !important;
+  }
+  .sd-ann2__sale-flower { width: 3rem; height: 3rem; flex-shrink: 0; }
+  .sd-ann2__sale-flower svg { width: 1.5rem; height: 1.5rem; }
+  .sd-ann2__sale-text { gap: 0 !important; align-items: flex-start; text-align: left; }
+  .sd-ann2__sale-eyebrow { display: none !important; }
+  .sd-ann2__sale-headline {
+    font-size: 1.45rem !important;
+    line-height: 1.15 !important;
+    background-image: none !important;
+    margin: 0 !important;
+    font-weight: 700 !important;
+  }
+  .sd-ann2__sale-cta {
+    grid-column: 2 / 3;
+    font-size: 0.85rem !important;
+    padding: 0.7rem 1.2rem !important;
+    letter-spacing: 0.05em !important;
+    margin-left: 0 !important;
+  }
+
+  /* ═════ Header — slim + logo LEFT + trustpilot TOP ═════ */
+  /* Move trustpilot to its own row ABOVE everything (a tiny top strip) */
+  .sd-header-left {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    padding: 0.4rem 1rem !important;
+    background: var(--sd-cream, #FFFAEA) !important;
+    border-bottom: 1px solid rgba(165, 140, 112, 0.18) !important;
+    justify-content: center !important;
+    z-index: 5;
+  }
+  .sd-header-tp {
+    padding: 0 !important;
+    gap: 0.5rem !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  .sd-header-tp::before, .sd-header-tp::after { display: none !important; }
+  .sd-header-tp__badge {
+    width: 2rem !important; height: 2rem !important;
+    background: var(--sd-tp, #00B67A) !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+  }
+  .sd-header-tp__rating-big {
+    font-size: 1.05rem !important;
+    color: #fff !important;
+    text-shadow: none !important;
+  }
+  .sd-header-tp__text { display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 0.4rem; }
+  .sd-header-tp__top {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+  }
+  .sd-header-tp__stars { gap: 1px !important; }
+  .sd-header-tp__star svg { width: 9px !important; height: 9px !important; }
+  .sd-header-tp__label {
+    font-size: 0.78rem !important;
+    color: var(--sd-brown) !important;
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase !important;
+  }
+  .sd-header-tp__sub { display: none !important; }
+
+  /* Header itself — push down to make room for tp strip; reduce height */
+  .header-wrapper { padding-top: 32px !important; }
+  .header {
+    padding: 0.6rem 1rem !important;
+    min-height: auto !important;
+    grid-template-columns: auto 1fr auto !important;
+  }
+  /* LOGO to LEFT — override Dawn's middle-center / middle-left */
+  .header__heading,
+  .header--middle-left .header__heading,
+  .header--middle-center .header__heading {
+    grid-column: 1 !important;
+    justify-self: start !important;
+    margin: 0 !important;
+  }
+  .header__heading-logo-wrapper { justify-content: flex-start !important; }
+  .header__heading-logo { max-width: 120px !important; }
+  /* Icons (search/account/cart/menu) on right */
+  .header__icons {
+    grid-column: 3 !important;
+    justify-self: end !important;
+  }
+  /* Hide search icon when needed to save space */
+  .header__icon--menu { margin-right: 0 !important; }
+}
+
+/* ─── Tiny (<= 480px) ─── */
+@media screen and (max-width: 480px) {
+  /* Marquee — hide certain perks */
+  .sd-marquee__viewport { padding: 0.5rem 0; }
+  .sd-marquee__item { font-size: 0.85rem; padding: 0 0.75rem; }
+
+  /* Sale — tighter but readable */
+  .sd-ann2__inner { padding: 0.75rem 1rem !important; min-height: unset !important; }
+  .sd-ann2__sale { gap: 0.7rem !important; }
+  .sd-ann2__sale-flower { width: 2.7rem; height: 2.7rem; }
+  .sd-ann2__sale-flower svg { width: 1.35rem; height: 1.35rem; }
+  .sd-ann2__sale-headline { font-size: 1.25rem !important; }
+  .sd-ann2__sale-cta { font-size: 0.78rem !important; padding: 0.6rem 1rem !important; }
+  .sd-ann2__sale-cta-arrow svg { width: 11px; height: 11px; }
+
+  /* Trustpilot strip — slightly smaller */
+  .sd-header-tp__badge { width: 1.8rem !important; height: 1.8rem !important; }
+  .sd-header-tp__rating-big { font-size: 0.95rem !important; }
+  .sd-header-tp__label { font-size: 0.7rem !important; }
+  .header__heading-logo { max-width: 110px !important; }
+  .header-wrapper { padding-top: 30px !important; }
+}
+
+/* ─── Very tiny (<= 360px) — last resort ─── */
+@media screen and (max-width: 360px) {
+  .sd-ann2__sale-flower { width: 2.4rem; height: 2.4rem; }
+  .sd-ann2__sale-flower svg { width: 1.2rem; height: 1.2rem; }
+  .sd-ann2__sale-headline { font-size: 0.95rem; }
+  .sd-ann2__sale-cta { padding: 0.45rem 0.75rem; font-size: 0.72rem; letter-spacing: 0.02em; }
+  .header__heading-logo { max-width: 95px; }
+}
+
+/* Prevent any overflow */
+.sd-marquee, .sd-ann2 { max-width: 100vw; overflow-x: hidden; }
+.sd-ann2__inner { max-width: 100%; box-sizing: border-box; }
+.sd-ann2__sale-text { min-width: 0; }
+.sd-ann2__sale-headline,
+.sd-ann2__sale-sub { word-break: keep-all; overflow-wrap: break-word; }
+
+/* Buttons — primary buttons get brown background, teal text on hover */
+.button--primary:hover,
+button.button--primary:hover {
+  background: var(--sd-brown) !important;
+  border-color: var(--sd-brown) !important;
+  color: var(--sd-cream) !important;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.button--secondary:hover {
+  border-color: var(--sd-brown) !important;
+  color: var(--sd-brown) !important;
+}
+
+/* Focus ring matches brand */
+*:focus-visible {
+  outline-color: var(--sd-brown) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Color schemes — repaint to brand palette
+   ════════════════════════════════════════════════════════════════ */
+
+/* scheme-1 — default light → warm cream */
+.color-scheme-1 {
+  --color-background: 255, 250, 234;        /* cream */
+  --color-foreground: 47, 72, 88;           /* teal */
+  --color-button: 165, 140, 112;            /* brown */
+  --color-button-text: 255, 250, 234;       /* cream */
+  --color-secondary-button-text: 47, 72, 88;
+  --color-link: 47, 72, 88;
+  --gradient-background: var(--sd-cream);
+}
+
+/* scheme-2 — card scheme → soft taupe / cream */
+.color-scheme-2 {
+  --color-background: 248, 244, 232;
+  --color-foreground: 47, 72, 88;
+  --color-button: 47, 72, 88;
+  --color-button-text: 255, 250, 234;
+  --color-secondary-button-text: 47, 72, 88;
+  --color-link: 165, 140, 112;
+  --gradient-background: #F8F4E8;
+}
+
+/* scheme-3 — accent dark → teal (already brand) */
+.color-scheme-3 {
+  --color-background: 47, 72, 88;
+  --color-foreground: 255, 250, 234;
+  --color-button: 255, 250, 234;
+  --color-button-text: 47, 72, 88;
+  --color-link: 192, 176, 159;
+}
+
+/* scheme-4 — super dark → ink with cream text */
+.color-scheme-4 {
+  --color-background: 18, 18, 18;
+  --color-foreground: 255, 250, 234;
+  --color-button: 165, 140, 112;
+  --color-button-text: 255, 250, 234;
+}
+
+/* scheme-5 — warm → taupe */
+.color-scheme-5 {
+  --color-background: 192, 176, 159;
+  --color-foreground: 47, 72, 88;
+  --color-button: 47, 72, 88;
+  --color-button-text: 255, 250, 234;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Product Cards — uniform style across home + collection + search
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Title ── */
+.card__heading,
+.card__heading.h5,
+.card__heading.h4,
+.card__heading.h3,
+.card-information .card__heading,
+.product-card__title,
+.card-wrapper .card__heading {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif) !important;
+  font-size: 1.6rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.005em !important;
+  color: var(--sd-teal) !important;
+  margin: 0.6rem 0 0.4rem !important;
+}
+.card__heading a,
+.card-information .card__heading a {
+  color: var(--sd-teal) !important;
+  text-decoration: none !important;
+  transition: color .18s ease;
+}
+.card__heading a:hover {
+  color: var(--sd-brown) !important;
+}
+
+/* Responsive title sizing */
+@media (min-width: 750px) {
+  .card__heading {
+    font-size: 1.75rem !important;
+  }
+}
+@media (min-width: 990px) {
+  .card__heading {
+    font-size: 1.9rem !important;
+  }
+}
+
+/* ── Price ── */
+.price,
+.price--on-sale,
+.price .price-item,
+.price .price-item--regular,
+.price .price-item--sale,
+.card-information .price,
+.card-wrapper .price {
+  font-family: var(--sd-font-body, 'Montserrat', sans-serif) !important;
+  letter-spacing: 0.01em !important;
+}
+
+.price-item {
+  font-size: 1.55rem !important;
+  font-weight: 700 !important;
+  color: var(--sd-teal) !important;
+}
+
+/* Sale price */
+.price-item--sale,
+.price--on-sale .price-item--sale {
+  color: var(--sd-brown) !important;
+  font-weight: 700 !important;
+}
+
+/* Compare-at (strikethrough) */
+.price-item--regular {
+  color: rgba(47, 72, 88, 0.55) !important;
+  font-weight: 500 !important;
+  font-size: 1.3rem !important;
+}
+.price--on-sale .price-item--regular {
+  text-decoration: line-through !important;
+  text-decoration-color: var(--sd-brown);
+  text-decoration-thickness: 1.2px;
+}
+
+/* Sale badge */
+.price__badge,
+.price__badge-sale,
+.badge.price__badge-sale {
+  background: var(--sd-brown) !important;
+  color: var(--sd-cream) !important;
+  border-radius: 99px !important;
+  font-family: var(--sd-font-body, sans-serif) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  padding: 0.25rem 0.8rem !important;
+  font-size: 1rem !important;
+}
+.badge.price__badge-sold-out {
+  background: var(--sd-teal) !important;
+  color: var(--sd-cream) !important;
+  border-radius: 99px !important;
+}
+
+@media (min-width: 750px) {
+  .price-item { font-size: 1.7rem !important; }
+}
+
+/* ── Card hover lift ── */
+.card-wrapper {
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+.card-wrapper:hover {
+  transform: translateY(-3px);
+}
+.card--media .card__media,
+.card--card .card__media {
+  transition: transform .35s ease;
+}
+.card-wrapper:hover .card__media {
+  transform: scale(1.02);
+}
+
+/* ── Quick-add / Add-to-cart button — brand hover ── */
+.quick-add__submit:hover,
+.card__inner button:hover {
+  background: var(--sd-brown) !important;
+  color: var(--sd-cream) !important;
+  border-color: var(--sd-brown) !important;
+}
+
+/* ── Cart drawer / Cart page — remove (delete) button ────────
+   Dawn's <cart-remove-button> uses .button which has min-width:
+   12rem + padding 0 3rem + pill radius, so on hover the dark
+   teal pill expands awkwardly. Force a compact square icon-only
+   button with a subtle hover instead. ─── */
+cart-remove-button .button,
+cart-remove-button button.button {
+  min-width: 3.2rem !important;
+  min-height: 3.2rem !important;
+  width: 3.2rem;
+  height: 3.2rem;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--sd-teal, #2F4858) !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
+  box-shadow: none !important;
+  transition: background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+cart-remove-button .button:hover,
+cart-remove-button button.button:hover {
+  background: rgba(165, 140, 112, 0.10) !important;   /* soft brown wash */
+  color: var(--sd-brown, #A58C70) !important;
+  border-color: var(--sd-brown, #A58C70) !important;
+}
+cart-remove-button .button:before,
+cart-remove-button .button:after,
+cart-remove-button button.button:before,
+cart-remove-button button.button:after {
+  content: none !important;                            /* kill Dawn's fill animation */
+}
+cart-remove-button .icon-remove {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Header logo brown for hover
+   ════════════════════════════════════════════════════════════════ */
+.header__heading-link:hover {
+  opacity: 0.85;
+}
+.header__menu-item:hover,
+.list-menu__item:hover {
+  color: var(--sd-brown) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NAV OVERFLOW FIX — tight up nav between ~990px and ~1500px
+   so items stay on one line and don't wrap.
+   ════════════════════════════════════════════════════════════════ */
+/* Tier 1: 1600px and below — tighten gap + letter-spacing */
+@media (min-width: 990px) and (max-width: 1600px) {
+  .header__inline-menu .list-menu--inline {
+    gap: 0.4rem !important;
+  }
+  .header__inline-menu .header__menu-item,
+  .header__inline-menu .list-menu__item--link {
+    font-size: 1.4rem !important;
+    padding: 0.9rem 0.2rem !important;
+    letter-spacing: -0.005em !important;
+  }
+  .sd-header-left {
+    gap: 0.6rem !important;
+  }
+  .sd-header-tp { padding: 0.35rem 0.7rem 0.35rem 0.4rem !important; gap: 0.5rem !important; }
+  .sd-header-tp__rating-big { font-size: 1.3rem !important; }
+  .sd-header-tp__badge { width: 2.7rem !important; height: 2.7rem !important; }
+  .sd-header-tp__label { font-size: 0.95rem !important; letter-spacing: 0.08em !important; }
+  .sd-header-tp__sub { display: none !important; }
+  .header.page-width { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+}
+
+/* Tier 2: 1400px and below — tighter still */
+@media (min-width: 990px) and (max-width: 1400px) {
+  .header__inline-menu .list-menu--inline {
+    gap: 0.25rem !important;
+  }
+  .header__inline-menu .header__menu-item,
+  .header__inline-menu .list-menu__item--link {
+    font-size: 1.3rem !important;
+    padding: 0.85rem 0.1rem !important;
+    letter-spacing: -0.01em !important;
+  }
+}
+
+/* Tier 3: 1200px and below — minimum readable */
+@media (min-width: 990px) and (max-width: 1200px) {
+  .header__inline-menu .list-menu--inline {
+    gap: 0.15rem !important;
+  }
+  .header__inline-menu .header__menu-item,
+  .header__inline-menu .list-menu__item--link {
+    font-size: 1.2rem !important;
+    padding: 0.85rem 0.05rem !important;
+    letter-spacing: -0.015em !important;
+  }
+}
+
+@media (min-width: 990px) and (max-width: 1150px) {
+  .sd-header-tp__text { display: none !important; }
+  .sd-header-tp { padding: 0.3rem !important; }
+}
+
+@media (min-width: 990px) and (max-width: 1150px) {
+  /* Show only TP badge (rating circle) — hide text label */
+  .sd-header-tp__text { display: none !important; }
+  .sd-header-tp { padding: 0.3rem !important; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Selection color — brand
+   ════════════════════════════════════════════════════════════════ */
+::selection {
+  background: var(--sd-brown);
+  color: var(--sd-cream);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Collection Card Badges + Prices — brand palette override
+   (sd-collection-alt page)
+   ════════════════════════════════════════════════════════════════ */
+
+/* Save badge — was pink/red */
+.sda-card__save-badge {
+  background: rgba(255, 250, 234, 0.96) !important;
+  color: var(--sd-brown) !important;
+  border: 1px solid rgba(165, 140, 112, 0.4) !important;
+}
+
+/* Free Delivery badge — was bright blue */
+.sda-card__delivery-badge {
+  background: var(--sd-teal) !important;
+  color: var(--sd-cream) !important;
+  border: 1px solid rgba(255, 250, 234, 0.25) !important;
+}
+
+/* Sale chip */
+.sda-card__badge {
+  background: var(--sd-cream) !important;
+  color: var(--sd-teal) !important;
+}
+.sda-card__badge--sale {
+  background: var(--sd-brown) !important;
+  color: var(--sd-cream) !important;
+}
+.sda-card__badge--new {
+  background: var(--sd-teal) !important;
+  color: var(--sd-cream) !important;
+}
+.sda-card__badge--best {
+  background: var(--sd-gold) !important;
+  color: var(--sd-teal) !important;
+}
+
+/* Wishlist active state */
+.sda-card__wish:hover,
+.sda-card__wish.active {
+  color: var(--sd-brown) !important;
+}
+
+/* Prices — was red on sale */
+.sda-card__price {
+  color: var(--sd-teal) !important;
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif) !important;
+}
+.sda-card__price--sale {
+  color: var(--sd-brown) !important;
+  text-shadow: none !important;
+}
+.sda-card__was {
+  color: rgba(47, 72, 88, 0.55) !important;
+  text-decoration-color: var(--sd-brown);
+}
+
+/* Title (link colour fix — was showing blue on the caramel card in screenshot) */
+.sda-card__title,
+.sda-card__title a,
+.sda-card__name,
+.sda-card__name-link,
+.sda-card__name-link .sda-card__name {
+  color: var(--sd-teal) !important;
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif) !important;
+  text-decoration: none !important;
+}
+.sda-card__title a:hover,
+.sda-card__name-link:hover,
+.sda-card__name-link:hover .sda-card__name,
+.sda-card__name-link:focus .sda-card__name,
+a.sda-card__name-link:visited .sda-card__name {
+  color: var(--sd-brown) !important;
+}
+
+/* Description excerpt */
+.sda-card__desc,
+.sda-card__description {
+  color: rgba(47, 72, 88, 0.72) !important;
+}
+
+/* Image dot indicator under cards */
+.sda-card__dot,
+.sda-card__color-dot {
+  border: 1.5px solid var(--sd-brown) !important;
+}
+
+/* Image-count chip */
+.sda-card__img-count {
+  background: rgba(47, 72, 88, 0.78) !important;
+  color: var(--sd-cream) !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   GLOBAL TYPOGRAPHY — fix word-break, smart wrapping
+   No font-size / weight / colour changes — only renderer fixes.
+   ════════════════════════════════════════════════════════════════ */
+
+/* Never break a word mid-character. Allow natural word wrap, no hyphens. */
+html, body {
+  word-break: normal;
+  overflow-wrap: break-word;
+  -webkit-hyphens: none;
+  hyphens: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings — keep whole words together; break only at spaces */
+h1, h2, h3, h4, h5, h6,
+.h0, .h1, .h2, .h3, .h4, .h5, .h6,
+.banner__heading, .banner__text,
+.section-header__heading, .section-heading,
+.card__heading, .card-information,
+.slideshow__heading, .image-banner__heading,
+.title, .product__title, .collection__title,
+[class*="__heading"], [class*="-heading"],
+[class*="__title"], [class*="-title"] {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  -webkit-hyphens: none;
+  hyphens: none;
+  text-wrap: balance;          /* modern browsers — balanced multi-line */
+}
+
+/* Long single words (URLs, etc.) — only break-all on body text, never on headings */
+p, .rte, .metafield-rich_text_field,
+[class*="__excerpt"], [class*="__description"], [class*="__text"] {
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-wrap: pretty;
+}
+
+/* Prevent runaway oversized headings from exceeding container width */
+.banner__heading, .image-banner__heading,
+.section-header__heading, .hero__heading,
+[class*="__hero-heading"], [class*="__hero-title"],
+.sd-everyday-banner h1, .sd-everyday-banner h2,
+.sd-everyday-banner__heading,
+.sd-everyday__heading,
+.sd-hero__heading {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+/* Responsive heading clamp — prevents huge headlines breaking on narrow screens
+   (we don't override exact sizes — only cap the maximum). */
+@media (max-width: 768px) {
+  h1, .h0, .h1, [class*="__hero-heading"] {
+    font-size: clamp(2.4rem, 8vw, 4.4rem) !important;
+    line-height: 1.1 !important;
+  }
+  h2, .h2, [class*="banner__heading"] {
+    font-size: clamp(2rem, 6.5vw, 3.6rem) !important;
+    line-height: 1.15 !important;
+  }
+  /* Product title — capped at 30px on mobile/tablet */
+  .sd-product__title {
+    font-size: clamp(2rem, 7vw, 3rem) !important;
+    line-height: 1.18 !important;
+  }
+}
+@media (max-width: 480px) {
+  h1, .h0, .h1 { font-size: clamp(2rem, 9vw, 3.6rem) !important; }
+  h2, .h2 { font-size: clamp(1.8rem, 7vw, 3rem) !important; }
+  /* Product title — capped at 30px on small mobile */
+  .sd-product__title { font-size: clamp(1.8rem, 8vw, 3rem) !important; line-height: 1.2 !important; }
+}
+
+/* Global font-family — ensure every heading uses the display font (Recoleta/serif),
+   body uses the body font (Montserrat). Do not override inline overrides. */
+:where(h1, h2, h3, h4, h5, h6,
+       .h0, .h1, .h2, .h3, .h4, .h5, .h6,
+       [class*="__heading"], [class*="-heading"],
+       [class*="__title"], [class*="-title"],
+       .banner__heading, .section-header__heading) {
+  font-family: var(--font-heading-family, var(--sd-font-display, 'Recoleta', Georgia, serif));
+  font-weight: var(--font-heading-weight, 600);
+}
+
+:where(body, p, li, td, th, input, button, select, textarea, a) {
+  font-family: var(--font-body-family, var(--sd-font-body, 'Montserrat', system-ui, sans-serif));
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SD GLOBAL LAYOUT SYSTEM
+   ----------------------------------------------------------------
+   Outer layout: equal 5rem (50px) horizontal padding sitewide
+   Inner content container: capped at 1700px, centred
+   Applies to: header, footer, and standard content sections
+   Excludes: full-width / immersive sections — hero, lifestyle
+   banner, everyday banner, shop-the-look, new-releases image grid
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --sd-page-width: 170rem;          /* 1700px inner container cap */
+  --sd-page-pad: 5rem;              /* 50px outer side padding (desktop) */
+  --sd-page-pad-tablet: 3.2rem;     /* 32px on tablet */
+  --sd-page-pad-mobile: 1.6rem;     /* 16px on mobile */
+
+  /* Override Dawn's theme-settings page width so every .page-width
+     consumer (header, utility bar, product pages, collection grids,
+     blog, cart, etc.) automatically aligns to 1700px. */
+  --page-width: var(--sd-page-width);
+}
+
+/* Reusable content container utility ---------------------------- */
+.sd-container {
+  width: 100%;
+  max-width: var(--sd-page-width);
+  margin-inline: auto;
+  padding-inline: var(--sd-page-pad);
+  box-sizing: border-box;
+}
+
+/* ── Dawn .page-width: enforce unified 1700px + 5rem padding ── */
+@media screen and (min-width: 990px) {
+  .page-width {
+    max-width: var(--sd-page-width);
+    padding-inline: var(--sd-page-pad);
+  }
+  .header.page-width,
+  .utility-bar__grid.page-width {
+    max-width: var(--sd-page-width);
+    padding-inline: var(--sd-page-pad);
+  }
+}
+
+/* ── Header section: keep inner alignment matched to content ── */
+@media screen and (min-width: 990px) {
+  .section-header .header,
+  .section-header .header-wrapper > .header {
+    max-width: var(--sd-page-width);
+    margin-inline: auto;
+    padding-left: var(--sd-page-pad) !important;
+    padding-right: var(--sd-page-pad) !important;
+    box-sizing: border-box;
+  }
+}
+
+/* ── Footer: re-state to use shared variables ────────────────── */
+.sd-footer__main,
+.sd-footer__bottom {
+  width: 100%;
+  max-width: var(--sd-page-width);
+  margin-inline: auto;
+  padding-inline: var(--sd-page-pad);
+  box-sizing: border-box;
+}
+
+/* ── Standard SD content sections — inner alignment ──────────
+   Each section's existing inner wrapper is re-aligned to the
+   shared 1700px container + 5rem padding. Full-width sections
+   (sd-hero, sd-lbanner, sd-everyday, sd-nr, sd-shop-the-look)
+   are intentionally omitted.
+   ─────────────────────────────────────────────────────────── */
+@media screen and (min-width: 990px) {
+  .sd-best-sellers > .sd-best-sellers__header,
+  .sd-best-sellers > .sd-best-sellers__slider-wrap,
+  .sd-clearance__inner,
+  .sd-catbrowse > .page-width,
+  .sd-blog__container,
+  .sd-blog__container.page-width {
+    width: 100%;
+    max-width: var(--sd-page-width);
+    margin-inline: auto;
+    padding-inline: var(--sd-page-pad);
+    box-sizing: border-box;
+  }
+}
+
+/* ── Below 1300px: hide announcement capsule (causes overflow) ── */
+@media screen and (max-width: 1299px) {
+  aside.sd-ann2__capsule {
+    display: none !important;
+  }
+}
+
+/* ── Below 1500px: tighten nav letter-spacing to prevent wrap/overflow ── */
+@media screen and (max-width: 1499px) {
+  .header__inline-menu .list-menu--inline a,
+  .header__inline-menu .header__menu-item,
+  .header__inline-menu .list-menu__item a,
+  .header__menu-item span {
+    letter-spacing: 0 !important;
+  }
+  .header__inline-menu .list-menu--inline {
+    gap: 1rem !important;
+  }
+}
+
+/* ── Priority Navigation — overflow items move into "More" popup ──
+   JS (assets/sd-priority-nav.js) measures available width and hides
+   items that don't fit, surfacing them inside the .sd-pn__more popup.
+   Below styles handle the More button + popup chrome. ─── */
+.sd-pn__more {
+  display: none;                  /* shown by JS when overflow exists */
+  position: relative;
+  margin-left: 0.4rem;
+  align-self: center;             /* don't stretch to parent height */
+  height: auto;
+  line-height: 1;
+  padding: 0 !important;          /* override .list-menu__item--link */
+}
+.sd-pn__more.is-active {
+  display: inline-flex;
+  align-items: center;
+  height: auto;
+}
+/* Ensure the li doesn't get stretched by parent flex/grid alignment */
+.list-menu--inline > .sd-pn__more {
+  flex: 0 0 auto;
+}
+.sd-pn__more-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--sd-teal, #2F4858);
+  padding: 0.6rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  position: relative;             /* popup anchor */
+  transition: background-color .18s ease, color .18s ease;
+}
+.sd-pn__more-btn:hover,
+.sd-pn__more-btn[aria-expanded="true"] {
+  background: rgba(165, 140, 112, 0.12);
+  color: var(--sd-brown, #A58C70);
+}
+.sd-pn__more-btn::after {
+  content: '';
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  margin-left: 0.2rem;
+  transition: transform .2s ease;
+}
+.sd-pn__more-btn[aria-expanded="true"]::after { transform: rotate(180deg); }
+
+.sd-pn__popup {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 22rem;
+  background: #fff;
+  border: 1px solid rgba(165, 140, 112, 0.18);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.04);
+  padding: 0.8rem;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+}
+.sd-pn__more.is-open .sd-pn__popup {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.sd-pn__popup ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.sd-pn__popup li { margin: 0; }
+.sd-pn__popup a {
+  display: block;
+  padding: 1rem 1.4rem;
+  border-radius: 8px;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--sd-teal, #2F4858);
+  text-decoration: none;
+  transition: background-color .15s ease, color .15s ease;
+}
+.sd-pn__popup a:hover,
+.sd-pn__popup a:focus-visible {
+  background: rgba(165, 140, 112, 0.10);
+  color: var(--sd-brown, #A58C70);
+}
+
+/* Items hidden by overflow logic */
+.header__inline-menu .list-menu--inline > li.sd-pn--hidden,
+.header__inline-menu .list-menu--inline > details.sd-pn--hidden {
+  display: none !important;
+}
+.header__inline-menu .list-menu--inline {
+  flex-wrap: nowrap !important;
+  /* overflow-x: clip hides items that overflow the container *from the
+     first paint*. When sd-priority-nav.js later marks them .sd-pn--hidden,
+     no visual width change occurs → no CLS. overflow-y: visible keeps
+     the More ▾ popup (position:absolute; top:100%) from being clipped
+     downward. Browsers without `clip` (Chrome <90, Safari <16) fall
+     back to `hidden`, which also clips the popup — acceptable on <2%
+     of traffic. */
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* ── Below 1300px: reduce side padding to 3rem (header/footer/home) ── */
+@media screen and (max-width: 1299px) {
+  .page-width,
+  .header.page-width,
+  .utility-bar__grid.page-width,
+  .section-header .header,
+  .section-header .header-wrapper > .header,
+  .sd-footer__main,
+  .sd-footer__bottom,
+  .sd-best-sellers > .sd-best-sellers__header,
+  .sd-best-sellers > .sd-best-sellers__slider-wrap,
+  .sd-clearance__inner,
+  .sd-catbrowse > .page-width,
+  .sd-blog__container,
+  .sd-blog__container.page-width,
+  .sd-everyday.sd-everyday--container,
+  .sd-stl.sd-stl--container {
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+  }
+}
+
+/* Mobile (<=749px): tighten the same container padding to 1.5rem */
+@media screen and (max-width: 749px) {
+  .page-width,
+  .header.page-width,
+  .utility-bar__grid.page-width,
+  .section-header .header,
+  .section-header .header-wrapper > .header,
+  .sd-footer__main,
+  .sd-footer__bottom,
+  .sd-best-sellers > .sd-best-sellers__header,
+  .sd-best-sellers > .sd-best-sellers__slider-wrap,
+  .sd-clearance__inner,
+  .sd-catbrowse > .page-width,
+  .sd-blog__container,
+  .sd-blog__container.page-width,
+  .sd-everyday.sd-everyday--container,
+  .sd-stl.sd-stl--container {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+/* ── Tablet (750–989px): reduce side padding for breathing room ── */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .page-width,
+  .header.page-width,
+  .utility-bar__grid.page-width,
+  .section-header .header,
+  .sd-footer__main,
+  .sd-footer__bottom,
+  .sd-best-sellers > .sd-best-sellers__header,
+  .sd-best-sellers > .sd-best-sellers__slider-wrap,
+  .sd-clearance__inner,
+  .sd-catbrowse > .page-width,
+  .sd-blog__container {
+    padding-inline: var(--sd-page-pad-tablet);
+  }
+}
+
+/* ── Mobile (≤749px): tight side padding ─────────────────────── */
+@media screen and (max-width: 749px) {
+  .page-width,
+  .sd-footer__main,
+  .sd-footer__bottom,
+  .sd-best-sellers > .sd-best-sellers__header,
+  .sd-clearance__inner,
+  .sd-catbrowse > .page-width,
+  .sd-blog__container {
+    padding-inline: var(--sd-page-pad-mobile);
+  }
+}
+
+/* ── Safety net — only truly full-bleed sections stay edge-to-edge.
+   Sections with a `section_width` setting (sd-everyday, sd-stl)
+   are NOT forced full-width here — they respect their own
+   --container / --full modifier class set from the theme editor. ── */
+.sd-hero,
+.sd-lbanner,
+.sd-nr {
+  max-width: 100% !important;
+  padding-inline: 0 !important;
+}
+
+/* ── Sections with section_width setting: respect the chosen mode ── */
+@media screen and (min-width: 990px) {
+  .sd-everyday.sd-everyday--container,
+  .sd-stl.sd-stl--container {
+    width: 100%;
+    max-width: var(--sd-page-width);
+    margin-inline: auto;
+    padding-inline: var(--sd-page-pad);
+    box-sizing: border-box;
+  }
+}
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  .sd-everyday.sd-everyday--container,
+  .sd-stl.sd-stl--container {
+    padding-inline: var(--sd-page-pad-tablet);
+  }
+}
+@media screen and (max-width: 749px) {
+  .sd-everyday.sd-everyday--container,
+  .sd-stl.sd-stl--container {
+    padding-inline: var(--sd-page-pad-mobile);
+  }
+}
+
+/* Full-bleed variants of those same sections */
+.sd-everyday.sd-everyday--full,
+.sd-stl.sd-stl--full {
+  max-width: 100% !important;
+  padding-inline: 0 !important;
+}
+
+/* Below 990px: force sd-everyday ("Designed For Everyday Living")
+   to be edge-to-edge regardless of its section_width setting. */
+@media screen and (max-width: 989px) {
+  .sd-everyday,
+  .sd-everyday.sd-everyday--container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+

@@ -1,0 +1,206 @@
+/* ============================================================
+   SD Top Bar — trust icons + brown call block
+   ============================================================ */
+.sd-topbar {
+  --sd-tb-call-bg: #A48C70;
+  --sd-tb-title: #2F4858;
+  --sd-tb-icon: #A48C70;
+  position: relative;
+  width: 100%;
+  background: #fff; /* full-bleed white base */
+  overflow: hidden;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Brown right portion — full-bleed (outside container), right 776/1920 = 40.417% */
+.sd-topbar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40.42%;
+  background: var(--sd-tb-call-bg);
+  z-index: 0;
+}
+
+/* Inner — content sits inside page-width container (same as header nav) */
+.sd-topbar__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+/* ---- LEFT: trust items ---- */
+.sd-topbar__trust {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(16px, 3vw, 39.827px);
+  list-style: none;
+  margin: 0;
+  padding: 14px 0;
+}
+
+.sd-topbar__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.sd-topbar__icon {
+  flex: 0 0 auto;
+  color: var(--sd-tb-icon);
+  display: inline-flex;
+}
+.sd-topbar__icon svg {
+  width: clamp(34px, 3.3vw, 63.229px);
+  height: clamp(34px, 3.3vw, 63.723px);
+  display: block;
+}
+
+/* ---- Per-icon dimensions (Figma) ---- */
+/* Truck / delivery: 63.723 × 44.143 */
+.sd-topbar__icon--truck svg   { width: clamp(40px, 4.0vw, 63.723px); height: clamp(28px, 2.8vw, 44.143px); }
+/* Shield / warranty: 46.322 × 55.731 */
+.sd-topbar__icon--shield svg  { width: clamp(29px, 2.9vw, 46.322px); height: clamp(35px, 3.5vw, 55.731px); }
+/* Returns box+arrow: 63.229 × 63.723 */
+.sd-topbar__icon--returns svg { width: clamp(40px, 4.0vw, 63.229px); height: clamp(40px, 4.0vw, 63.723px); }
+/* Finance / pound: 55.758 × 55.758 */
+.sd-topbar__icon--finance svg { width: clamp(35px, 3.5vw, 55.758px); height: clamp(35px, 3.5vw, 55.758px); }
+
+.sd-topbar__label {
+  display: flex;
+  flex-direction: column;
+  color: var(--sd-tb-title);
+  font-size: clamp(11px, 0.95vw, 15.931px);
+  font-weight: 700;
+  line-height: 1.05; /* 100% per spec */
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+/* ---- RIGHT: brown call text — content in container, bg comes from .sd-topbar::after ---- */
+.sd-topbar__call {
+  flex: 0 0 40.42%;        /* aligns text over the brown right portion */
+  max-width: 40.42%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: clamp(13px, 1.25vw, 24px);
+  line-height: normal;
+  padding: 0;
+  text-align: center;
+  transition: opacity .2s ease;
+}
+.sd-topbar__call:hover { opacity: .85; }
+
+/* Tighter gap + smaller call text below 1660px */
+@media (max-width: 1660px) {
+  .sd-topbar__trust { gap: 15px; }
+  .sd-topbar__call { font-size: clamp(13px, 1.15vw, 24px); }
+}
+
+/* Narrower brown call portion below 1260px */
+@media (max-width: 1260px) {
+  .sd-topbar__call {
+    flex: 0 0 37%;
+    max-width: 37%;
+  }
+  .sd-topbar::after {
+    width: 37%;
+  }
+}
+
+/* Tighter icon/label gap + smaller call text below 1100px */
+@media (max-width: 1100px) {
+  .sd-topbar__item { gap: 5px; }
+  .sd-topbar__call { font-size: clamp(12px, 1.15vw, 24px); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 989px) {
+  .sd-topbar::after { display: none; } /* no side strip when stacked */
+  .sd-topbar__inner { flex-direction: column; }
+  .sd-topbar__trust {
+    order: 2;
+    flex: 0 0 auto;
+    max-width: none;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px 28px;
+    padding: 14px 16px;
+  }
+  .sd-topbar__call {
+    order: 1;
+    flex: 0 0 auto;
+    max-width: none;
+    width: 100%;
+    background: var(--sd-tb-call-bg); /* full-width brown bar on mobile */
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sd-topbar__trust { gap: 14px 20px; }
+  .sd-topbar__item { gap: 9px; }
+  .sd-topbar__label { font-size: 11px; }
+  .sd-topbar__icon svg { width: 30px; height: 30px; }
+}
+
+/* Phone (≤749px): trust items become a single horizontal scroll row at the
+   top; the call bar is moved (via JS) to sit below the promo banner as a
+   full-width brown bar. */
+@media (max-width: 749px) {
+  .sd-topbar { display: none; }              /* hide whole topbar on mobile */
+  .sd-topbar::after { display: none; }       /* no side strip — call moves out */
+  .sd-topbar__inner { flex-direction: row; }
+  .sd-topbar__trust {
+    order: 0;
+    flex: 1 1 auto;
+    width: 100%;
+    flex-wrap: nowrap;                        /* single row */
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 18px;
+    padding: 10px 14px;
+  }
+  .sd-topbar__trust::-webkit-scrollbar { display: none; }
+  .sd-topbar__item { flex: 0 0 auto; gap: 8px; }
+
+  /* Call now lives in the promo banner on mobile — hide the topbar's own call */
+  .sd-topbar__call { display: none; }
+}
+
+
+@media (min-width: 1920px) {
+.sd-topbar:after {
+   
+    width: 43.42%;
+  
+}
+}
+@media (min-width: 2340px) {
+.sd-topbar:after {
+   
+    width: 44.42%;
+  
+}
+}

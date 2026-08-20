@@ -1,0 +1,46 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "sd_hero": {
+      "type": "sd-about-hero",
+      "settings": {
+        "image": "shopify://shop_images/Frame_1_4f19e370-9264-4a09-ab3e-281d87d773dd.webp",
+        "badge_text": "",
+        "heading": "",
+        "body_text": ""
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "page_ankDK8": {
+      "type": "page",
+      "name": "t:sections.page.presets.name",
+      "settings": {
+        "page": "privacy-policy",
+        "heading_size": "h1",
+        "color_scheme": "scheme-e852916b-d7ac-410f-95d8-59ec044e6d79",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "sd_hero",
+    "main",
+    "page_ankDK8"
+  ]
+}

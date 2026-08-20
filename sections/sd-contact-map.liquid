@@ -1,0 +1,164 @@
+<link rel="stylesheet" href="{{ 'sd-contact-map.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-contact-map.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign map_embed_url = section.settings.map_embed_url
+  if map_embed_url == blank
+    assign map_embed_url = 'https://www.google.com/maps?q=Unit+2a+Durbar+Industrial+Estate,+Durbar+Avenue,+Coventry+CV6+5QF&output=embed'
+  endif
+
+  assign open_map_url = section.settings.open_map_url
+  if open_map_url == blank
+    assign open_map_url = 'https://www.google.com/maps/search/?api=1&query=Unit+2a+Durbar+Industrial+Estate,+Durbar+Avenue,+Coventry+CV6+5QF'
+  endif
+-%}
+
+{%- style -%}
+  .sd-contact-map--{{ section.id }} {
+    --sd-contact-map-height-desktop: {{ section.settings.map_height_desktop }}px;
+    --sd-contact-map-height-mobile: {{ section.settings.map_height_mobile }}px;
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .sd-contact-map--{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="sd-contact-map sd-contact-map--{{ section.id }}">
+  <div class="sd-contact-map__container page-width">
+    <div class="sd-contact-map__card">
+      <div class="sd-contact-map__copy">
+        {%- if section.settings.kicker != blank -%}
+          <span class="sd-contact-map__kicker">{{ section.settings.kicker }}</span>
+        {%- endif -%}
+
+        <h2 class="sd-contact-map__heading">{{ section.settings.heading }}</h2>
+
+        {%- if section.settings.body != blank -%}
+          <p class="sd-contact-map__body">{{ section.settings.body }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.address != blank -%}
+          <p class="sd-contact-map__address">{{ section.settings.address }}</p>
+        {%- endif -%}
+
+        <a href="{{ open_map_url }}" class="sd-contact-map__btn" target="_blank" rel="noopener noreferrer">
+          Open in Google Maps
+          <span aria-hidden="true">-></span>
+        </a>
+      </div>
+
+      <div class="sd-contact-map__frame-wrap">
+        <iframe
+          class="sd-contact-map__frame"
+          src="{{ map_embed_url }}"
+          title="{{ section.settings.heading | escape }}"
+          loading="lazy"
+          width="600"
+          height="420"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Contact Map",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "Find Us"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Visit Our Coventry Location"
+    },
+    {
+      "type": "textarea",
+      "id": "body",
+      "label": "Body text",
+      "default": "Drop in to explore sofa styles in person, compare fabrics, and get help from our team."
+    },
+    {
+      "type": "text",
+      "id": "address",
+      "label": "Address",
+      "default": "Unit 2a Durbar Industrial Estate, Durbar Avenue, Coventry CV6 5QF"
+    },
+    {
+      "type": "text",
+      "id": "map_embed_url",
+      "label": "Google Map embed URL",
+      "default": "https://www.google.com/maps?q=Unit+2a+Durbar+Industrial+Estate,+Durbar+Avenue,+Coventry+CV6+5QF&output=embed"
+    },
+    {
+      "type": "url",
+      "id": "open_map_url",
+      "label": "Open map link"
+    },
+    {
+      "type": "range",
+      "id": "map_height_desktop",
+      "min": 280,
+      "max": 700,
+      "step": 10,
+      "unit": "px",
+      "label": "Map height (desktop)",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "map_height_mobile",
+      "min": 220,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "label": "Map height (mobile)",
+      "default": 280
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 72
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Contact Map"
+    }
+  ]
+}
+{% endschema %}

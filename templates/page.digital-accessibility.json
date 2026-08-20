@@ -1,0 +1,285 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero": {
+      "type": "sd-info-hero",
+      "blocks": {
+        "c1": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "WCAG 2.1 AA"
+          }
+        },
+        "c2": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Screen Reader Friendly"
+          }
+        },
+        "c3": {
+          "type": "chip",
+          "settings": {
+            "icon": true,
+            "text": "Keyboard Accessible"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "disabled": true,
+      "settings": {
+        "badge_text": "Accessibility Statement",
+        "heading": "A Website For Everyone",
+        "body_text": "We believe everyone should be able to browse, explore, and shop with ease. We're committed to making sofadirect.co.uk accessible and inclusive for all visitors, including people with disabilities.\nWe aim to meet WCAG 2.1 Level AA standards and the UK Equality Act 2010 wherever possible."
+      }
+    },
+    "intro": {
+      "type": "sd-info-intro",
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Our Commitment",
+        "heading": "Inclusive By Design",
+        "body": "<p>Our goal is for our site to be accessible to all users - no matter how they use it. So that means easy-to-understand information, accessible features and full support for assistive technologies, such as screen readers and magnifiers.<br/><br/></p>"
+      }
+    },
+    "features": {
+      "type": "sd-info-cards",
+      "blocks": {
+        "f1": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Assistive Technology",
+            "text": "We've designed our website to be compatible with screen readers, magnifiers and other assistive technologies. It can be fully navigated with a keyboard.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "f2": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Text Alternatives",
+            "text": "Images, icons and video have clear and descriptive alternatives for users to understand the content without the need for visuals.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "f3": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Colour & Contrast",
+            "text": "We select colours that are accessible and have enough contrast so that text readers can read them, including people with low vision.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "f4": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Responsive Design",
+            "text": "We ensure that our website is responsive and compatible with desktops, tablets and mobile devices, and that the content is automatically resized to fit the screen.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "f5": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Clear Structure",
+            "text": "Text is broken down into headings, lists and other formats to aid readability and search.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "f6": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Multimedia Access",
+            "text": "Videos are captioned or have audio transcripts where possible and audio is supported by summaries.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6"
+      ],
+      "disabled": true,
+      "settings": {
+        "eyebrow": "How We're Making It Accessible",
+        "heading": "Features Built In",
+        "bg": "cream"
+      }
+    },
+    "ongoing": {
+      "type": "sd-info-cards",
+      "blocks": {
+        "o1": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Regular Audits",
+            "text": "Our site is regularly checked for accessibility issues and improvements made.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "o2": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Staff Training",
+            "text": "We provide training on accessibility issues to our employees to ensure accessibility of content and features.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "o3": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Vendor Collaboration",
+            "text": "We collaborate with vendors and suppliers to ensure accessibility within and across systems.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        },
+        "o4": {
+          "type": "card",
+          "settings": {
+            "number": "",
+            "title": "Standards Monitoring",
+            "text": "We are aware of changes to accessibility standards and keep our website up to date.",
+            "sub1": "",
+            "list1": "",
+            "sub2": "",
+            "list2": "",
+            "list2_cross": false
+          }
+        }
+      },
+      "block_order": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "disabled": true,
+      "settings": {
+        "eyebrow": "Ongoing Efforts",
+        "heading": "We Don’t Stop Learning",
+        "bg": "white"
+      }
+    },
+    "cta": {
+      "type": "sd-info-cta",
+      "blocks": {
+        "btn1": {
+          "type": "button",
+          "settings": {
+            "label": "Email Us",
+            "link": "mailto:sales@furnitureinstore.co.uk",
+            "outline": false
+          }
+        },
+        "btn2": {
+          "type": "button",
+          "settings": {
+            "label": "Call 02476 581 053",
+            "link": "tel:02476 581 053",
+            "outline": true
+          }
+        }
+      },
+      "block_order": [
+        "btn1",
+        "btn2"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "Need accessibility support?",
+        "body": "If you have any trouble accessing our website or would like to request help, please contact us - Sofa Direct is always here to help and will respond to you as soon as possible."
+      }
+    },
+    "sd_about_hero_pTRK4L": {
+      "type": "sd-about-hero",
+      "name": "SD About Hero",
+      "settings": {
+        "image": "shopify://shop_images/Accessibility_Statement.webp",
+        "badge_text": "",
+        "heading": "Digital Accessibility Statement",
+        "body_text": ""
+      }
+    },
+    "page_FWg4fq": {
+      "type": "page",
+      "name": "t:sections.page.presets.name",
+      "settings": {
+        "page": "digital-accessibility-statement",
+        "heading_size": "h1",
+        "color_scheme": "scheme-e852916b-d7ac-410f-95d8-59ec044e6d79",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "intro",
+    "features",
+    "ongoing",
+    "cta",
+    "sd_about_hero_pTRK4L",
+    "page_FWg4fq"
+  ]
+}

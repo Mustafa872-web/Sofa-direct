@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="{{ 'sd-info.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-info.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign badge = section.settings.badge_text
+  assign heading = section.settings.heading
+  assign body_text = section.settings.body_text
+-%}
+
+<section class="sd-info-hero" aria-label="{{ heading | escape }}">
+  <div class="sd-info-hero__inner">
+    {%- if badge != blank -%}
+      <span class="sd-info-hero__badge">{{ badge }}</span>
+    {%- endif -%}
+
+    <h1 class="sd-info-hero__heading">{{ heading }}</h1>
+
+    {%- if body_text != blank -%}
+      <p class="sd-info-hero__text">{{ body_text }}</p>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="sd-info-hero__meta">
+        {%- for block in section.blocks -%}
+          <span class="sd-info-hero__chip" {{ block.shopify_attributes }}>
+            {%- if block.settings.icon != blank -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
+              </svg>
+            {%- endif -%}
+            {{ block.settings.text }}
+          </span>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "SD Info Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "badge_text", "label": "Badge text" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Page Title" },
+    { "type": "textarea", "id": "body_text", "label": "Body text" }
+  ],
+  "blocks": [
+    {
+      "type": "chip",
+      "name": "Chip",
+      "settings": [
+        { "type": "checkbox", "id": "icon", "label": "Show icon", "default": true },
+        { "type": "text", "id": "text", "label": "Chip text" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "SD Info Hero" } ]
+}
+{% endschema %}

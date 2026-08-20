@@ -1,0 +1,220 @@
+/* ============================================================
+   SD Product Info — Material tab
+   Collapsible "Material" widget sitting in the product info column,
+   styled to match sd-pinfo-fabric / sd-pinfo-delivery.
+   Brand palette: cream / taupe / brown / teal + gold accent.
+   ============================================================ */
+
+.sd-pinmat {
+  --pm-cream: var(--color-sd-cream, #FFFAEA);
+  --pm-taupe: var(--color-sd-tan,   #C0B09F);
+  --pm-brown: var(--color-sd-brown, #A58C70);
+  --pm-teal:  var(--color-sd-teal,  #2F4858);
+  --pm-gold:  #E8A53A;
+  --pm-line:  rgba(165, 140, 112, 0.30);
+
+  position: relative;
+  margin: 0 0 2rem;
+  padding: 0;
+  background:
+    linear-gradient(180deg, #fffdf3 0%, var(--pm-cream) 60%, rgba(192, 176, 159, 0.18) 100%);
+  border: 1px solid var(--pm-line);
+  border-radius: 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 18px 36px -22px rgba(47, 72, 88, 0.32);
+  overflow: hidden;
+}
+
+/* ── Bar (clickable tab) ───────────────────────────────── */
+.sd-pinmat__bar {
+  appearance: none;
+  display: flex; width: 100%;
+  align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1rem 1.4rem;
+  background: var(--pm-teal);
+  color: #fff; border: 0; cursor: pointer;
+  text-align: left; font-family: inherit;
+  position: relative; z-index: 2;
+  transition: filter 0.25s ease;
+}
+.sd-pinmat__bar:hover { filter: brightness(1.08); }
+.sd-pinmat__bar:focus-visible { outline: 2px solid var(--pm-gold); outline-offset: -2px; }
+
+.sd-pinmat__bar-l { display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex: 1; }
+
+.sd-pinmat__bar-ico {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(232, 165, 58, 0.18) 0%, rgba(165, 140, 112, 0.12) 100%);
+  border: 1px solid rgba(232, 165, 58, 0.35);
+  color: var(--pm-gold);
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.sd-pinmat__bar-txt { display: flex; flex-direction: column; min-width: 0; }
+.sd-pinmat__bar-title {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.3rem; font-weight: 700; letter-spacing: 0.02em; line-height: 1.15;
+}
+.sd-pinmat__bar-sub {
+  font-size: 1rem; font-weight: 500;
+  color: rgba(255, 255, 255, 0.72); letter-spacing: 0.02em; margin-top: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.sd-pinmat__bar-toggle {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff; font-family: var(--sd-font-body, inherit);
+  font-size: 1.1rem; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 0.45rem 0.85rem; border-radius: 999px; flex-shrink: 0;
+}
+.sd-pinmat__bar:hover .sd-pinmat__bar-toggle { background: rgba(255, 255, 255, 0.24); }
+.sd-pinmat__bar-chev { transition: transform 0.3s ease; }
+.sd-pinmat.is-collapsed .sd-pinmat__bar-chev { transform: rotate(-90deg); }
+
+/* ── Panel collapse ────────────────────────────────────── */
+.sd-pinmat__panel {
+  position: relative;
+  max-height: 1600px; opacity: 1; overflow: hidden;
+  padding: 1.8rem 1.8rem 1.6rem;
+  transition: max-height 0.45s ease, opacity 0.3s ease, padding 0.4s ease;
+}
+.sd-pinmat.is-collapsed .sd-pinmat__panel {
+  max-height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; pointer-events: none;
+}
+
+/* Subtle diagonal weave texture overlay */
+.sd-pinmat__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(165, 140, 112, 0.04) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(165, 140, 112, 0.03) 0 2px, transparent 2px 6px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Header ────────────────────────────────────────────── */
+.sd-pinmat__head {
+  position: relative; z-index: 1;
+  margin-bottom: 1.4rem;
+}
+
+.sd-pinmat__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(165, 140, 112, 0.14);
+  border: 1px solid rgba(165, 140, 112, 0.32);
+  color: var(--pm-brown);
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.05rem; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  margin-bottom: 0.7rem;
+}
+.sd-pinmat__eyebrow svg { color: var(--pm-gold); }
+
+.sd-pinmat__title {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 2rem; font-weight: 600;
+  color: var(--pm-teal);
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.01em; line-height: 1.15;
+}
+
+.sd-pinmat__sub {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.2rem;
+  color: rgba(47, 72, 88, 0.7);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ── 2×2 grid of pillars ───────────────────────────────── */
+.sd-pinmat__grid {
+  position: relative; z-index: 1;
+  list-style: none; margin: 0 0 1.2rem; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+}
+
+.sd-pinmat__card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: #fff;
+  border: 1px solid var(--pm-line);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 8px 18px -14px rgba(47, 72, 88, 0.30);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.sd-pinmat__card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(232, 165, 58, 0.45);
+  box-shadow: 0 14px 26px -16px rgba(47, 72, 88, 0.38);
+}
+
+.sd-pinmat__ico {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(232, 165, 58, 0.16) 0%, rgba(165, 140, 112, 0.12) 100%);
+  border: 1px solid rgba(232, 165, 58, 0.32);
+  color: var(--pm-teal);
+  flex-shrink: 0;
+}
+
+.sd-pinmat__body {
+  display: flex; flex-direction: column; gap: 0.2rem;
+  min-width: 0; flex: 1;
+}
+.sd-pinmat__body strong {
+  font-family: var(--sd-font-display, 'Recoleta', Georgia, serif);
+  font-size: 1.35rem; font-weight: 700;
+  color: var(--pm-teal);
+  line-height: 1.2;
+}
+.sd-pinmat__body span {
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.1rem; font-weight: 500;
+  color: rgba(47, 72, 88, 0.72);
+  line-height: 1.4;
+}
+
+/* ── Theme editor rich-text notes ──────────────────────── */
+.sd-pinmat__notes {
+  position: relative; z-index: 1;
+  margin-top: 0.6rem;
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px dashed rgba(165, 140, 112, 0.32);
+  border-radius: 12px;
+  font-family: var(--sd-font-body, inherit);
+  font-size: 1.15rem;
+  color: rgba(47, 72, 88, 0.78);
+  line-height: 1.55;
+}
+.sd-pinmat__notes p:first-child { margin-top: 0; }
+.sd-pinmat__notes p:last-child  { margin-bottom: 0; }
+
+/* ── Responsive ────────────────────────────────────────── */
+@media screen and (max-width: 480px) {
+  .sd-pinmat__bar { padding: 0.9rem 1.1rem; }
+  .sd-pinmat__bar-title { font-size: 1.2rem; }
+  .sd-pinmat__bar-sub { font-size: 0.95rem; }
+  .sd-pinmat__bar-toggle-label { display: none; }
+  .sd-pinmat__bar-toggle { padding: 0.45rem 0.6rem; }
+  .sd-pinmat__panel { padding: 1.4rem 1.2rem 1.2rem; }
+  .sd-pinmat__title { font-size: 1.7rem; }
+  .sd-pinmat__grid { grid-template-columns: 1fr; gap: 0.7rem; }
+}

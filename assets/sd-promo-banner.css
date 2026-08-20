@@ -1,0 +1,198 @@
+/* ============================================================
+   SD Promo Banner — Spring Sale split banner
+   ============================================================ */
+.sd-promo {
+  --sd-pr-left: #2F4858;
+  --sd-pr-btn: #A48C70;
+  --sd-pr-border: #E0A93E;
+  --sd-pr-border-w: 2px;
+  position: relative;
+  width: 100%; /* full-bleed background + image */
+  min-height: clamp(110px, 13vw, 162px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--sd-pr-left);
+  border: none;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ---- right-side image only (~55%), left stays solid bg colour ---- */
+.sd-promo__media {
+  position: relative;
+  top: 0;
+  right: 0;
+  display: block !important;
+  bottom: 0;
+  left: auto;
+  width: 40.4%;          /* Figma: image x=1144 / 1920 → right ~40% only */
+  z-index: 0;
+  height: 162px;
+    order: 2;
+  background: url('https://sofa-direct.co.uk/cdn/shop/files/Rectangle_16.png');
+}
+
+/* ---- content ---- */
+.sd-promo__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 3vw, 48px);
+  width: 100%;
+  margin: 0 auto;
+  max-width: var(--sd-page-width);
+  margin-inline: auto;
+      justify-content: center;
+    max-width: calc(100% - 40.4%);
+  box-sizing: border-box;
+}
+
+.sd-promo__heading {
+  margin: 0;
+  color: #fff;
+  font-weight: 700;
+  font-size: clamp(22px, 3.1vw, 40px);
+  line-height: normal;
+  text-transform: capitalize;
+}
+
+/* Smaller heading below 1660px */
+@media (max-width: 1660px) {
+  .sd-promo__heading { font-size: 30px; }
+}
+
+/* Tighter split + smaller heading below 1260px */
+@media (max-width: 1260px) {
+  .sd-promo__heading {
+    font-size: 25px;
+    letter-spacing: 0px;
+  }
+  .sd-promo__content {
+    gap: clamp(20px, 1.5vw, 48px);
+    max-width: 63%;
+  }
+  .sd-promo__media {
+    width: 37%;
+  }
+}
+
+/* Center heading text below 1100px */
+@media (max-width: 1100px) {
+  .sd-promo__heading { text-align: center; }
+}
+
+/* Mobile-only full-width call bar below the promo banner */
+.sd-promo__callbar { display: none; }
+@media (max-width: 749px) {
+  .sd-promo__callbar {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    background: var(--sd-pr-call-bg, #A48C70);
+    color: #FFF;
+    text-decoration: none;
+    font-family: Montserrat, sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    line-height: normal;
+    text-transform: capitalize;
+    text-align: center;
+    padding: 9px 16px;
+    transition: opacity .2s ease;
+  }
+  .sd-promo__callbar:active { opacity: .85; }
+}
+
+.sd-promo__btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  background: var(--sd-pr-btn);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: clamp(14px, 1.2vw, 20px);
+  line-height: normal;
+  text-transform: capitalize;
+  padding: 12px 32px;
+  transition: filter .2s ease, transform .2s ease;
+  white-space: nowrap;
+}
+.sd-promo__btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+
+.sd-promo__btn-arrow {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+/* ---- responsive ---- */
+@media (max-width: 749px) {
+  .sd-promo__heading {
+    font-size: 15.833px !important;
+    font-weight: 700;
+    letter-spacing: 0px;
+    text-transform: capitalize;
+    text-align: center !important;
+    margin: 0 auto 0px;
+  }
+  .sd-promo__content {
+    flex-direction: column;        /* spring sale on top, button below */
+    align-items: flex-start;
+    gap: 8px;
+    max-width: 218px;
+    text-align: left;
+  }
+  .sd-promo__media {
+    width: 170px;
+    height: 80px;
+    order: 2;
+    background: url(https://cdn.shopify.com/s/files/1/0948/7132/2955/files/Rectangle_16_1.png?v=1780925513);
+  }
+  .sd-promo {
+   
+    min-height: 80px;
+    
+}
+  .sd-promo__btn {
+    padding: 5px 16px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: capitalize;
+    line-height: 8px;
+  }
+}
+@media (max-width: 400px) {
+    .sd-promo__heading {
+        font-size: 14px !important;
+        font-weight: 700;
+        letter-spacing: 0px;
+        text-transform: capitalize;
+        text-align: center !important;
+        margin: 0 auto;
+    }
+    .sd-promo__btn {
+        padding: 5px 8px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: capitalize;
+        line-height: 8px;
+        gap: 5px;
+    }
+        .sd-promo__media {
+        width: 140px;
+        height: 80px;
+         }
+        }
+@media (min-width: 1920px) {
+        .sd-promo__media {
+    background-repeat: no-repeat;
+    background-position: center left;
+}
+}

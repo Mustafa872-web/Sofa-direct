@@ -1,0 +1,216 @@
+<link rel="stylesheet" href="{{ 'sd-trustpilot.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'sd-trustpilot.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- liquid
+  assign badge_text     = section.settings.badge_text     | default: 'Verified Reviews'
+  assign heading        = section.settings.heading        | default: 'Loved by thousands of UK homes.'
+  assign subheading     = section.settings.subheading
+  assign rating         = section.settings.rating_value   | default: '4.7'
+  assign review_count   = section.settings.review_count   | default: '5,200+'
+  assign stars_filled   = section.settings.stars_filled   | default: 5
+  assign locale         = section.settings.tp_locale      | default: 'en-GB'
+  assign template_id    = section.settings.tp_template_id | default: '53aa8912dec7e10d38f59f36'
+  assign business_id    = section.settings.tp_business_id | default: '5bd9bd98486407000195c98b'
+  assign tp_height      = section.settings.tp_height      | default: 240
+  assign review_url     = section.settings.review_url     | default: 'https://uk.trustpilot.com/review/sofadirect.com'
+-%}
+
+<section
+  id="sd-tp-{{ section.id }}"
+  class="sd-tp{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
+  aria-label="Trustpilot reviews"
+>
+  <div class="sd-tp__bg" aria-hidden="true">
+    <span class="sd-tp__blob sd-tp__blob--1"></span>
+    <span class="sd-tp__blob sd-tp__blob--2"></span>
+  </div>
+
+  <div class="sd-tp__container page-width">
+
+    <header class="sd-tp__header">
+      {%- if badge_text != blank -%}
+        <span class="sd-badge sd-tp__badge">
+          <svg class="sd-tp__badge-star" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          {{ badge_text }}
+        </span>
+      {%- endif -%}
+
+      {%- if heading != blank -%}
+        <h2 class="sd-tp__heading">{{ heading }}</h2>
+      {%- endif -%}
+
+      {%- if subheading != blank -%}
+        <p class="sd-tp__subheading">{{ subheading }}</p>
+      {%- endif -%}
+
+      <div class="sd-tp__stats">
+        <div class="sd-tp__stat">
+          <div class="sd-tp__stars" role="img" aria-label="{{ stars_filled }} out of 5 stars">
+            {%- for i in (1..5) -%}
+              <span class="sd-tp__star {% if forloop.index <= stars_filled %}sd-tp__star--on{% endif %}">
+                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </span>
+            {%- endfor -%}
+          </div>
+          <div class="sd-tp__stat-num">{{ rating }}<span>/5</span></div>
+          <div class="sd-tp__stat-label">Average rating</div>
+        </div>
+
+        <span class="sd-tp__divider" aria-hidden="true"></span>
+
+        <div class="sd-tp__stat">
+          <div class="sd-tp__stat-num sd-tp__stat-num--count">{{ review_count }}</div>
+          <div class="sd-tp__stat-label">Verified reviews</div>
+        </div>
+
+        <span class="sd-tp__divider" aria-hidden="true"></span>
+
+        <div class="sd-tp__stat sd-tp__stat--logo">
+          <a href="{{ review_url }}" target="_blank" rel="noopener" class="sd-tp__logo" aria-label="View us on Trustpilot">
+            <svg class="sd-tp__logo-star" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#00B67A" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <span class="sd-tp__logo-text">Trustpilot</span>
+          </a>
+          <div class="sd-tp__stat-label">Independent reviews</div>
+        </div>
+      </div>
+    </header>
+
+    {%- comment -%} ── Trustpilot widget ── {%- endcomment -%}
+    <div class="sd-tp__widget-wrap">
+      <div
+        class="trustpilot-widget sd-tp__widget"
+        data-locale="{{ locale }}"
+        data-template-id="{{ template_id }}"
+        data-businessunit-id="{{ business_id }}"
+        data-style-height="{{ tp_height }}px"
+        data-style-width="100%"
+        data-theme="light"
+      >
+        <a href="{{ review_url }}" target="_blank" rel="noopener">Trustpilot</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
+
+{% schema %}
+{
+  "name": "SD Trustpilot",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge label",
+      "default": "Verified Reviews"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Loved by thousands of UK homes."
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Real reviews from real customers — independently collected by Trustpilot."
+    },
+    {
+      "type": "header",
+      "content": "Statistics row"
+    },
+    {
+      "type": "text",
+      "id": "rating_value",
+      "label": "Average rating",
+      "default": "4.7"
+    },
+    {
+      "type": "range",
+      "id": "stars_filled",
+      "label": "Filled stars",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Total review count",
+      "default": "5,200+"
+    },
+    {
+      "type": "url",
+      "id": "review_url",
+      "label": "Trustpilot profile link",
+      "info": "e.g. https://uk.trustpilot.com/review/sofadirect.com"
+    },
+    {
+      "type": "header",
+      "content": "Trustpilot widget"
+    },
+    {
+      "type": "text",
+      "id": "tp_locale",
+      "label": "Locale",
+      "default": "en-GB"
+    },
+    {
+      "type": "text",
+      "id": "tp_template_id",
+      "label": "Template ID",
+      "default": "53aa8912dec7e10d38f59f36",
+      "info": "Carousel template — change to switch widget style."
+    },
+    {
+      "type": "text",
+      "id": "tp_business_id",
+      "label": "Business Unit ID",
+      "default": "5bd9bd98486407000195c98b"
+    },
+    {
+      "type": "range",
+      "id": "tp_height",
+      "label": "Widget height",
+      "min": 140,
+      "max": 360,
+      "step": 10,
+      "default": 240,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SD Trustpilot",
+      "settings": {
+        "badge_text": "Verified Reviews",
+        "heading": "Loved by thousands of UK homes.",
+        "subheading": "Real reviews from real customers — independently collected by Trustpilot.",
+        "rating_value": "4.7",
+        "stars_filled": 5,
+        "review_count": "5,200+",
+        "review_url": "https://uk.trustpilot.com/review/sofadirect.com",
+        "tp_locale": "en-GB",
+        "tp_template_id": "53aa8912dec7e10d38f59f36",
+        "tp_business_id": "5bd9bd98486407000195c98b",
+        "tp_height": 240
+      }
+    }
+  ]
+}
+{% endschema %}
