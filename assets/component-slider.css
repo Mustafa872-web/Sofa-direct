@@ -1,3 +1,7 @@
+.slideshow__text-wrapper.banner__content.banner__content--middle-center.page-width.banner--desktop-transparent.scroll-trigger.animate--slide-in{
+  z-index:-1;
+}
+
 slider-component {
   --desktop-margin-left-first-item: max(
     5rem,
