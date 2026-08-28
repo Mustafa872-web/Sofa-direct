@@ -22,20 +22,75 @@
     #shopify-section-{{ section.id }} .countdown-announcement,
     #shopify-section-{{ section.id }} .countdown-announcement__inner{height:80px}
   }
+
+  /* Tablet band: the 64px/20px column gap pushed the CTA onto a second row that
+     the fixed height then clipped. Hold one row and let the text absorb the slack. */
+  @media(min-width:681px) and (max-width:989px){
+    #shopify-section-{{ section.id }} .countdown-announcement__inner{
+      flex-wrap:nowrap;column-gap:16px;padding-top:4px;padding-bottom:4px
+    }
+    /* headline was capped at one line here too, cutting ‘MUST GO’ off the end */
+    #shopify-section-{{ section.id }} .countdown-announcement__headline,
+    #shopify-section-{{ section.id }} .countdown-announcement__subline{
+      height:auto;line-height:1.15;
+      display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden
+    }
+    #shopify-section-{{ section.id }} .countdown-announcement__text{flex:1 1 auto;min-width:0}
+    #shopify-section-{{ section.id }} .countdown-announcement__timer{flex:0 0 auto;width:auto}
+    #shopify-section-{{ section.id }} .countdown-announcement__cta{flex:0 0 auto;margin-left:0}
+    /* keep the row clear of the absolutely positioned close button */
+    #shopify-section-{{ section.id }} .countdown-announcement:has(.countdown-announcement__close) .countdown-announcement__inner{
+      padding-right:48px
+    }
+  }
+  /* Mobile: headline/subline take the leftover width and wrap to 2 lines instead
+     of being clipped mid-sentence. Timer and CTA hold their intrinsic width on the
+     same row (nowrap) so the button can never wrap into the hidden overflow. */
   @media(max-width:680px){
     #shopify-section-{{ section.id }},
     #shopify-section-{{ section.id }} .countdown-announcement,
-    #shopify-section-{{ section.id }} .countdown-announcement__inner{height:45px}
+    #shopify-section-{{ section.id }} .countdown-announcement__inner{height:68px}
+    #shopify-section-{{ section.id }} .countdown-announcement__inner{
+      flex-wrap:nowrap;column-gap:8px;row-gap:0;padding:4px 10px
+    }
+    #shopify-section-{{ section.id }} .countdown-announcement__text{
+      flex:1 1 auto;width:auto;min-width:0;text-align:left
+    }
+    #shopify-section-{{ section.id }} .countdown-announcement__headline,
+    #shopify-section-{{ section.id }} .countdown-announcement__subline{
+      height:auto;line-height:1.2;text-align:left;letter-spacing:0;
+      display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden
+    }
+    #shopify-section-{{ section.id }} .countdown-announcement__headline{font-size:clamp(10px,3.2vw,13px)}
+    #shopify-section-{{ section.id }} .countdown-announcement__subline{font-size:clamp(9px,2.8vw,11px)}
+    #shopify-section-{{ section.id }} .countdown-announcement__timer{flex:0 0 auto;width:auto}
+    #shopify-section-{{ section.id }} .countdown-announcement__segment{min-width:2.2rem}
+    #shopify-section-{{ section.id }} .countdown-announcement__separator{
+      padding:0 1px;line-height:1.1;margin-bottom:.35rem
+    }
+    #shopify-section-{{ section.id }} .countdown-announcement__cta{flex:0 0 auto;margin-left:0}
+    /* sticky header sits directly below the bar, so it tracks the height above */
+    .shopify-section-header-sticky{top:68px}
   }
+  /* Very narrow phones: claw back width from the timer and CTA so the headline
+     still fits its 2 lines instead of ellipsising. */
+  @media(max-width:360px){
+    #shopify-section-{{ section.id }} .countdown-announcement__inner{column-gap:6px;padding:4px 8px}
+    #shopify-section-{{ section.id }} .countdown-announcement__segment{min-width:1.9rem}
+    #shopify-section-{{ section.id }} .countdown-announcement__separator{padding:0;font-size:1.1rem}
+    #shopify-section-{{ section.id }} .countdown-announcement__value{font-size:14px}
+    #shopify-section-{{ section.id }} .countdown-announcement__label{font-size:8px}
+    #shopify-section-{{ section.id }} .countdown-announcement__cta{
+      font-size:9px;padding:.25rem .5rem;height:24px
+    }
+  }
+  /* id-scoped so these still beat the mobile layout rules above */
   @media(min-width:681px){
-    .countdown-announcement__subline.mobile-text{display:none}
+    #shopify-section-{{ section.id }} .countdown-announcement__subline.mobile-text{display:none}
   }
   @media(max-width:680px){
-    .countdown-announcement__subline.desktop-txt{display:none}
-    .countdown-announcement{min-height:45px}
-  }
-  @media(max-width:380px){
-    .countdown-announcement__subline{font-size:9px}
+    #shopify-section-{{ section.id }} .countdown-announcement__subline.desktop-txt{display:none}
+    #shopify-section-{{ section.id }} .countdown-announcement{min-height:68px}
   }
 </style>
 <script src="{{ 'component-countdown-announcement.js' | asset_url }}" defer="defer"></script>
