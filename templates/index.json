@@ -85,6 +85,43 @@
         "slide_duration": 5
       }
     },
+    "slideshow_mJXwAy": {
+      "type": "slideshow",
+      "blocks": {
+        "slide_ATchhw": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/SD_Banner_Image.webp",
+            "image_overlay_opacity": 0,
+            "heading": "",
+            "heading_size": "h2",
+            "subheading": "",
+            "button_label": "",
+            "link": "shopify://collections/all-sofas",
+            "button_style_secondary": false,
+            "show_text_box": false,
+            "box_align": "middle-center",
+            "text_alignment": "center",
+            "text_alignment_mobile": "center",
+            "color_scheme": "scheme-1"
+          }
+        }
+      },
+      "block_order": [
+        "slide_ATchhw"
+      ],
+      "name": "t:sections.slideshow.presets.name",
+      "settings": {
+        "layout": "full_bleed",
+        "slide_height": "medium",
+        "slider_visual": "counter",
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "image_behavior": "none",
+        "show_text_below": true,
+        "accessibility_info": "Slideshow about our brand"
+      }
+    },
     "sd_best_sellers": {
       "type": "sd-best-sellers",
       "blocks": {
@@ -335,47 +372,11 @@
         "cta_label": "View All Articles",
         "cta_url": ""
       }
-    },
-    "slideshow_mJXwAy": {
-      "type": "slideshow",
-      "blocks": {
-        "slide_ATchhw": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/SD_Banner_Image.webp",
-            "image_overlay_opacity": 0,
-            "heading": "",
-            "heading_size": "h2",
-            "subheading": "",
-            "button_label": "",
-            "link": "shopify://collections/all-sofas",
-            "button_style_secondary": false,
-            "show_text_box": false,
-            "box_align": "middle-center",
-            "text_alignment": "center",
-            "text_alignment_mobile": "center",
-            "color_scheme": "scheme-1"
-          }
-        }
-      },
-      "block_order": [
-        "slide_ATchhw"
-      ],
-      "name": "t:sections.slideshow.presets.name",
-      "settings": {
-        "layout": "full_bleed",
-        "slide_height": "medium",
-        "slider_visual": "counter",
-        "auto_rotate": false,
-        "change_slides_speed": 5,
-        "image_behavior": "none",
-        "show_text_below": true,
-        "accessibility_info": "Slideshow about our brand"
-      }
     }
   },
   "order": [
     "sd_hero",
+    "slideshow_mJXwAy",
     "sd_best_sellers",
     "sd_lifestyle_relax",
     "sd_new_releases_HtQwYb",
@@ -383,7 +384,6 @@
     "sd_everyday_banner_UjYYCc",
     "sd_category_browse",
     "sd_shop_the_look_VHaxQL",
-    "sd_blog",
-    "slideshow_mJXwAy"
+    "sd_blog"
   ]
 }
