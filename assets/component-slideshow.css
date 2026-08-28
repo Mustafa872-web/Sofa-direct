@@ -89,6 +89,28 @@ slideshow-component .slideshow.banner {
   }
 }
 
+/* Full-slide image link: sits above the media overlay, clickable around the text box */
+.slideshow__media-link {
+  display: block;
+  z-index: 2;
+}
+
+.slideshow__media-link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.slideshow__text-wrapper.banner__content {
+  pointer-events: none;
+  z-index: 3;
+}
+
+.slideshow__text-wrapper .slideshow__text {
+  pointer-events: auto;
+}
+
 .slideshow:not(.banner--mobile-bottom) .slideshow__text-wrapper {
   height: 100%;
 }
