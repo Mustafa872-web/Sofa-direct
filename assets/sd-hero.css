@@ -316,3 +316,23 @@
     margin: 0;
   }
 }
+
+/* ── WHOLE-SLIDE CLICK TARGET ────────────────────────────── */
+
+/* Covers the slide so a click anywhere on the image navigates.
+   z-index 2 keeps it above the gradient overlay (1) but below the
+   nav pills and mute button (3), so those stay clickable. */
+.sd-hero__slide-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sd-hero__slide-link:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -6px;
+}

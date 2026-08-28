@@ -74,6 +74,20 @@
         {%- else -%}
           {{ 'lifestyle-1' | placeholder_svg_tag: 'sd-hero__img sd-hero__img--placeholder' }}
         {%- endif -%}
+
+        {%- comment -%}
+          Whole-slide click target. Sits above the gradient overlay (z-index 1)
+          but below the nav pills and mute button (z-index 3), so those stay
+          clickable. Only the active slide receives clicks — inactive slides
+          carry pointer-events:none.
+        {%- endcomment -%}
+        {%- if section.settings.hero_link != blank -%}
+          <a
+            class="sd-hero__slide-link"
+            href="{{ section.settings.hero_link }}"
+            aria-label="{{ section.settings.hero_link_label | default: heading | escape }}"
+          ></a>
+        {%- endif -%}
       </div>
 
       {%- comment -%} Extra slides from blocks {%- endcomment -%}
@@ -94,6 +108,14 @@
               {{ block.settings.slide_image | image_url: width: 1920 | image_tag: loading: 'lazy', class: 'sd-hero__img', widths: '440,750,990,1200,1500,1920', sizes: '100vw', alt: sa }}
             {%- else -%}
               {{ 'lifestyle-2' | placeholder_svg_tag: 'sd-hero__img sd-hero__img--placeholder' }}
+            {%- endif -%}
+
+            {%- if block.settings.slide_link != blank -%}
+              <a
+                class="sd-hero__slide-link"
+                href="{{ block.settings.slide_link }}"
+                aria-label="{{ block.settings.slide_link_label | default: heading | escape }}"
+              ></a>
             {%- endif -%}
           </div>
           {%- assign si = si | plus: 1 -%}
@@ -366,6 +388,18 @@
       "info": "Direct .mp4 URL. Autoplays muted; mute button lets visitors toggle sound."
     },
     {
+      "type": "url",
+      "id": "hero_link",
+      "label": "First slide link",
+      "info": "Makes the whole first slide clickable. Leave blank for no link."
+    },
+    {
+      "type": "text",
+      "id": "hero_link_label",
+      "label": "First slide link description",
+      "info": "Screen-reader text for the clickable slide. Defaults to the heading."
+    },
+    {
       "type": "range",
       "id": "slide_duration",
       "label": "Seconds per slide",
@@ -407,6 +441,18 @@
           "type": "image_picker",
           "id": "slide_image",
           "label": "Slide image (used if no video)"
+        },
+        {
+          "type": "url",
+          "id": "slide_link",
+          "label": "Slide link",
+          "info": "Makes the whole slide clickable. Leave blank for no link."
+        },
+        {
+          "type": "text",
+          "id": "slide_link_label",
+          "label": "Slide link description",
+          "info": "Screen-reader text for the clickable slide. Defaults to the heading."
         }
       ]
     }
