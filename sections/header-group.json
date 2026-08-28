@@ -1,1 +1,485 @@
-{"name":"t:sections.header.name","type":"header","sections":{"sd-announcement-bar":{"type":"sd-announcement-bar","blocks":{"mq_delivery":{"type":"marquee_item","settings":{"text":"Free Delivery England & Wales","icon":"truck","url":""}},"mq_finance":{"type":"marquee_item","settings":{"text":"12 Month Warranty","icon":"credit","url":""}},"mq_warranty":{"type":"marquee_item","settings":{"text":"Old Sofa Removal","icon":"shield","url":""}},"mq_made":{"type":"marquee_item","settings":{"text":"0% Interest Free Finance","icon":"heart","url":""}},"mq_returns":{"type":"marquee_item","settings":{"text":"14-Day Risk-Free Returns","icon":"shield","url":""}}},"block_order":["mq_delivery","mq_finance","mq_warranty","mq_made","mq_returns"],"settings":{"show_marquee":true,"show_sale":false,"sale_text":"Spring Sale — Up to 50% Off","sale_cta":"Shop Now","sale_url":"/collections/all","sale_sub":" Fast UK Delivery · Easy Finance · Ends soon","show_trustpilot":false,"tp_rating":"4.8","tp_count":"2,400","tp_url":"https://uk.trustpilot.com/review/sofadirect.com","phone_label":"Call. Discuss. Buy","phone_number":"02476 581 053","phone_hours":"Mon–Sat 08:00 – 18:00"}},"sd-topbar":{"type":"sd-topbar","blocks":{"tb_delivery":{"type":"trust_item","settings":{"icon":"truck","icon_text":"5","line1":"Free Delivery","line2":"England & Wales"}},"tb_warranty":{"type":"trust_item","settings":{"icon":"shield","icon_text":"5","line1":"12 Month","line2":"Warranty"}},"tb_returns":{"type":"trust_item","settings":{"icon":"returns","icon_text":"5","line1":"Old Sofa","line2":"Removal"}},"tb_finance":{"type":"trust_item","settings":{"icon":"finance","icon_text":"5","line1":"0% Interest Free","line2":"Finance"}}},"block_order":["tb_delivery","tb_warranty","tb_returns","tb_finance"],"settings":{"call_text":"Call 02476 - 581 - 053 For Help | 08:00 AM - 6:00 PM","call_phone":"02476 581 053","call_bg":"#a48c70","title_color":"#2f4858","icon_color":"#a48c70"}},"sd-promo-banner":{"type":"sd-promo-banner","settings":{"heading":"Sale - Up to 50% Off","btn_label":"Explore Comfy Ranges","btn_url":"shopify://collections/all","show_call_bar":true,"call_text":"Call 02476 - 581 - 053 For Help | 08:00 AM - 6:00 PM","call_phone":"02476 581 053","call_bg":"#a48c70","call_color":"#ffffff","left_bg":"#2f4858","btn_bg":"#a48c70","border_color":"#e0a93e","border_width":2}},"header":{"type":"header","blocks":{"mega_menu_d9Vnhd":{"type":"mega_menu","settings":{"menu_handle":"All Sofas","show_featured":false,"show_col_thumbs":true,"featured_heading":"Featured","featured_product_1":"","featured_product_2":"","featured_product_3":"","promo_image":"shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png","promo_title":"All Sofas","promo_desc":"Modern comfort with clean lines and supportive seating — designed for everyday living.","promo_cta":"Shop the Valencia Range","promo_url":"shopify://collections/all-sofas","info_title":"New In & Sale","info_desc":"Discover the latest arrivals and limited-time sofa offers.","info_cta":"View Offers","info_url":"","quick1_label":"New Arrivals","quick1_url":"","quick2_label":"Best Sellers","quick2_url":"","quick3_label":"Clearance","quick3_url":"","quick4_label":"Finance Options","quick4_url":""}},"mega_menu_TzbDVt":{"type":"mega_menu","settings":{"menu_handle":"Express Sofa","show_featured":false,"show_col_thumbs":true,"featured_heading":"Featured","featured_product_1":"","featured_product_2":"","featured_product_3":"","promo_image":"shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png","promo_title":"Valencia Range","promo_desc":"Modern comfort with clean lines and supportive seating — designed for everyday living.","promo_cta":"Shop the Valencia Range","promo_url":"shopify://collections/express-sofa","info_title":"New In & Sale","info_desc":"Discover the latest arrivals and limited-time sofa offers.","info_cta":"View Offers","info_url":"","quick1_label":"New Arrivals","quick1_url":"","quick2_label":"Best Sellers","quick2_url":"","quick3_label":"Clearance","quick3_url":"","quick4_label":"Finance Options","quick4_url":""}},"mega_menu_Wac6yr":{"type":"mega_menu","settings":{"menu_handle":"Corner Sofas","show_featured":false,"show_col_thumbs":true,"featured_heading":"Featured","featured_product_1":"","featured_product_2":"","featured_product_3":"","promo_image":"shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png","promo_title":"Corner Sofas","promo_desc":"Modern comfort with clean lines and supportive seating — designed for everyday living.","promo_cta":"Shop the Valencia Range","promo_url":"shopify://collections/corner-sofas","info_title":"New In & Sale","info_desc":"Discover the latest arrivals and limited-time sofa offers.","info_cta":"View Offers","info_url":"","quick1_label":"New Arrivals","quick1_url":"","quick2_label":"Best Sellers","quick2_url":"","quick3_label":"Clearance","quick3_url":"","quick4_label":"Finance Options","quick4_url":""}},"mega_menu_m4QTfa":{"type":"mega_menu","settings":{"menu_handle":"Recliner Sofas","show_featured":false,"show_col_thumbs":true,"featured_heading":"Featured","featured_product_1":"","featured_product_2":"","featured_product_3":"","promo_image":"shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png","promo_title":"Recliner Sofas","promo_desc":"Modern comfort with clean lines and supportive seating — designed for everyday living.","promo_cta":"Shop the Valencia Range","promo_url":"shopify://collections/recliner-sofas","info_title":"New In & Sale","info_desc":"Discover the latest arrivals and limited-time sofa offers.","info_cta":"View Offers","info_url":"","quick1_label":"New Arrivals","quick1_url":"","quick2_label":"Best Sellers","quick2_url":"","quick3_label":"Clearance","quick3_url":"","quick4_label":"Finance Options","quick4_url":""}},"mega_menu_WF9KJ7":{"type":"mega_menu","settings":{"menu_handle":"Leather Sofas","show_featured":false,"show_col_thumbs":true,"featured_heading":"Featured","featured_product_1":"","featured_product_2":"","featured_product_3":"","promo_image":"shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png","promo_title":"Leather Sofas","promo_desc":"Modern comfort with clean lines and supportive seating — designed for everyday living.","promo_cta":"Shop the Valencia Range","promo_url":"shopify://collections/leather-sofas","info_title":"New In & Sale","info_desc":"Discover the latest arrivals and limited-time sofa offers.","info_cta":"View Offers","info_url":"","quick1_label":"New Arrivals","quick1_url":"","quick2_label":"Best Sellers","quick2_url":"","quick3_label":"Clearance","quick3_url":"","quick4_label":"Finance Options","quick4_url":""}},"mega_menu_LTmj8W":{"type":"mega_menu","settings":{"menu_handle":"Fabric Sofas","show_featured":false,"show_col_thumbs":true,"featured_heading":"Featured","featured_product_1":"","featured_product_2":"","featured_product_3":"","promo_image":"shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png","promo_title":"Fabric Sofas","promo_desc":"Modern comfort with clean lines and supportive seating — designed for everyday living.","promo_cta":"Shop the Valencia Range","promo_url":"shopify://collections/fabric-sofas","info_title":"New In & Sale","info_desc":"Discover the latest arrivals and limited-time sofa offers.","info_cta":"View Offers","info_url":"","quick1_label":"New Arrivals","quick1_url":"","quick2_label":"Best Sellers","quick2_url":"","quick3_label":"Clearance","quick3_url":"","quick4_label":"Finance Options","quick4_url":""}},"mega_menu_HwyYtj":{"type":"mega_menu","settings":{"menu_handle":"ArmChairs","show_featured":false,"show_col_thumbs":true,"featured_heading":"Featured","featured_product_1":"","featured_product_2":"","featured_product_3":"","promo_image":"shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png","promo_title":"ArmChairs","promo_desc":"Modern comfort with clean lines and supportive seating — designed for everyday living.","promo_cta":"Shop the Valencia Range","promo_url":"shopify://collections/armchairs","info_title":"New In & Sale","info_desc":"Discover the latest arrivals and limited-time sofa offers.","info_cta":"View Offers","info_url":"shopify://collections/armchairs","quick1_label":"New Arrivals","quick1_url":"","quick2_label":"Best Sellers","quick2_url":"","quick3_label":"Clearance","quick3_url":"","quick4_label":"Finance Options","quick4_url":""}},"mega_menu_TJr4CQ":{"type":"mega_menu","settings":{"menu_handle":"Rise & Recliner Chairs","show_featured":false,"show_col_thumbs":true,"featured_heading":"Featured","featured_product_1":"","featured_product_2":"","featured_product_3":"","promo_image":"shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png","promo_title":"Rise & Recliner Chairs","promo_desc":"","promo_cta":"","promo_url":"shopify://collections/rise-recliner-chairs","info_title":"New In & Sale","info_desc":"Discover the latest arrivals and limited-time sofa offers.","info_cta":"View Offers","info_url":"shopify://collections","quick1_label":"New Arrivals","quick1_url":"","quick2_label":"Best Sellers","quick2_url":"","quick3_label":"Clearance","quick3_url":"","quick4_label":"Finance Options","quick4_url":""}}},"block_order":["mega_menu_d9Vnhd","mega_menu_TzbDVt","mega_menu_Wac6yr","mega_menu_m4QTfa","mega_menu_WF9KJ7","mega_menu_LTmj8W","mega_menu_HwyYtj","mega_menu_TJr4CQ"],"custom_css":["main#MainContent {padding-top: 45px;}"],"settings":{"logo_position":"top-center","mobile_logo_position":"left","menu":"main-menu","menu_type_desktop":"mega","sticky_header_type":"always","show_line_separator":false,"color_scheme":"scheme-2","menu_color_scheme":"","enable_country_selector":false,"enable_language_selector":false,"enable_customer_avatar":true,"margin_bottom":0,"padding_top":20,"padding_bottom":20,"mobile_nav_sale_url":"#","mobile_nav_sale_label":"Sale + Final Reductions","mobile_nav_phone":"+44 1234 567890","mobile_nav_help_url":"#","mobile_nav_wishlist_url":"#"}},"sd-ai-chat-agent":{"type":"sd-ai-chat-agent","settings":{"enabled":false,"logo_image":"shopify://shop_images/logo_SD_ef68bfa1-955f-4c47-832a-13604d846aac.png","assistant_name":"SofaDirect Concierge","launcher_label":"Ask AI","mcp_endpoint":"/apps/sd-ai-agent/chat","greeting_message":"Hi, I can help you find the right sofa, answer delivery questions, and build your cart.","input_placeholder":"Ask for products, delivery info, or checkout help","empty_state_message":"Try: \"Find a corner sofa under 1200 GBP\"","quick_prompts":"Find a 3 seater sofa under 900 GBP\nWhat are your delivery timelines?\nAdd your best-selling sofa to my cart","policy_summary":"Delivery and return details are available on our policy pages. Ask me about shipping windows, delivery charges, or returns.","default_search_query":"sofa","enable_local_fallback":true,"allow_cart_mutations":true,"allow_checkout":true,"show_checkout_bar":true,"enable_voice":true,"enable_tts":true,"open_by_default":false,"enable_whatsapp":true,"whatsapp_number":"02476581053","whatsapp_message":"Hi SofaDirect, I have a question about my order.","shipping_policy_page":"","returns_policy_page":"","faq_page":""}},"countdown-bar":{"type":"countdown-bar","settings":{"enabled":true,"headline":"NEW YEAR SALE, ALL STOCK MUST GO","subline":"SAVE AN EXTRA 5% WITH CODE BF5","sublinem":"SAVE AN EXTRA 5% WITH CODE BF5","end_datetime":"2026-12-31 23:59:59","daily_mode":true,"daily_start_hour":1,"daily_end_hour":24,"daily_subline":false,"timezone":"Europe/London","button_label":"Shop now","button_link":"shopify://collections/all","show_close":true,"background_color":"#b11616","text_color":"#ffffff","button_bg_color":"#ffffff","button_text_color":"#111111","color_scheme":"scheme-3"}}},"order":["countdown-bar","sd-announcement-bar","sd-topbar","sd-promo-banner","header","sd-ai-chat-agent"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "countdown-bar": {
+      "type": "countdown-bar",
+      "settings": {
+        "enabled": true,
+        "headline": "NEW YEAR SALE, ALL STOCK MUST GO",
+        "subline": "SAVE AN EXTRA 5% WITH CODE BF5",
+        "sublinem": "SAVE AN EXTRA 5% WITH CODE BF5",
+        "end_datetime": "2026-12-31 23:59:59",
+        "daily_mode": true,
+        "daily_start_hour": 1,
+        "daily_end_hour": 24,
+        "daily_subline": false,
+        "timezone": "Europe/London",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections/all",
+        "show_close": true,
+        "background_color": "#b11616",
+        "text_color": "#ffffff",
+        "button_bg_color": "#ffffff",
+        "button_text_color": "#111111",
+        "color_scheme": "scheme-3"
+      }
+    },
+    "sd-announcement-bar": {
+      "type": "sd-announcement-bar",
+      "blocks": {
+        "mq_delivery": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Free Delivery England & Wales",
+            "icon": "truck",
+            "url": ""
+          }
+        },
+        "mq_finance": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "12 Month Warranty",
+            "icon": "credit",
+            "url": ""
+          }
+        },
+        "mq_warranty": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "Old Sofa Removal",
+            "icon": "shield",
+            "url": ""
+          }
+        },
+        "mq_made": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "0% Interest Free Finance",
+            "icon": "heart",
+            "url": ""
+          }
+        },
+        "mq_returns": {
+          "type": "marquee_item",
+          "settings": {
+            "text": "14-Day Risk-Free Returns",
+            "icon": "shield",
+            "url": ""
+          }
+        }
+      },
+      "block_order": [
+        "mq_delivery",
+        "mq_finance",
+        "mq_warranty",
+        "mq_made",
+        "mq_returns"
+      ],
+      "settings": {
+        "show_marquee": true,
+        "show_sale": false,
+        "sale_text": "Spring Sale — Up to 50% Off",
+        "sale_cta": "Shop Now",
+        "sale_url": "/collections/all",
+        "sale_sub": " Fast UK Delivery · Easy Finance · Ends soon",
+        "show_trustpilot": false,
+        "tp_rating": "4.8",
+        "tp_count": "2,400",
+        "tp_url": "https://uk.trustpilot.com/review/sofadirect.com",
+        "phone_label": "Call. Discuss. Buy",
+        "phone_number": "02476 581 053",
+        "phone_hours": "Mon–Sat 08:00 – 18:00"
+      }
+    },
+    "sd-topbar": {
+      "type": "sd-topbar",
+      "blocks": {
+        "tb_delivery": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "truck",
+            "icon_text": "5",
+            "line1": "Free Delivery",
+            "line2": "England & Wales"
+          }
+        },
+        "tb_warranty": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "shield",
+            "icon_text": "5",
+            "line1": "12 Month",
+            "line2": "Warranty"
+          }
+        },
+        "tb_returns": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "returns",
+            "icon_text": "5",
+            "line1": "Old Sofa",
+            "line2": "Removal"
+          }
+        },
+        "tb_finance": {
+          "type": "trust_item",
+          "settings": {
+            "icon": "finance",
+            "icon_text": "5",
+            "line1": "0% Interest Free",
+            "line2": "Finance"
+          }
+        }
+      },
+      "block_order": [
+        "tb_delivery",
+        "tb_warranty",
+        "tb_returns",
+        "tb_finance"
+      ],
+      "settings": {
+        "call_text": "Call 02476 - 581 - 053 For Help | 08:00 AM - 6:00 PM",
+        "call_phone": "02476 581 053",
+        "call_bg": "#a48c70",
+        "title_color": "#2f4858",
+        "icon_color": "#a48c70"
+      }
+    },
+    "sd-promo-banner": {
+      "type": "sd-promo-banner",
+      "disabled": true,
+      "settings": {
+        "heading": "Sale - Up to 50% Off",
+        "btn_label": "Explore Comfy Ranges",
+        "btn_url": "shopify://collections/all",
+        "show_call_bar": true,
+        "call_text": "Call 02476 - 581 - 053 For Help | 08:00 AM - 6:00 PM",
+        "call_phone": "02476 581 053",
+        "call_bg": "#a48c70",
+        "call_color": "#ffffff",
+        "left_bg": "#2f4858",
+        "btn_bg": "#a48c70",
+        "border_color": "#e0a93e",
+        "border_width": 2
+      }
+    },
+    "header": {
+      "type": "header",
+      "blocks": {
+        "mega_menu_d9Vnhd": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_handle": "All Sofas",
+            "show_featured": false,
+            "show_col_thumbs": true,
+            "featured_heading": "Featured",
+            "featured_product_1": "",
+            "featured_product_2": "",
+            "featured_product_3": "",
+            "promo_image": "shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png",
+            "promo_title": "All Sofas",
+            "promo_desc": "Modern comfort with clean lines and supportive seating — designed for everyday living.",
+            "promo_cta": "Shop the Valencia Range",
+            "promo_url": "shopify://collections/all-sofas",
+            "info_title": "New In & Sale",
+            "info_desc": "Discover the latest arrivals and limited-time sofa offers.",
+            "info_cta": "View Offers",
+            "info_url": "",
+            "quick1_label": "New Arrivals",
+            "quick1_url": "",
+            "quick2_label": "Best Sellers",
+            "quick2_url": "",
+            "quick3_label": "Clearance",
+            "quick3_url": "",
+            "quick4_label": "Finance Options",
+            "quick4_url": ""
+          }
+        },
+        "mega_menu_TzbDVt": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_handle": "Express Sofa",
+            "show_featured": false,
+            "show_col_thumbs": true,
+            "featured_heading": "Featured",
+            "featured_product_1": "",
+            "featured_product_2": "",
+            "featured_product_3": "",
+            "promo_image": "shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png",
+            "promo_title": "Valencia Range",
+            "promo_desc": "Modern comfort with clean lines and supportive seating — designed for everyday living.",
+            "promo_cta": "Shop the Valencia Range",
+            "promo_url": "shopify://collections/express-sofa",
+            "info_title": "New In & Sale",
+            "info_desc": "Discover the latest arrivals and limited-time sofa offers.",
+            "info_cta": "View Offers",
+            "info_url": "",
+            "quick1_label": "New Arrivals",
+            "quick1_url": "",
+            "quick2_label": "Best Sellers",
+            "quick2_url": "",
+            "quick3_label": "Clearance",
+            "quick3_url": "",
+            "quick4_label": "Finance Options",
+            "quick4_url": ""
+          }
+        },
+        "mega_menu_Wac6yr": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_handle": "Corner Sofas",
+            "show_featured": false,
+            "show_col_thumbs": true,
+            "featured_heading": "Featured",
+            "featured_product_1": "",
+            "featured_product_2": "",
+            "featured_product_3": "",
+            "promo_image": "shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png",
+            "promo_title": "Corner Sofas",
+            "promo_desc": "Modern comfort with clean lines and supportive seating — designed for everyday living.",
+            "promo_cta": "Shop the Valencia Range",
+            "promo_url": "shopify://collections/corner-sofas",
+            "info_title": "New In & Sale",
+            "info_desc": "Discover the latest arrivals and limited-time sofa offers.",
+            "info_cta": "View Offers",
+            "info_url": "",
+            "quick1_label": "New Arrivals",
+            "quick1_url": "",
+            "quick2_label": "Best Sellers",
+            "quick2_url": "",
+            "quick3_label": "Clearance",
+            "quick3_url": "",
+            "quick4_label": "Finance Options",
+            "quick4_url": ""
+          }
+        },
+        "mega_menu_m4QTfa": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_handle": "Recliner Sofas",
+            "show_featured": false,
+            "show_col_thumbs": true,
+            "featured_heading": "Featured",
+            "featured_product_1": "",
+            "featured_product_2": "",
+            "featured_product_3": "",
+            "promo_image": "shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png",
+            "promo_title": "Recliner Sofas",
+            "promo_desc": "Modern comfort with clean lines and supportive seating — designed for everyday living.",
+            "promo_cta": "Shop the Valencia Range",
+            "promo_url": "shopify://collections/recliner-sofas",
+            "info_title": "New In & Sale",
+            "info_desc": "Discover the latest arrivals and limited-time sofa offers.",
+            "info_cta": "View Offers",
+            "info_url": "",
+            "quick1_label": "New Arrivals",
+            "quick1_url": "",
+            "quick2_label": "Best Sellers",
+            "quick2_url": "",
+            "quick3_label": "Clearance",
+            "quick3_url": "",
+            "quick4_label": "Finance Options",
+            "quick4_url": ""
+          }
+        },
+        "mega_menu_WF9KJ7": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_handle": "Leather Sofas",
+            "show_featured": false,
+            "show_col_thumbs": true,
+            "featured_heading": "Featured",
+            "featured_product_1": "",
+            "featured_product_2": "",
+            "featured_product_3": "",
+            "promo_image": "shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png",
+            "promo_title": "Leather Sofas",
+            "promo_desc": "Modern comfort with clean lines and supportive seating — designed for everyday living.",
+            "promo_cta": "Shop the Valencia Range",
+            "promo_url": "shopify://collections/leather-sofas",
+            "info_title": "New In & Sale",
+            "info_desc": "Discover the latest arrivals and limited-time sofa offers.",
+            "info_cta": "View Offers",
+            "info_url": "",
+            "quick1_label": "New Arrivals",
+            "quick1_url": "",
+            "quick2_label": "Best Sellers",
+            "quick2_url": "",
+            "quick3_label": "Clearance",
+            "quick3_url": "",
+            "quick4_label": "Finance Options",
+            "quick4_url": ""
+          }
+        },
+        "mega_menu_LTmj8W": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_handle": "Fabric Sofas",
+            "show_featured": false,
+            "show_col_thumbs": true,
+            "featured_heading": "Featured",
+            "featured_product_1": "",
+            "featured_product_2": "",
+            "featured_product_3": "",
+            "promo_image": "shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png",
+            "promo_title": "Fabric Sofas",
+            "promo_desc": "Modern comfort with clean lines and supportive seating — designed for everyday living.",
+            "promo_cta": "Shop the Valencia Range",
+            "promo_url": "shopify://collections/fabric-sofas",
+            "info_title": "New In & Sale",
+            "info_desc": "Discover the latest arrivals and limited-time sofa offers.",
+            "info_cta": "View Offers",
+            "info_url": "",
+            "quick1_label": "New Arrivals",
+            "quick1_url": "",
+            "quick2_label": "Best Sellers",
+            "quick2_url": "",
+            "quick3_label": "Clearance",
+            "quick3_url": "",
+            "quick4_label": "Finance Options",
+            "quick4_url": ""
+          }
+        },
+        "mega_menu_HwyYtj": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_handle": "ArmChairs",
+            "show_featured": false,
+            "show_col_thumbs": true,
+            "featured_heading": "Featured",
+            "featured_product_1": "",
+            "featured_product_2": "",
+            "featured_product_3": "",
+            "promo_image": "shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png",
+            "promo_title": "ArmChairs",
+            "promo_desc": "Modern comfort with clean lines and supportive seating — designed for everyday living.",
+            "promo_cta": "Shop the Valencia Range",
+            "promo_url": "shopify://collections/armchairs",
+            "info_title": "New In & Sale",
+            "info_desc": "Discover the latest arrivals and limited-time sofa offers.",
+            "info_cta": "View Offers",
+            "info_url": "shopify://collections/armchairs",
+            "quick1_label": "New Arrivals",
+            "quick1_url": "",
+            "quick2_label": "Best Sellers",
+            "quick2_url": "",
+            "quick3_label": "Clearance",
+            "quick3_url": "",
+            "quick4_label": "Finance Options",
+            "quick4_url": ""
+          }
+        },
+        "mega_menu_TJr4CQ": {
+          "type": "mega_menu",
+          "settings": {
+            "menu_handle": "Rise & Recliner Chairs",
+            "show_featured": false,
+            "show_col_thumbs": true,
+            "featured_heading": "Featured",
+            "featured_product_1": "",
+            "featured_product_2": "",
+            "featured_product_3": "",
+            "promo_image": "shopify://shop_images/A4_-_1_5cccbab7-f5ac-40ba-8458-585bf0bdf3c6.png",
+            "promo_title": "Rise & Recliner Chairs",
+            "promo_desc": "",
+            "promo_cta": "",
+            "promo_url": "shopify://collections/rise-recliner-chairs",
+            "info_title": "New In & Sale",
+            "info_desc": "Discover the latest arrivals and limited-time sofa offers.",
+            "info_cta": "View Offers",
+            "info_url": "shopify://collections",
+            "quick1_label": "New Arrivals",
+            "quick1_url": "",
+            "quick2_label": "Best Sellers",
+            "quick2_url": "",
+            "quick3_label": "Clearance",
+            "quick3_url": "",
+            "quick4_label": "Finance Options",
+            "quick4_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "mega_menu_d9Vnhd",
+        "mega_menu_TzbDVt",
+        "mega_menu_Wac6yr",
+        "mega_menu_m4QTfa",
+        "mega_menu_WF9KJ7",
+        "mega_menu_LTmj8W",
+        "mega_menu_HwyYtj",
+        "mega_menu_TJr4CQ"
+      ],
+      "custom_css": [
+        "main#MainContent {padding-top: 45px;}"
+      ],
+      "settings": {
+        "logo_position": "top-center",
+        "mobile_logo_position": "left",
+        "menu": "main-menu",
+        "menu_type_desktop": "mega",
+        "sticky_header_type": "always",
+        "show_line_separator": false,
+        "color_scheme": "scheme-2",
+        "menu_color_scheme": "",
+        "enable_country_selector": false,
+        "enable_language_selector": false,
+        "enable_customer_avatar": true,
+        "margin_bottom": 0,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "mobile_nav_sale_url": "#",
+        "mobile_nav_sale_label": "Sale + Final Reductions",
+        "mobile_nav_phone": "+44 1234 567890",
+        "mobile_nav_help_url": "#",
+        "mobile_nav_wishlist_url": "#"
+      }
+    },
+    "sd-ai-chat-agent": {
+      "type": "sd-ai-chat-agent",
+      "settings": {
+        "enabled": false,
+        "logo_image": "shopify://shop_images/logo_SD_ef68bfa1-955f-4c47-832a-13604d846aac.png",
+        "assistant_name": "SofaDirect Concierge",
+        "launcher_label": "Ask AI",
+        "mcp_endpoint": "/apps/sd-ai-agent/chat",
+        "greeting_message": "Hi, I can help you find the right sofa, answer delivery questions, and build your cart.",
+        "input_placeholder": "Ask for products, delivery info, or checkout help",
+        "empty_state_message": "Try: \"Find a corner sofa under 1200 GBP\"",
+        "quick_prompts": "Find a 3 seater sofa under 900 GBP\nWhat are your delivery timelines?\nAdd your best-selling sofa to my cart",
+        "policy_summary": "Delivery and return details are available on our policy pages. Ask me about shipping windows, delivery charges, or returns.",
+        "default_search_query": "sofa",
+        "enable_local_fallback": true,
+        "allow_cart_mutations": true,
+        "allow_checkout": true,
+        "show_checkout_bar": true,
+        "enable_voice": true,
+        "enable_tts": true,
+        "open_by_default": false,
+        "enable_whatsapp": true,
+        "whatsapp_number": "02476581053",
+        "whatsapp_message": "Hi SofaDirect, I have a question about my order.",
+        "shipping_policy_page": "",
+        "returns_policy_page": "",
+        "faq_page": ""
+      }
+    }
+  },
+  "order": [
+    "countdown-bar",
+    "sd-announcement-bar",
+    "sd-topbar",
+    "sd-promo-banner",
+    "header",
+    "sd-ai-chat-agent"
+  ]
+}
