@@ -13,6 +13,7 @@
   "sections": {
     "countdown-bar": {
       "type": "countdown-bar",
+      "disabled": true,
       "settings": {
         "enabled": true,
         "headline": "SUMMER BANK HOLIDAY SALE - ALL STOCK MUST GO",
